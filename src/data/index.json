@@ -1,0 +1,10 @@
+{
+  "narrations": [
+    {
+      "slug": "alexander-rules-world",
+      "title": "Adult Alexander the Great Rules the World",
+      "file": "alexander-rules-world.json",
+      "rootNodeIds": ["alexander-rules-world::n001"]
+    }
+  ]
+}
