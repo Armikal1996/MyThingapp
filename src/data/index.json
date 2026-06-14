@@ -20,6 +20,13 @@
       "description": "An interactive branching history of physiology, psychology, and neuroscience from ancient medicine to modern science.",
       "file": "history-of-physiology-and-psychology.json",
       "rootNodeIds": ["history-of-physiology-and-psychology::root"]
+    },
+    {
+      "slug": "deep-ocean-exploration",
+      "title": "Who dared to dive deep into the ocean?",
+      "description": "A history web about exploring the deep ocean. Historical = supported by evidence. Speculative = educated guess. Alternate = what-if history.",
+      "file": "deep-ocean-exploration.json",
+      "rootNodeIds": ["deep-ocean-exploration::root"]
     }
   ]
 }

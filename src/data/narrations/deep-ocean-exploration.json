@@ -1,0 +1,869 @@
+{
+  "slug": "deep-ocean-exploration",
+  "title": "Who dared to dive deep into the ocean?",
+  "version": 1,
+  "description": "A history web about exploring the deep ocean. Historical = supported by evidence. Speculative = educated guess. Alternate = what-if history.",
+  "theme": {
+    "era": "archive",
+    "accent": "#f59e0b",
+    "accent2": "#38bdf8",
+    "motif": "maps, notes, instruments"
+  },
+  "narrator": {
+    "name": "Captain Current",
+    "persona": "curious time-guide",
+    "intro": "Read the clue, make a brave guess, then reveal the branch.",
+    "correctLines": [
+      "Correct! You spotted the clue.",
+      "Nice historical thinking."
+    ],
+    "wrongLines": [
+      "Good guess, but history took another path.",
+      "Not quite. Test the next clue."
+    ]
+  },
+  "rootNodeIds": [
+    "deep-ocean-exploration::root"
+  ],
+  "missions": [
+    {
+      "id": "mission-divers",
+      "title": "First Divers",
+      "description": "Trace the earliest ocean explorers.",
+      "nodeIds": [
+        "deep-ocean-exploration::root",
+        "deep-ocean-exploration::ancient-divers",
+        "deep-ocean-exploration::pearl-divers",
+        "deep-ocean-exploration::diving-bell"
+      ]
+    },
+    {
+      "id": "mission-machines",
+      "title": "Machines Below",
+      "description": "Follow inventions that let humans stay underwater longer.",
+      "nodeIds": [
+        "deep-ocean-exploration::diving-bell",
+        "deep-ocean-exploration::halley-bell",
+        "deep-ocean-exploration::air-pumps",
+        "deep-ocean-exploration::scuba"
+      ]
+    },
+    {
+      "id": "mission-deep",
+      "title": "Into the Abyss",
+      "description": "Travel from submarines to trench explorers.",
+      "nodeIds": [
+        "deep-ocean-exploration::bathysphere",
+        "deep-ocean-exploration::trieste",
+        "deep-ocean-exploration::challenger-deep",
+        "deep-ocean-exploration::mapping-trench"
+      ]
+    },
+    {
+      "id": "mission-future",
+      "title": "Ocean Futures",
+      "description": "Explore what may come next.",
+      "nodeIds": [
+        "deep-ocean-exploration::robots",
+        "deep-ocean-exploration::future-ocean",
+        "deep-ocean-exploration::ocean-network"
+      ]
+    }
+  ],
+  "nodes": {
+    "deep-ocean-exploration::root": {
+      "id": "deep-ocean-exploration::root",
+      "narration": "deep-ocean-exploration",
+      "type": "root",
+      "title": "Who dared to dive deep into the ocean?",
+      "summary": "Humans have crossed oceans for thousands of years.\nBut the deep ocean stayed mysterious and dark.\nHow did people first explore what lay below?",
+      "factuality": "historical",
+      "sources": [
+        {
+          "label": "NOAA Ocean Exploration",
+          "url": "[https://oceanexplorer.noaa.gov"
+        }
+      ],
+      "consequences": "Starts](https://oceanexplorer.noaa.gov%22}],%22consequences%22:%22Starts) the story of underwater exploration.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::ancient-divers",
+          "edgeType": "causal",
+          "branchSide": "left",
+          "branchLabel": "Human divers"
+        },
+        {
+          "targetId": "deep-ocean-exploration::ancient-curiosity",
+          "edgeType": "causal",
+          "branchSide": "right",
+          "branchLabel": "Ocean mysteries"
+        }
+      ],
+      "prediction": {
+        "question": "What came first in ocean exploration?",
+        "choices": [
+          {
+            "id": "c1",
+            "text": "People diving with no machines",
+            "correct": true,
+            "feedback": "Ancient divers explored long before machines.",
+            "leadsTo": "deep-ocean-exploration::ancient-divers"
+          },
+          {
+            "id": "c2",
+            "text": "Steel submarines",
+            "correct": false,
+            "feedback": "Those arrived much later."
+          }
+        ]
+      },
+      "powerUp": {
+        "title": "Timeline Sense",
+        "text": "Put inventions in the right historical order."
+      }
+    },
+    "deep-ocean-exploration::ancient-divers": {
+      "id": "deep-ocean-exploration::ancient-divers",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Ancient Free Divers",
+      "summary": "Thousands of years ago, divers collected food, sponges, and treasure.\nThey held their breath and relied on skill.\nWhich goal pushed diving further?",
+      "factuality": "historical",
+      "sources": [
+        {
+          "label": "Britannica Diving",
+          "url": "[https://www.britannica.com"
+        }
+      ],
+      "consequences": "Humans](https://www.britannica.com%22}],%22consequences%22:%22Humans) learned underwater survival techniques.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::pearl-divers",
+          "edgeType": "causal",
+          "branchSide": "left",
+          "branchLabel": "Pearls"
+        },
+        {
+          "targetId": "deep-ocean-exploration::sponge-divers",
+          "edgeType": "causal",
+          "branchSide": "right",
+          "branchLabel": "Sponges"
+        }
+      ],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "Notice how work and trade drive invention."
+      }
+    },
+    "deep-ocean-exploration::ancient-curiosity": {
+      "id": "deep-ocean-exploration::ancient-curiosity",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Mysteries Beneath Ships",
+      "summary": "Sailors wondered what lived under the waves.\nStories mixed truth and imagination.\nCould people ever stay underwater longer?",
+      "factuality": "historical",
+      "consequences": "Curiosity encouraged new technology.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::diving-bell-idea",
+          "edgeType": "causal",
+          "branchSide": "right",
+          "branchLabel": "New tools"
+        }
+      ],
+      "powerUp": {
+        "title": "Question Builder",
+        "text": "Big discoveries often start with curiosity."
+      }
+    },
+    "deep-ocean-exploration::pearl-divers": {
+      "id": "deep-ocean-exploration::pearl-divers",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Pearl Divers",
+      "summary": "Divers searched for valuable pearls.\nSome trained from childhood.\nTheir success showed how much humans could do underwater.",
+      "factuality": "historical",
+      "consequences": "Created demand for better diving methods.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::diving-bell",
+          "edgeType": "causal",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "Economic Clue",
+        "text": "Money and trade can accelerate exploration."
+      }
+    },
+    "deep-ocean-exploration::sponge-divers": {
+      "id": "deep-ocean-exploration::sponge-divers",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Sponge Divers",
+      "summary": "Divers gathered sea sponges for cleaning and trade.\nThe work was dangerous.\nPeople wanted safer ways to stay underwater.",
+      "factuality": "historical",
+      "consequences": "Encouraged underwater technology.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::diving-bell",
+          "edgeType": "causal",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "Work and Technology",
+        "text": "Jobs often inspire inventions."
+      }
+    },
+    "deep-ocean-exploration::diving-bell-idea": {
+      "id": "deep-ocean-exploration::diving-bell-idea",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "The Bell Idea",
+      "summary": "People noticed trapped air could remain underwater.\nCould a container carry air beneath the sea?",
+      "factuality": "historical",
+      "consequences": "Led toward diving bells.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::diving-bell",
+          "edgeType": "causal",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "Pattern Finder",
+        "text": "Observe nature to invent tools."
+      }
+    },
+    "deep-ocean-exploration::diving-bell": {
+      "id": "deep-ocean-exploration::diving-bell",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "The Diving Bell",
+      "summary": "A bell-shaped chamber trapped air underwater.\nDivers could breathe for a time inside it.\nHow could it be improved?",
+      "factuality": "historical",
+      "sources": [
+        {
+          "label": "Smithsonian Ocean History",
+          "url": "[https://www.si.edu"
+        }
+      ],
+      "consequences": "Allowed](https://www.si.edu%22}],%22consequences%22:%22Allowed) longer underwater work.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::halley-bell",
+          "edgeType": "causal",
+          "branchSide": "left",
+          "branchLabel": "Better bells"
+        },
+        {
+          "targetId": "deep-ocean-exploration::salvage-work",
+          "edgeType": "causal",
+          "branchSide": "right",
+          "branchLabel": "Shipwrecks"
+        }
+      ],
+      "prediction": {
+        "question": "What made diving bells more useful?",
+        "choices": [
+          {
+            "id": "c1",
+            "text": "Fresh air supplied underwater",
+            "correct": true,
+            "feedback": "Air systems improved diving bells.",
+            "leadsTo": "deep-ocean-exploration::halley-bell"
+          },
+          {
+            "id": "c2",
+            "text": "Magic sea creatures",
+            "correct": false,
+            "feedback": "Stories were not the solution."
+          }
+        ]
+      },
+      "powerUp": {
+        "title": "Engineering Lens",
+        "text": "Small improvements can transform a tool."
+      }
+    },
+    "deep-ocean-exploration::halley-bell": {
+      "id": "deep-ocean-exploration::halley-bell",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Edmond Halley's Bell",
+      "summary": "In the 1690s, Halley improved the diving bell.\nFresh air barrels extended time underwater.",
+      "factuality": "historical",
+      "consequences": "Made underwater work more practical.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::air-pumps",
+          "edgeType": "causal",
+          "branchSide": "left"
+        },
+        {
+          "targetId": "deep-ocean-exploration::deep-work",
+          "edgeType": "causal",
+          "branchSide": "right"
+        }
+      ],
+      "powerUp": {
+        "title": "Innovation Trail",
+        "text": "Track how one invention improves another."
+      }
+    },
+    "deep-ocean-exploration::salvage-work": {
+      "id": "deep-ocean-exploration::salvage-work",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Recovering Shipwrecks",
+      "summary": "Divers searched sunken ships for cargo.\nThis work funded better equipment.",
+      "factuality": "historical",
+      "consequences": "Exploration gained financial support.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::deep-work",
+          "edgeType": "causal",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "Cause and Effect",
+        "text": "Resources help technology advance."
+      }
+    },
+    "deep-ocean-exploration::air-pumps": {
+      "id": "deep-ocean-exploration::air-pumps",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Air Pumps and Helmets",
+      "summary": "Engineers developed ways to send air to divers.\nHeavy helmets appeared.\nWould freedom or safety matter more next?",
+      "factuality": "historical",
+      "consequences": "Divers could stay underwater longer.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::surface-suits",
+          "edgeType": "causal",
+          "branchSide": "left",
+          "branchLabel": "Safety"
+        },
+        {
+          "targetId": "deep-ocean-exploration::portable-air",
+          "edgeType": "causal",
+          "branchSide": "right",
+          "branchLabel": "Freedom"
+        }
+      ],
+      "powerUp": {
+        "title": "Tradeoff Tracker",
+        "text": "Technology often balances competing goals."
+      }
+    },
+    "deep-ocean-exploration::deep-work": {
+      "id": "deep-ocean-exploration::deep-work",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Working Below the Waves",
+      "summary": "Construction, salvage, and science all needed divers.\nDemand for deeper work kept growing.",
+      "factuality": "historical",
+      "consequences": "Encouraged new diving systems.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::surface-suits",
+          "edgeType": "causal",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "Need Drives Change",
+        "text": "Identify the problem inventors wanted to solve."
+      }
+    },
+    "deep-ocean-exploration::surface-suits": {
+      "id": "deep-ocean-exploration::surface-suits",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Surface-Supplied Diving Suits",
+      "summary": "Divers wore helmets connected to air hoses.\nThey could work deeper than before.",
+      "factuality": "historical",
+      "consequences": "Opened more of the underwater world.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::portable-air",
+          "edgeType": "causal",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "Technology Ladder",
+        "text": "New inventions build on earlier ones."
+      }
+    },
+    "deep-ocean-exploration::portable-air": {
+      "id": "deep-ocean-exploration::portable-air",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "The Dream of Portable Air",
+      "summary": "Divers wanted to move freely.\nCould they carry their own air supply?",
+      "factuality": "historical",
+      "consequences": "Set the stage for scuba.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::scuba",
+          "edgeType": "causal",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "Problem Solver",
+        "text": "Define the next challenge clearly."
+      }
+    },
+    "deep-ocean-exploration::scuba": {
+      "id": "deep-ocean-exploration::scuba",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Scuba and Cousteau",
+      "summary": "Jacques Cousteau and Émile Gagnan helped create the Aqua-Lung.\nDivers could swim freely with compressed air.\nWhat changed most?",
+      "factuality": "historical",
+      "sources": [
+        {
+          "label": "Cousteau Society",
+          "url": "[https://www.cousteau.org"
+        }
+      ],
+      "consequences": "Made](https://www.cousteau.org%22}],%22consequences%22:%22Made) underwater exploration far more accessible.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::underwater-films",
+          "edgeType": "causal",
+          "branchSide": "left",
+          "branchLabel": "Share discoveries"
+        },
+        {
+          "targetId": "deep-ocean-exploration::scientific-diving",
+          "edgeType": "causal",
+          "branchSide": "right",
+          "branchLabel": "Study oceans"
+        }
+      ],
+      "powerUp": {
+        "title": "Turning Point",
+        "text": "Recognize a breakthrough invention."
+      }
+    },
+    "deep-ocean-exploration::underwater-films": {
+      "id": "deep-ocean-exploration::underwater-films",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Underwater Films",
+      "summary": "Cousteau showed ocean life to millions.\nPeople became fascinated by the sea.",
+      "factuality": "historical",
+      "consequences": "Built public interest in ocean science.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::ocean-interest",
+          "edgeType": "causal",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "Media Detective",
+        "text": "Ideas spread through communication."
+      }
+    },
+    "deep-ocean-exploration::scientific-diving": {
+      "id": "deep-ocean-exploration::scientific-diving",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Scientific Diving",
+      "summary": "Researchers could now observe marine life directly.\nNew discoveries arrived quickly.",
+      "factuality": "historical",
+      "consequences": "Expanded marine science.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::ocean-interest",
+          "edgeType": "causal",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "Field Science",
+        "text": "Observe nature directly whenever possible."
+      }
+    },
+    "deep-ocean-exploration::ocean-interest": {
+      "id": "deep-ocean-exploration::ocean-interest",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "A Growing Ocean Age",
+      "summary": "More people wanted to explore deeper waters.\nDivers still had limits.\nWhat could go deeper than a diver?",
+      "factuality": "historical",
+      "consequences": "Inspired deep-submergence technology.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::bathysphere",
+          "edgeType": "causal",
+          "branchSide": "left",
+          "branchLabel": "Submersibles"
+        },
+        {
+          "targetId": "deep-ocean-exploration::submarine-path",
+          "edgeType": "causal",
+          "branchSide": "right",
+          "branchLabel": "Submarines"
+        }
+      ],
+      "powerUp": {
+        "title": "Next Question",
+        "text": "Each solution reveals a new challenge."
+      }
+    },
+    "deep-ocean-exploration::bathysphere": {
+      "id": "deep-ocean-exploration::bathysphere",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "The Bathysphere",
+      "summary": "William Beebe and Otis Barton descended in a steel sphere.\nThey saw deep-sea life few humans had witnessed.",
+      "factuality": "historical",
+      "consequences": "Proved humans could safely visit greater depths.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::deep-observations",
+          "edgeType": "causal",
+          "branchSide": "left"
+        },
+        {
+          "targetId": "deep-ocean-exploration::trieste",
+          "edgeType": "causal",
+          "branchSide": "right"
+        }
+      ],
+      "powerUp": {
+        "title": "Observation Skill",
+        "text": "Direct observation can change science."
+      }
+    },
+    "deep-ocean-exploration::submarine-path": {
+      "id": "deep-ocean-exploration::submarine-path",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Submarine Technology",
+      "summary": "Submarines demonstrated that humans could survive deep underwater.\nEngineers dreamed of going even deeper.",
+      "factuality": "historical",
+      "consequences": "Advanced pressure-resistant designs.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::trieste",
+          "edgeType": "causal",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "Connection Maker",
+        "text": "Different technologies can support each other."
+      }
+    },
+    "deep-ocean-exploration::deep-observations": {
+      "id": "deep-ocean-exploration::deep-observations",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Creatures of the Deep",
+      "summary": "Scientists found strange animals living in darkness.\nLife existed where many thought it could not.",
+      "factuality": "historical",
+      "consequences": "Expanded understanding of ecosystems.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::deep-sea-science",
+          "edgeType": "causal",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "Evidence First",
+        "text": "Nature may surprise our expectations."
+      }
+    },
+    "deep-ocean-exploration::trieste": {
+      "id": "deep-ocean-exploration::trieste",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Trieste Reaches Challenger Deep",
+      "summary": "In 1960, Trieste descended to the deepest known part of the ocean.\nHumans finally reached the bottom of Challenger Deep.",
+      "factuality": "historical",
+      "sources": [
+        {
+          "label": "NOAA Challenger Deep",
+          "url": "[https://oceanservice.noaa.gov"
+        }
+      ],
+      "consequences": "Showed](https://oceanservice.noaa.gov%22}],%22consequences%22:%22Showed) extreme depths were reachable.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::deep-sea-science",
+          "edgeType": "causal",
+          "branchSide": "left"
+        },
+        {
+          "targetId": "deep-ocean-exploration::deep-challenges",
+          "edgeType": "causal",
+          "branchSide": "right"
+        }
+      ],
+      "powerUp": {
+        "title": "Extreme Environments",
+        "text": "Learn how scientists face harsh conditions."
+      }
+    },
+    "deep-ocean-exploration::deep-sea-science": {
+      "id": "deep-ocean-exploration::deep-sea-science",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "A New Science Frontier",
+      "summary": "Deep oceans became laboratories.\nScientists studied geology, biology, and chemistry.",
+      "factuality": "historical",
+      "consequences": "Created modern deep-sea research.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::mapping-trench",
+          "edgeType": "causal",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "Big Picture",
+        "text": "Different sciences can work together."
+      }
+    },
+    "deep-ocean-exploration::deep-challenges": {
+      "id": "deep-ocean-exploration::deep-challenges",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Crushing Pressure",
+      "summary": "Deep ocean pressure can crush ordinary machines.\nEngineers needed stronger designs.",
+      "factuality": "historical",
+      "consequences": "Improved submersible technology.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::mapping-trench",
+          "edgeType": "causal",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "Constraint Finder",
+        "text": "Understand the limits of a system."
+      }
+    },
+    "deep-ocean-exploration::mapping-trench": {
+      "id": "deep-ocean-exploration::mapping-trench",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Mapping the Mariana Trench",
+      "summary": "Ships used sonar to map the deep seafloor.\nThe Mariana Trench became one of Earth's best-known deep-ocean features.\nWhat tool helped most?",
+      "factuality": "historical",
+      "sources": [
+        {
+          "label": "NOAA Mapping",
+          "url": "[https://oceanexplorer.noaa.gov"
+        }
+      ],
+      "consequences": "Revealed](https://oceanexplorer.noaa.gov%22}],%22consequences%22:%22Revealed) the shape of the deep ocean.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::sonar",
+          "edgeType": "causal",
+          "branchSide": "left",
+          "branchLabel": "Sonar"
+        },
+        {
+          "targetId": "deep-ocean-exploration::robots",
+          "edgeType": "causal",
+          "branchSide": "right",
+          "branchLabel": "Robots"
+        }
+      ],
+      "powerUp": {
+        "title": "Map Reader",
+        "text": "Maps reveal hidden places."
+      }
+    },
+    "deep-ocean-exploration::sonar": {
+      "id": "deep-ocean-exploration::sonar",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Sound Maps the Seafloor",
+      "summary": "Sonar sends sound waves and measures echoes.\nIt can map places humans cannot see.",
+      "factuality": "historical",
+      "consequences": "Made large-scale ocean mapping possible.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::modern-maps",
+          "edgeType": "causal",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "Indirect Evidence",
+        "text": "Scientists often measure clues instead of seeing directly."
+      }
+    },
+    "deep-ocean-exploration::robots": {
+      "id": "deep-ocean-exploration::robots",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Robots Go Deeper",
+      "summary": "Remotely operated vehicles and autonomous robots explore dangerous depths.\nThey can stay underwater much longer than humans.",
+      "factuality": "historical",
+      "consequences": "Expanded deep-ocean exploration.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::modern-maps",
+          "edgeType": "causal",
+          "branchSide": "center"
+        },
+        {
+          "targetId": "deep-ocean-exploration::future-ocean",
+          "edgeType": "causal",
+          "branchSide": "right"
+        }
+      ],
+      "powerUp": {
+        "title": "Tool Choice",
+        "text": "Choose the right tool for the job."
+      }
+    },
+    "deep-ocean-exploration::modern-maps": {
+      "id": "deep-ocean-exploration::modern-maps",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Modern Ocean Maps",
+      "summary": "Scientists combine sonar, satellites, and robots.\nThe ocean is mapped more accurately every year.",
+      "factuality": "historical",
+      "consequences": "Improves navigation and science.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::ocean-secrets",
+          "edgeType": "causal",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "Data Combiner",
+        "text": "Many kinds of evidence work together."
+      }
+    },
+    "deep-ocean-exploration::ocean-secrets": {
+      "id": "deep-ocean-exploration::ocean-secrets",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Many Secrets Remain",
+      "summary": "Large parts of the ocean remain poorly explored.\nThe deep sea still holds surprises.",
+      "factuality": "historical",
+      "consequences": "Exploration continues today.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::future-ocean",
+          "edgeType": "causal",
+          "branchSide": "center"
+        },
+        {
+          "targetId": "deep-ocean-exploration::alternate-no-scuba",
+          "edgeType": "consequence",
+          "branchSide": "right"
+        }
+      ],
+      "powerUp": {
+        "title": "Open Questions",
+        "text": "Science is never completely finished."
+      }
+    },
+    "deep-ocean-exploration::future-ocean": {
+      "id": "deep-ocean-exploration::future-ocean",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Future Ocean Exploration",
+      "summary": "Future explorers may use smarter robots and better sensors.\nMuch of the ocean is still unknown.",
+      "factuality": "speculative",
+      "consequences": "Suggests future discoveries.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::ocean-network",
+          "edgeType": "causal",
+          "branchSide": "left"
+        },
+        {
+          "targetId": "deep-ocean-exploration::future-habitats",
+          "edgeType": "causal",
+          "branchSide": "right"
+        }
+      ],
+      "powerUp": {
+        "title": "Future Thinking",
+        "text": "Separate evidence from prediction."
+      }
+    },
+    "deep-ocean-exploration::ocean-network": {
+      "id": "deep-ocean-exploration::ocean-network",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "A Network of Ocean Sensors",
+      "summary": "Scientists may place connected sensors across vast areas.\nData could arrive in real time.",
+      "factuality": "speculative",
+      "consequences": "Could improve understanding of the ocean.",
+      "children": [],
+      "powerUp": {
+        "title": "Systems Thinking",
+        "text": "Large networks reveal patterns."
+      }
+    },
+    "deep-ocean-exploration::future-habitats": {
+      "id": "deep-ocean-exploration::future-habitats",
+      "narration": "deep-ocean-exploration",
+      "type": "simple",
+      "title": "Living Underwater?",
+      "summary": "Future habitats might support longer stays below the sea.\nMany engineering challenges remain.",
+      "factuality": "speculative",
+      "consequences": "Extends exploration possibilities.",
+      "children": [],
+      "powerUp": {
+        "title": "Feasibility Check",
+        "text": "Ask what would be needed to make an idea real."
+      }
+    },
+    "deep-ocean-exploration::alternate-no-scuba": {
+      "id": "deep-ocean-exploration::alternate-no-scuba",
+      "narration": "deep-ocean-exploration",
+      "type": "consequence",
+      "title": "What If Scuba Had Never Been Invented?",
+      "summary": "Ocean science might have advanced more slowly.\nFewer people could have explored reefs and shallow seas.",
+      "factuality": "alternate",
+      "consequences": "Shows the importance of portable diving gear.",
+      "children": [
+        {
+          "targetId": "deep-ocean-exploration::alternate-no-trieste",
+          "edgeType": "consequence",
+          "branchSide": "center"
+        }
+      ],
+      "powerUp": {
+        "title": "What-If Lens",
+        "text": "Explore alternate paths without changing evidence."
+      }
+    },
+    "deep-ocean-exploration::alternate-no-trieste": {
+      "id": "deep-ocean-exploration::alternate-no-trieste",
+      "narration": "deep-ocean-exploration",
+      "type": "consequence",
+      "title": "What If Nobody Reached Challenger Deep?",
+      "summary": "The deepest ocean might have remained more mysterious for longer.\nTechnology could have progressed more slowly.",
+      "factuality": "alternate",
+      "consequences": "Highlights the value of landmark expeditions.",
+      "children": [],
+      "powerUp": {
+        "title": "Counterfactual Thinking",
+        "text": "Compare what happened with what might have happened."
+      }
+    }
+  }
+}

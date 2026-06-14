@@ -1,5 +1,12 @@
 <template>
   <div class="start-screen">
+    <div class="start-topbar">
+      <button class="studio-open-btn" @click="studioOpen = true">
+        <span class="studio-open-icon">✦</span>
+        Create narration with AI
+      </button>
+    </div>
+
     <header class="start-header">
       <div class="eyebrow">Predict • Reveal • Research</div>
       <h1 class="app-title">Time Web Academy</h1>
@@ -38,12 +45,19 @@
     <footer class="start-footer">
       <span>Kids-first by default. Sources are always one toggle away.</span>
     </footer>
+
+    <NarrationStudio
+      v-if="studioOpen"
+      :existing-narrations="narrations"
+      @close="studioOpen = false"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import indexData from '@/data/index.json'
+import NarrationStudio from '@/components/NarrationStudio.vue'
 
 const narrationModules = import.meta.glob('../data/narrations/*.json', { eager: true })
 
@@ -54,6 +68,7 @@ defineProps({
 defineEmits(['select', 'toggleResearchMode'])
 
 const narrations = ref(indexData.narrations)
+const studioOpen = ref(false)
 
 function readJson(key, fallback) {
   try {
@@ -85,9 +100,38 @@ function progressFor(narration) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 60px 24px 40px;
-  gap: 48px;
+  padding: 24px 24px 40px;
+  gap: 36px;
 }
+
+.start-topbar {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.studio-open-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  border: none;
+  color: #0a0e1a;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.25);
+  transition: transform 0.15s, box-shadow 0.2s;
+}
+.studio-open-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 26px rgba(245, 158, 11, 0.35);
+}
+.studio-open-icon { font-size: 14px; }
 
 .start-header {
   text-align: center;

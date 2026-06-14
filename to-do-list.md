@@ -222,3 +222,23 @@ A step-by-step build plan derived from `proposal.md`. Each step is self-containe
   - Run `npm run validate` and `npm run build`.
   - Manually inspect all three narrations, especially physiology, for left/right spread and readable branch labels.
   - **Done when:** validation/build pass and the graph feels like an explorable web, not a one-sided answer chain.
+
+---
+
+## Phase 10 — Narration Studio (AI generation helper)
+
+- [x] **Step 10.1 — In-browser validator**
+  - Add `src/utils/narrationValidator.js` mirroring `scripts/validateNarration.js`, returning `{ errors, warnings, stats }` (web-shape warnings included).
+  - **Done when:** pasted JSON is checked against the same structural laws used by `npm run validate`.
+
+- [x] **Step 10.2 — Prompt builder**
+  - Add `src/utils/narrationPromptBuilder.js` that turns a topic + headers into a complete AI prompt embedding all schema rules, web-shape guidance, a canonical example, and the style/slugs of existing narrations.
+  - **Done when:** the prompt is self-contained and avoids reusing existing slugs.
+
+- [x] **Step 10.3 — Narration Studio modal**
+  - Add `src/components/NarrationStudio.vue` with a 3-step flow: Describe → copy Prompt → paste JSON, validate, download `.json` + copy the `index.json` snippet.
+  - **Done when:** a valid pasted narration can be downloaded and registered.
+
+- [x] **Step 10.4 — Top-bar entry point**
+  - Add a "Create narration with AI" button to the Start Screen top bar that opens the studio and passes the existing narrations list.
+  - **Done when:** the button opens the studio and the build passes.
