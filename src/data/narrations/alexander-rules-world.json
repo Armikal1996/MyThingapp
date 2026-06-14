@@ -1,0 +1,483 @@
+{
+  "slug": "alexander-rules-world",
+  "title": "Adult Alexander the Great Rules the World",
+  "version": 2,
+  "description": "Imagine Alexander the Great did not die in Babylon in 323 BC — he lived, and kept ruling. This narration mixes real history with thoughtful 'what if' questions. Read each node, guess what might happen next, then click to find out. Green = what historians know really happened. Blue = educated guesses. Purple = alternate-history stories.",
+  "theme": {
+    "era": "antiquity",
+    "accent": "#f59e0b",
+    "accent2": "#22c55e",
+    "motif": "bronze maps, campfires, royal roads, and moonlit libraries"
+  },
+  "narrator": {
+    "name": "Mira",
+    "persona": "curious time-guide for young historians",
+    "intro": "I am Mira, your time-guide. Read the clue, make a brave guess, then reveal the branch.",
+    "correctLines": ["Sharp thinking, explorer!", "You read the clue like a real historian."],
+    "wrongLines": ["Good guess — history swerved another way.", "Not quite, but that was a smart path to test."]
+  },
+  "rootNodeIds": ["alexander-rules-world::n001"],
+  "missions": [
+    {
+      "id": "roads-and-trade",
+      "title": "Follow the Road Builders",
+      "description": "Trace how safe roads turn conquest into trade, stories, and art.",
+      "nodeIds": ["alexander-rules-world::n001", "alexander-rules-world::n002", "alexander-rules-world::n005", "alexander-rules-world::n011", "alexander-rules-world::n020"]
+    },
+    {
+      "id": "rome-question",
+      "title": "Test the Rome What-If",
+      "description": "Compare alternate conquest with what ancient Romans really debated.",
+      "nodeIds": ["alexander-rules-world::n001", "alexander-rules-world::n004", "alexander-rules-world::n018", "alexander-rules-world::n022"]
+    },
+    {
+      "id": "library-of-questions",
+      "title": "Build the Library of Questions",
+      "description": "Discover how Hellenism and Alexandria made knowledge travel.",
+      "nodeIds": ["alexander-rules-world::n003", "alexander-rules-world::n006", "alexander-rules-world::n008", "alexander-rules-world::n019"]
+    }
+  ],
+  "nodes": {
+    "alexander-rules-world::n001": {
+      "id": "alexander-rules-world::n001",
+      "narration": "alexander-rules-world",
+      "type": "root",
+      "title": "Alexander — 32 Years Old, Ruler of the World",
+      "summary": "It is the year 323 BC. Alexander the Great sits in Babylon. He has already marched from Greece to Egypt to India — farther than almost any king before him.\nIn real history, Alexander died here at age 32. His empire was torn apart by his generals within a few years.\nIn THIS story, he survives. He is still king. The whole ancient world waits to see what he does next.\nCan you guess: would he keep conquering, or stop and learn to govern?",
+      "factuality": "speculative",
+      "sources": [
+        { "label": "Arrian: Anabasis of Alexander (primary ancient account)", "url": "https://www.gutenberg.org/ebooks/46976" },
+        { "label": "Plutarch: Life of Alexander", "url": "https://www.gutenberg.org/ebooks/14140" },
+        { "label": "Britannica: Alexander the Great", "url": "https://www.britannica.com/biography/Alexander-the-Great" }
+      ],
+      "consequences": "Every path below starts from one big change: Alexander lives past 323 BC. Some branches teach what really happened in history. Others ask 'what if?' — those are thought experiments, not facts. Always check the coloured badge: Historical, Speculative, or Alternate.",
+      "children": [
+        { "targetId": "alexander-rules-world::n002", "edgeType": "causal" },
+        { "targetId": "alexander-rules-world::n003", "edgeType": "causal" },
+        { "targetId": "alexander-rules-world::n004", "edgeType": "consequence" }
+      ],
+      "prediction": {
+        "question": "Alexander survives in Babylon. What is the smartest first move for a king with a huge, exhausted empire?",
+        "choices": [
+          {
+            "id": "govern",
+            "text": "Stop marching for a while and learn how to govern the empire.",
+            "correct": true,
+            "feedback": "Exactly. Alexander's real final years already showed him trying to hold Persia, Egypt, and Greece together.",
+            "leadsTo": "alexander-rules-world::n002"
+          },
+          {
+            "id": "china",
+            "text": "Immediately march all the way to China.",
+            "correct": false,
+            "feedback": "Tempting for a conqueror, but his army had already mutinied near India because they wanted to go home."
+          },
+          {
+            "id": "hide",
+            "text": "Hide in Babylon and never campaign again.",
+            "correct": false,
+            "feedback": "Alexander was many things, but quiet and careful was not usually one of them."
+          }
+        ]
+      },
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n002": {
+      "id": "alexander-rules-world::n002",
+      "narration": "alexander-rules-world",
+      "type": "simple",
+      "title": "Alexander Stops Marching — He Starts Governing",
+      "summary": "In real life, Alexander spent his last years trying to hold his empire together, not just win battles. He married Persian nobles, dressed in Persian royal robes, and appointed governors called satraps to run distant provinces.\nSome of his own Macedonian soldiers grumbled — they wanted to go home to Greece.\nIf Alexander lived, he would almost certainly need to govern, not just fight.\nGuess: would soldiers accept Persian customs, or would they rebel?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Diodorus Siculus, Book XVII (Alexander's last years)", "url": "https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Diodorus_Siculus/17A*.html" },
+        { "label": "World History Encyclopedia: Satrap", "url": "https://www.worldhistory.org/Satrap/" }
+      ],
+      "consequences": "Alexander's real policy was fusion: Macedonian and Persian elites working together. That was bold — and risky. A living Alexander would face the same puzzle every empire faces: how do you rule people who do not share your language or religion?",
+      "children": [
+        { "targetId": "alexander-rules-world::n005", "edgeType": "causal" },
+        { "targetId": "alexander-rules-world::n006", "edgeType": "causal" }
+      ],
+      "prediction": {
+        "question": "Alexander starts ruling Persians and Macedonians together. What problem appears first?",
+        "choices": [
+          {
+            "id": "grumbling-soldiers",
+            "text": "Macedonian soldiers grumble because Persian customs feel like betrayal.",
+            "correct": true,
+            "feedback": "Right. In real history, many Macedonians disliked Alexander adopting Persian court customs.",
+            "leadsTo": "alexander-rules-world::n006"
+          },
+          {
+            "id": "roads-vanish",
+            "text": "All Persian roads vanish overnight.",
+            "correct": false,
+            "feedback": "Nope — the roads were real infrastructure. Smart rulers reuse useful systems."
+          },
+          {
+            "id": "no-taxes",
+            "text": "Everyone happily stops paying taxes forever.",
+            "correct": false,
+            "feedback": "A lovely dream, but empires run on taxes, roads, armies, and officials."
+          }
+        ]
+      },
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n003": {
+      "id": "alexander-rules-world::n003",
+      "narration": "alexander-rules-world",
+      "type": "simple",
+      "title": "Greek Language and Ideas Spread East",
+      "summary": "Wherever Alexander's armies went, Greek language, art, and learning followed. This blending of Greek and Eastern cultures is called Hellenism — and it really happened, even after Alexander died.\nGreek-style cities were founded from Egypt to Afghanistan. Coins, statues, and schools carried Greek ideas for centuries.\nAlexander's tutor as a boy was the philosopher Aristotle. Alexander famously carried a copy of Homer's Iliad on campaign.\nGuess: if Greek ideas spread even faster under a living king, what might people far away in India or Persia learn first — maths, stories, or sports?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "World History Encyclopedia: Hellenistic Period", "url": "https://www.worldhistory.org/Hellenistic_Period/" },
+        { "label": "Met Museum: Alexander the Great and Hellenism", "url": "https://www.metmuseum.org/toah/hd/alex/hd_alex.htm" }
+      ],
+      "consequences": "Hellenism outlived Alexander. The real Library of Alexandria — one of the greatest centres of learning in the ancient world — was built by his general Ptolemy after Alexander's death. Greek became a common language from the Mediterranean to Central Asia for hundreds of years.",
+      "children": [
+        { "targetId": "alexander-rules-world::n006", "edgeType": "causal" },
+        { "targetId": "alexander-rules-world::n017", "edgeType": "causal" }
+      ],
+      "prediction": {
+        "question": "Greek language spreads east. What is most likely to travel with it?",
+        "choices": [
+          {
+            "id": "shared-language",
+            "text": "A shared language for trade, science, coins, and stories.",
+            "correct": true,
+            "feedback": "Yes. Koine Greek became a common language across huge parts of the eastern Mediterranean and Near East.",
+            "leadsTo": "alexander-rules-world::n017"
+          },
+          {
+            "id": "same-food",
+            "text": "Every city immediately eats the exact same Greek food.",
+            "correct": false,
+            "feedback": "Culture blends, but local food, religion, and customs usually survive and mix rather than vanish."
+          },
+          {
+            "id": "no-local-languages",
+            "text": "All local languages disappear at once.",
+            "correct": false,
+            "feedback": "Shared languages help trade, but people often keep home languages for family and local life."
+          }
+        ]
+      },
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n004": {
+      "id": "alexander-rules-world::n004",
+      "narration": "alexander-rules-world",
+      "type": "consequence",
+      "title": "Alexander Looks West — Toward Rome",
+      "summary": "Before he died, Alexander planned more campaigns. Ancient writers wondered what would happen if he turned west toward the Mediterranean — where Rome was still a rising power, and Carthage ruled North Africa.\nThe Roman historian Livy later wrote a famous 'what if' scene: could Rome have stopped Alexander?\nIn 323 BC, Rome was not yet the giant empire we know from films — it was still fighting to control Italy.\nGuess: at age 32, with a tired but enormous army, could Alexander realistically march all the way to Italy?",
+      "factuality": "speculative",
+      "sources": [
+        { "label": "Livy, Ab Urbe Condita IX (the Alexander vs Rome debate)", "url": "https://penelope.uchicago.edu/Thayer/E/L/Roman/Texts/Livy/9*.html" },
+        { "label": "World History Encyclopedia: Roman Republic in 4th century BC", "url": "https://www.worldhistory.org/Roman_Republic/" }
+      ],
+      "consequences": "Historians disagree. Alexander's army was battle-hardened but very far from home. Rome's strength was stubborn citizen-soldiers and alliances across Italy — not glamour, but endurance. A westward war would have been Alexander's hardest test.",
+      "children": [
+        { "targetId": "alexander-rules-world::n007", "edgeType": "consequence" },
+        { "targetId": "alexander-rules-world::n018", "edgeType": "causal" }
+      ],
+      "prediction": {
+        "question": "Alexander looks west toward Rome. What should a careful historian say first?",
+        "choices": [
+          {
+            "id": "debate",
+            "text": "We can compare armies, but this battle never happened — ancient writers debated it later.",
+            "correct": true,
+            "feedback": "Perfect historian answer. Livy really did imagine the debate, but Alexander never fought Rome.",
+            "leadsTo": "alexander-rules-world::n018"
+          },
+          {
+            "id": "certain-win",
+            "text": "Alexander definitely wins because he always wins.",
+            "correct": false,
+            "feedback": "He was brilliant, but Rome's endurance and alliances make certainty dangerous."
+          },
+          {
+            "id": "certain-lose",
+            "text": "Rome definitely wins because Rome later became famous.",
+            "correct": false,
+            "feedback": "That is hindsight. In 323 BC, Rome was still a regional power, not the later empire."
+          }
+        ]
+      },
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n005": {
+      "id": "alexander-rules-world::n005",
+      "narration": "alexander-rules-world",
+      "type": "simple",
+      "title": "The Roads That Connected Continents",
+      "summary": "Persian kings before Alexander built the Royal Road — over 2,500 km from Sardis (in modern Turkey) toward Susa in Persia. Riders could relay messages in days instead of months.\nAlexander inherited and used these roads. Trade goods moved with them: grain, wine, metals, spices, and silk from the east.\nMerchants did not just carry goods — they carried languages, religions, and rumours of distant lands.\nGuess: which travels faster along a road — a bag of pepper, or a story about a king?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "World History Encyclopedia: Royal Road", "url": "https://www.worldhistory.org/Royal_Road/" },
+        { "label": "UNESCO: Silk Roads (long history of Eurasian trade)", "url": "https://en.unesco.org/silkroad" }
+      ],
+      "consequences": "Long-distance trade networks existed long before the famous 'Silk Road' name. Alexander's empire sat right across them. Safe roads meant more trade — and more trade meant cities grew richer and more connected.",
+      "children": [
+        { "targetId": "alexander-rules-world::n011", "edgeType": "causal" },
+        { "targetId": "alexander-rules-world::n012", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n006": {
+      "id": "alexander-rules-world::n006",
+      "narration": "alexander-rules-world",
+      "type": "simple",
+      "title": "A New Class of Rulers — Greek and Persian Together",
+      "summary": "Two paths meet here: stable government AND spreading Greek culture.\nIn real history, after Alexander died, his generals (the Diadochi) split the empire and fought each other for decades. But they all copied one idea: rule through local governors who spoke many languages and understood many customs.\nImagine officials who grew up reading Homer in Greek and negotiating in Persian — trusted by the king, respected by local people.\nThis node is a convergence point: both 'governing' and 'Hellenism' lead here.\nGuess: would people trust a governor from another country, or would they prefer one of their own?",
+      "factuality": "speculative",
+      "sources": [
+        { "label": "World History Encyclopedia: Diadochi", "url": "https://www.worldhistory.org/Diadochi/" }
+      ],
+      "consequences": "Real empires — Persian, Roman, British, and others — all wrestled with this. Alexander's fusion policy was an early attempt at ruling a multicultural empire. It worked partly, and failed partly. That tension is still with us today in every diverse country.",
+      "children": [
+        { "targetId": "alexander-rules-world::n008", "edgeType": "causal" },
+        { "targetId": "alexander-rules-world::n009", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n007": {
+      "id": "alexander-rules-world::n007",
+      "narration": "alexander-rules-world",
+      "type": "simple",
+      "title": "Rome Falls Before It Rises — An Alternate Story",
+      "summary": "THIS IS ALTERNATE HISTORY — it did not happen.\nIn our story, Alexander's phalanx (a wall of spears) and Companion cavalry smash through Roman legions in Italy. The Roman Republic, still young, collapses.\nIn real history, Rome went on to conquer the whole Mediterranean — including Greece and Egypt — and Latin became one of the world's most important languages.\nGuess: if Rome had lost early, would we still have Roman law, Roman roads, and languages like French and Spanish today?",
+      "factuality": "alternate",
+      "sources": [
+        { "label": "World History Encyclopedia: Roman Legion", "url": "https://www.worldhistory.org/Roman_Legion/" }
+      ],
+      "consequences": "Remove Rome from history and the ripple effects are enormous: no Roman Empire, possibly no Christianity spreading through Roman networks, no Latin-based languages across Europe. Alternate history is a game of 'what if' — fun to think about, impossible to prove.",
+      "children": [
+        { "targetId": "alexander-rules-world::n013", "edgeType": "consequence" }
+      ],
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n008": {
+      "id": "alexander-rules-world::n008",
+      "narration": "alexander-rules-world",
+      "type": "consequence",
+      "title": "Alexandria — City of Questions",
+      "summary": "Alexander founded the city of Alexandria in Egypt in 331 BC — he named it after himself. It became one of the greatest ports in the ancient world.\nAfter Alexander died, his general Ptolemy ruled Egypt and built the famous Library of Alexandria. Scholars there measured the Earth, studied the stars, and translated texts from many languages.\nIf Alexander lived, he might pour gold into making Alexandria the brain of his empire.\nGuess: what would you put in a library if you wanted to understand the whole world — maps, animal specimens, star charts, or poems?",
+      "factuality": "speculative",
+      "sources": [
+        { "label": "World History Encyclopedia: Library of Alexandria", "url": "https://www.worldhistory.org/Library_of_Alexandria/" },
+        { "label": "World History Encyclopedia: Alexandria, Egypt", "url": "https://www.worldhistory.org/Alexandria/" }
+      ],
+      "consequences": "The real Library of Alexandria symbolises how much the ancient world knew — and how much was lost. More royal funding might have saved more books and trained more scientists. Or politics and war might have destroyed them anyway, as happened in real history.",
+      "children": [
+        { "targetId": "alexander-rules-world::n010", "edgeType": "consequence" },
+        { "targetId": "alexander-rules-world::n019", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n009": {
+      "id": "alexander-rules-world::n009",
+      "narration": "alexander-rules-world",
+      "type": "simple",
+      "title": "Could There Be Votes in an Empire?",
+      "summary": "THIS IS ALTERNATE HISTORY — Alexander was a king, not an elected president.\nBut Greek city-states like Athens really did vote on laws. Persian villages had local elders who settled disputes. Alexander's empire contained both traditions.\nImagine eastern provinces experimenting with councils: farmers voting on irrigation, merchants choosing market rules.\nGuess: can you be a powerful king AND let people vote locally — or does one always cancel the other?",
+      "factuality": "alternate",
+      "sources": [
+        { "label": "World History Encyclopedia: Athenian Democracy", "url": "https://www.worldhistory.org/Athenian_Democracy/" }
+      ],
+      "consequences": "Most ancient empires were autocracies — one ruler at the top. Local councils existed, but rarely challenged the king. This branch asks whether Alexander's fusion policy could have gone further than he ever tried in real life.",
+      "children": [
+        { "targetId": "alexander-rules-world::n015", "edgeType": "consequence" }
+      ],
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n010": {
+      "id": "alexander-rules-world::n010",
+      "narration": "alexander-rules-world",
+      "type": "consequence",
+      "title": "One Empire, No Dark Ages?",
+      "summary": "THIS IS ALTERNATE HISTORY — a very big 'what if.'\nIn real history, Alexander's empire shattered after his death. Centuries later, the Western Roman Empire fell too, and Europe entered a period sometimes called the Dark Ages — less writing, fewer big cities, more local warfare.\nIn this story, one giant empire keeps learning alive from Greece to India for a thousand years.\nGuess: does one super-empire mean peace and science — or does it just mean one super-sized war when it finally breaks?",
+      "factuality": "alternate",
+      "sources": [
+        { "label": "World History Encyclopedia: Fall of the Western Roman Empire", "url": "https://www.worldhistory.org/Fall_of_the_Western_Roman_Empire/" }
+      ],
+      "consequences": "Historians today avoid the term 'Dark Ages' — culture continued in monasteries, Byzantium, and the Islamic world. Still, the question is worth asking: does unity help knowledge spread, or does competition between states drive invention? There is no simple answer.",
+      "children": [],
+      "crossLinks": [
+        {
+          "targetNodeId": "napoleon-wins-waterloo::n001",
+          "label": "Jump ahead 2,000 years: what if Napoleon, too, ruled a continent-spanning empire? (Coming Soon)"
+        }
+      ]
+    },
+
+    "alexander-rules-world::n011": {
+      "id": "alexander-rules-world::n011",
+      "narration": "alexander-rules-world",
+      "type": "simple",
+      "title": "Pepper, Silk, and Stories in Your Pack",
+      "summary": "Ancient traders carried goods worth fortunes. Black pepper from India was so valuable in Rome that soldiers were sometimes paid in spice.\nSilk from China travelled west along routes that existed long before Alexander — but his empire made the middle of the journey safer for a while.\nEvery merchant was also a storyteller: 'I saw a river wider than the sea,' 'I heard of a king who sleeps in a golden palace.'\nGuess: why might a ruler WANT merchants to travel — taxes, news, or new inventions?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "World History Encyclopedia: Silk Road", "url": "https://www.worldhistory.org/Silk_Road/" }
+      ],
+      "consequences": "Trade is never just about stuff. It spreads ideas — Buddhism moved along trade routes; so did Greek art styles in Gandhara (modern Pakistan). Empires that protect traders often grow rich. Empires that rob them shrink.",
+      "children": [
+        { "targetId": "alexander-rules-world::n020", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n012": {
+      "id": "alexander-rules-world::n012",
+      "narration": "alexander-rules-world",
+      "type": "simple",
+      "title": "The Royal Road — Persia's Internet",
+      "summary": "The Persian Royal Road had stations where fresh horses waited. A message could cross the empire faster than any single rider could gallop alone.\nAlexander did not invent this system — he inherited it from the Persian Empire he conquered. Smart conquerors reuse what works.\nRoads need guards, repair crews, and laws. That costs money. Kings pay for roads because control and trade depend on them.\nGuess: what is more useful to a king — a fast road or a fast army?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Herodotus on the Royal Road (Histories V.52–54)", "url": "https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Herodotus/5B*.html" }
+      ],
+      "consequences": "The Persians were master road-builders. Rome later built its own famous network. Today we still measure power by who controls transport — highways, ports, and internet cables are the modern Royal Roads.",
+      "children": [],
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n013": {
+      "id": "alexander-rules-world::n013",
+      "narration": "alexander-rules-world",
+      "type": "consequence",
+      "title": "Latin Never Becomes the Language of Law",
+      "summary": "ALTERNATE HISTORY.\nRoman Latin shaped French, Spanish, Italian, Portuguese, and Romanian — and thousands of English words too ('senate', 'justice', 'president').\nRoman law ideas — innocent until proven guilty, written contracts — spread with the language.\nIf Rome falls early, maybe Greek stays the language of government across the Mediterranean.\nGuess: would YOU rather learn Greek or Latin in school if history had gone differently?",
+      "factuality": "alternate",
+      "sources": [
+        { "label": "World History Encyclopedia: Latin Language", "url": "https://www.worldhistory.org/Latin/" }
+      ],
+      "consequences": "Language shapes how we think about law and power. Alternate-history branches like this help you see how much Rome still affects modern life — even if you never studied Latin.",
+      "children": [],
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n015": {
+      "id": "alexander-rules-world::n015",
+      "narration": "alexander-rules-world",
+      "type": "consequence",
+      "title": "Farmers Vote on the Canal — The King Watches",
+      "summary": "ALTERNATE HISTORY.\nPicture a village council in Bactria (modern Afghanistan) deciding when to open an irrigation canal. They vote. Alexander's governor reports the result to Babylon.\nThe king keeps his army and his throne — but local people handle local water.\nReal Persian and Greek communities DID make local decisions. This story pushes that further than history ever did.\nGuess: would local votes make people loyal to the empire, or would they demand MORE freedom over time?",
+      "factuality": "alternate",
+      "sources": [],
+      "consequences": "History shows a pattern: empires often grant local autonomy to keep peace, then tighten control when rebellions appear. Would Alexander have been patient enough to share power? He was famously impatient in real life.",
+      "children": [],
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n017": {
+      "id": "alexander-rules-world::n017",
+      "narration": "alexander-rules-world",
+      "type": "simple",
+      "title": "Koine Greek — One Language, Many Peoples",
+      "summary": "After Alexander, a common form of Greek called Koine ('common') spread across the eastern Mediterranean. The New Testament was written in Koine Greek. So were many scientific and business documents.\nPeople from Egypt to Syria could haggle, pray, and study in the same language — even if it was not their mother tongue.\nAlexander's soldiers married local women. Their children grew up bilingual.\nGuess: is one shared language a bridge between cultures — or does it erase smaller languages?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "World History Encyclopedia: Koine Greek", "url": "https://www.worldhistory.org/Koine_Greek/" }
+      ],
+      "consequences": "Shared languages help trade and science but can threaten local identity — a debate still alive today with English, Mandarin, and Spanish as global languages. Hellenism started this conversation 2,300 years ago.",
+      "children": [
+        { "targetId": "alexander-rules-world::n021", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n018": {
+      "id": "alexander-rules-world::n018",
+      "narration": "alexander-rules-world",
+      "type": "simple",
+      "title": "The Romans Argue About Alexander — In Real History",
+      "summary": "This node is based on a REAL ancient debate — not our alternate story.\nThe Roman writer Livy imagined a meeting where Romans ask: 'If Alexander had attacked Italy, would we have beaten him?'\nSome said Rome's discipline would win. Others said Alexander was simply unstoppable.\nThe debate tells us more about Roman pride than about actual battle odds — Alexander died before any clash happened.\nGuess: why do you think Romans cared so much about a king who never fought them?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Livy, Ab Urbe Condita IX (Alexander debate)", "url": "https://penelope.uchicago.edu/Thayer/E/L/Roman/Texts/Livy/9*.html" }
+      ],
+      "consequences": "Nations compare themselves to famous heroes. Romans measured their worth against Alexander the way students today might compare themselves to a legendary athlete. History is partly facts — and partly how people WANT to remember them.",
+      "children": [
+        { "targetId": "alexander-rules-world::n022", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n019": {
+      "id": "alexander-rules-world::n019",
+      "narration": "alexander-rules-world",
+      "type": "simple",
+      "title": "Eratosthenes Measures the Earth with Sticks and Shadows",
+      "summary": "REAL HISTORY from Alexandria, ~240 BC — after Alexander's death, but part of the world he helped connect.\nEratosthenes heard that at noon on the summer solstice, a well in Syene cast no shadow — the sun was directly overhead. In Alexandria, a stick DID cast a shadow at the same moment.\nUsing geometry, he calculated Earth's circumference — remarkably close to the real answer.\nHe did it without satellites — just maths, observation, and curiosity.\nGuess: what else could you measure with nothing but shadows and a brain?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "World History Encyclopedia: Eratosthenes", "url": "https://www.worldhistory.org/Eratosthenes/" },
+        { "label": "NASA: Earth Observatory — Eratosthenes", "url": "https://earthobservatory.nasa.gov/features/Eratosthenes" }
+      ],
+      "consequences": "Ancient people were not stupid — they were clever with the tools they had. Alexandria attracted minds like Eratosthenes because rulers invested in learning. That is why the 'city of questions' node matters for both kids and researchers.",
+      "children": [],
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n020": {
+      "id": "alexander-rules-world::n020",
+      "narration": "alexander-rules-world",
+      "type": "simple",
+      "title": "Greek Statues in India — Art That Travelled",
+      "summary": "REAL HISTORY: in Gandhara (modern Pakistan), artists carved Buddha statues with faces that look Greek — wavy hair, toga-like robes. This Greco-Buddhist art appeared after Alexander's campaigns opened the region to Greek influence.\nIdeas crossed mountains because people crossed mountains.\nA statue is a clue: it shows two cultures meeting without a textbook telling the story.\nGuess: if you found a statue that mixed two styles, what questions would you ask an archaeologist?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Met Museum: Gandhara", "url": "https://www.metmuseum.org/toah/hd/gand/hd_gand.htm" },
+        { "label": "World History Encyclopedia: Greco-Buddhist Art", "url": "https://www.worldhistory.org/Greco-Buddhist_Art/" }
+      ],
+      "consequences": "This is Hellenism you can SEE. For children: history is not only dates — it is also art, food, and buildings. For researchers: Gandhara proves cultural exchange was physical, not theoretical.",
+      "children": [],
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n021": {
+      "id": "alexander-rules-world::n021",
+      "narration": "alexander-rules-world",
+      "type": "simple",
+      "title": "Coins Tell Stories — Alexander's Face on Metal",
+      "summary": "REAL HISTORY: Alexander put his own portrait on coins — rare for Greek kings, who usually showed gods. His coins spread across the empire like ancient selfies.\nPeople far from court could hold his face in their hand when they traded.\nAfter he died, his generals minted coins with Alexander's image to claim his glory.\nGuess: why is a coin better propaganda than a speech — who sees it, and how often?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "British Museum: Coins of Alexander the Great", "url": "https://www.britishmuseum.org/collection/search?keyword=alexander+the+great+coin" },
+        { "label": "World History Encyclopedia: Hellenistic Coin Portraiture", "url": "https://www.worldhistory.org/Hellenistic_Period/" }
+      ],
+      "consequences": "Coins are primary sources — real objects from the past. Historians use them to date events, track trade routes, and see how rulers wanted to be remembered. Always ask: who made this, and who was supposed to see it?",
+      "children": [],
+      "crossLinks": []
+    },
+
+    "alexander-rules-world::n022": {
+      "id": "alexander-rules-world::n022",
+      "narration": "alexander-rules-world",
+      "type": "simple",
+      "title": "Alexander's Real Death — Fever, Grief, or Poison?",
+      "summary": "REAL HISTORY — back to what actually happened.\nIn June 323 BC, Alexander died in Babylon after a banquet. He had a high fever for days. He was 32.\nAncient sources disagree: malaria, typhoid, alcohol poisoning, or murder by poison. Modern doctors still debate.\nHis last words are disputed too — some say he left his empire 'to the strongest,' which sparked civil war.\nHis son Alexander IV was a baby. His generals fought for 40 years.\nGuess: was the empire's breakup caused more by his death, or by having no clear successor?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Plutarch: Death of Alexander (Life of Alexander LXXV)", "url": "https://www.gutenberg.org/ebooks/14140" },
+        { "label": "World History Encyclopedia: Wars of the Diadochi", "url": "https://www.worldhistory.org/Wars_of_the_Diadochi/" }
+      ],
+      "consequences": "This node anchors the whole narration. Our 'living Alexander' story is a fork in the road — but the real road ended here. Good history means knowing BOTH: what happened, and why people still argue about it.",
+      "children": [],
+      "crossLinks": []
+    }
+  }
+}

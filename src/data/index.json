@@ -1,0 +1,18 @@
+{
+  "narrations": [
+    {
+      "slug": "alexander-rules-world",
+      "title": "What If Alexander the Great Never Died?",
+      "description": "Explore real ancient history and thoughtful 'what if' questions. Read, guess, then click to see what happens next.",
+      "file": "alexander-rules-world.json",
+      "rootNodeIds": ["alexander-rules-world::n001"]
+    },
+    {
+      "slug": "marx-lenin-stalin-mao",
+      "title": "From Marx to Modern Communism",
+      "description": "Marxism, Leninism, Stalin, Mao, and communism today — real history, bold speculation, and guess-prompts at every turn.",
+      "file": "marx-lenin-stalin-mao.json",
+      "rootNodeIds": ["marx-lenin-stalin-mao::n001"]
+    }
+  ]
+}
