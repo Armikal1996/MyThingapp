@@ -170,3 +170,55 @@ A step-by-step build plan derived from `proposal.md`. Each step is self-containe
 - [x] **Step 8.6 — Verification**
   - Run validation, build, and lints.
   - **Done when:** all checks pass and this section is marked complete.
+
+---
+
+## Phase 9 — Web-Shaped Narration + Better Branching
+
+- [ ] **Step 9.1 — Define narrative branching rules**
+  - Update the narration authoring rules so most non-leaf story nodes should have **2 children**: one "left" answer and one "right" answer.
+  - Use 1 child only for bridge nodes, recaps, book/reference nodes, or when history genuinely has only one necessary next step.
+  - Keep 0 children for true endings only.
+  - Keep the root at 2–3 children so a narration can start with a broad choice.
+  - **Done when:** the README/template explain when to use 0, 1, 2, or 3 children.
+
+- [ ] **Step 9.2 — Add branch intent to JSON**
+  - Extend child edges with optional `branchSide` (`left`, `right`, `center`) and `branchLabel` fields.
+  - Example: one child can be `branchSide: "left", branchLabel: "Body path"` and the other `branchSide: "right", branchLabel: "Mind path"`.
+  - Keep `edgeType` for meaning (`causal` / `consequence`); use `branchSide` only for layout and visual shape.
+  - **Done when:** validator accepts optional `branchSide` and rejects invalid values.
+
+- [ ] **Step 9.3 — Add narrative balance checks**
+  - Add validator warnings, not hard errors, for narrations that become too one-sided.
+  - Warn when more than about 60% of expandable non-root nodes have only 1 child.
+  - Warn when a path gets very long without a split, because that creates a boring "click straight down" chain.
+  - **Done when:** `npm run validate` still passes valid narrations but prints helpful authoring warnings.
+
+- [ ] **Step 9.4 — Update AI narration template**
+  - Update `templates/template.json` to ask third-party AIs for a wider web: most important decision nodes should offer 2 meaningful children.
+  - Require the two answers to feel meaningfully different, not just "correct vs silly."
+  - Encourage convergences where two paths later meet again, so the graph feels like a web instead of isolated branches.
+  - **Done when:** the template gives a clear example of left/right branches that later converge.
+
+- [ ] **Step 9.5 — Improve graph layout**
+  - Update `useGraphLayout.js` so `branchSide` influences placement: left branches lean left, right branches lean right, center branches stay near the trunk.
+  - Increase horizontal spacing for large narrations and reduce the long vertical "ladder" feeling.
+  - Preserve pan/zoom and avoid overlap.
+  - **Done when:** the physiology narration spreads left and right instead of mostly forming one tall column.
+
+- [ ] **Step 9.6 — Add branch choice UI clarity**
+  - Show small edge or node labels for branch meaning, such as "Body", "Mind", "Experiment", "Theory", "School", or "Technology".
+  - In prediction questions, make the two main options map clearly to the two revealed branches.
+  - Use child-friendly wording for kids mode and factual wording for research mode.
+  - **Done when:** users can understand why choosing left vs right matters.
+
+- [ ] **Step 9.7 — Rework physiology narration shape**
+  - Edit `history-of-physiology-and-psychology.json` so major nodes branch more evenly into body/mind, experiment/theory, books/discoveries, and technology/ideas.
+  - Add or adjust convergence nodes where related paths meet again.
+  - Avoid fake choices: every branch should teach a real historical direction.
+  - **Done when:** the graph has a more playful web shape while staying factual.
+
+- [ ] **Step 9.8 — Verify web-shaped experience**
+  - Run `npm run validate` and `npm run build`.
+  - Manually inspect all three narrations, especially physiology, for left/right spread and readable branch labels.
+  - **Done when:** validation/build pass and the graph feels like an explorable web, not a one-sided answer chain.

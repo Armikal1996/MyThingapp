@@ -1,7 +1,7 @@
 {
   "name": "history-spider-web",
   "version": "1.0.0",
-  "description": "Interactive spider-web history exploration app",
+  "description": "Interactive history exploration app",
   "private": true,
   "engines": {
     "node": ">=18"
@@ -13,9 +13,9 @@
     "validate": "node scripts/validateNarration.js"
   },
   "dependencies": {
-    "@vue-flow/core": "^1.42.1",
     "@vue-flow/background": "^1.3.2",
     "@vue-flow/controls": "^1.1.2",
+    "@vue-flow/core": "^1.42.1",
     "dagre": "^0.8.5",
     "vue": "^3.5.13"
   },

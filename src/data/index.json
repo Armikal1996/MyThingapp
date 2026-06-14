@@ -13,6 +13,13 @@
       "description": "Marxism, Leninism, Stalin, Mao, and communism today — real history, bold speculation, and guess-prompts at every turn.",
       "file": "marx-lenin-stalin-mao.json",
       "rootNodeIds": ["marx-lenin-stalin-mao::n001"]
+    },
+    {
+      "slug": "history-of-physiology-and-psychology",
+      "title": "How Did Humans Learn How the Body and Mind Work?",
+      "description": "An interactive branching history of physiology, psychology, and neuroscience from ancient medicine to modern science.",
+      "file": "history-of-physiology-and-psychology.json",
+      "rootNodeIds": ["history-of-physiology-and-psychology::root"]
     }
   ]
 }

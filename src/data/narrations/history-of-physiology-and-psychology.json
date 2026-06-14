@@ -1,0 +1,2377 @@
+{
+  "slug": "history-of-physiology-and-psychology",
+  "title": "How Did Humans Learn How the Body and Mind Work?",
+  "version": 1,
+  "description": "An interactive branching history of physiology, psychology, and neuroscience from ancient medicine to modern science.",
+  "theme": {
+    "era": "archive",
+    "accent": "#2563eb",
+    "accent2": "#7c3aed",
+    "motif": "laboratories, anatomy sketches, brain maps, and scientific instruments"
+  },
+  "narrator": {
+    "name": "Dr. Sophia",
+    "persona": "Historian of Science",
+    "intro": "I am Dr. Sophia. Read the clue, guess the next discovery, then reveal how body and mind science grew.",
+    "correctLines": [
+      "Excellent diagnosis!",
+      "You followed the evidence."
+    ],
+    "wrongLines": [
+      "Good hypothesis, but the evidence points elsewhere.",
+      "Not quite — science took another path."
+    ]
+  },
+  "rootNodeIds": [
+    "history-of-physiology-and-psychology::root"
+  ],
+  "missions": [
+    {
+      "id": "mission-foundations",
+      "title": "The Search Begins",
+      "description": "Discover how ancient thinkers tried to explain body and mind.",
+      "nodeIds": [
+        "history-of-physiology-and-psychology::root",
+        "history-of-physiology-and-psychology::hippocrates",
+        "history-of-physiology-and-psychology::aristotle",
+        "history-of-physiology-and-psychology::alexandria-school",
+        "history-of-physiology-and-psychology::galen"
+      ]
+    },
+    {
+      "id": "mission-scientific-method",
+      "title": "Evidence Replaces Authority",
+      "description": "See observation and experiments transform medicine.",
+      "nodeIds": [
+        "history-of-physiology-and-psychology::renaissance",
+        "history-of-physiology-and-psychology::vesalius",
+        "history-of-physiology-and-psychology::harvey",
+        "history-of-physiology-and-psychology::bernard",
+        "history-of-physiology-and-psychology::experimental-medicine"
+      ]
+    },
+    {
+      "id": "mission-books",
+      "title": "Books That Changed Everything",
+      "description": "Follow ideas that survived through texts and teaching.",
+      "nodeIds": [
+        "history-of-physiology-and-psychology::books-hub",
+        "history-of-physiology-and-psychology::book-hippocratic",
+        "history-of-physiology-and-psychology::book-galen",
+        "history-of-physiology-and-psychology::book-canon",
+        "history-of-physiology-and-psychology::book-fabrica",
+        "history-of-physiology-and-psychology::book-harvey"
+      ]
+    },
+    {
+      "id": "mission-neuroscience",
+      "title": "The Brain Reveals Its Secrets",
+      "description": "Trace discoveries that turned mind study into neuroscience.",
+      "nodeIds": [
+        "history-of-physiology-and-psychology::neuron-doctrine",
+        "history-of-physiology-and-psychology::golgi",
+        "history-of-physiology-and-psychology::ramon-cajal",
+        "history-of-physiology-and-psychology::brain-localization",
+        "history-of-physiology-and-psychology::mri",
+        "history-of-physiology-and-psychology::cognitive-neuroscience"
+      ]
+    },
+    {
+      "id": "mission-future",
+      "title": "The Next Frontier",
+      "description": "Explore possible futures of physiology, psychology, and medicine.",
+      "nodeIds": [
+        "history-of-physiology-and-psychology::future-medicine",
+        "history-of-physiology-and-psychology::digital-twins",
+        "history-of-physiology-and-psychology::gene-editing",
+        "history-of-physiology-and-psychology::alternate-ai-doctors",
+        "history-of-physiology-and-psychology::future-ethics",
+        "history-of-physiology-and-psychology::future-consciousness"
+      ]
+    }
+  ],
+  "nodes": {
+    "history-of-physiology-and-psychology::root": {
+      "id": "history-of-physiology-and-psychology::root",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "root",
+      "title": "How Did Humans Learn How the Body and Mind Work?",
+      "summary": "Today we use MRI scanners, neuroscience, psychology, and physiology. But for most of history people did not know how blood moved, how nerves worked, or where thoughts came from. This is the story of humanity's attempt to understand itself.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::hippocrates",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::aristotle",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::books-hub",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      },
+      "prediction": {
+        "question": "Who do you think had the greatest influence on medicine for the next 1,500 years?",
+        "choices": [
+          {
+            "id": "choice-1",
+            "text": "Hippocrates",
+            "correct": false,
+            "feedback": "Good guess, but \"Hippocrates\" is not the strongest answer here."
+          },
+          {
+            "id": "choice-2",
+            "text": "Aristotle",
+            "correct": false,
+            "feedback": "Good guess, but \"Aristotle\" is not the strongest answer here."
+          },
+          {
+            "id": "choice-3",
+            "text": "Galen",
+            "correct": true,
+            "feedback": "Correct. \"Galen\" is the strongest answer for this historical moment."
+          },
+          {
+            "id": "choice-4",
+            "text": "Nobody",
+            "correct": false,
+            "feedback": "Good guess, but \"Nobody\" is not the strongest answer here."
+          }
+        ]
+      }
+    },
+    "history-of-physiology-and-psychology::hippocrates": {
+      "id": "history-of-physiology-and-psychology::hippocrates",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Hippocrates",
+      "summary": "Around 400 BCE, Hippocrates argued that disease had natural causes rather than supernatural ones. This idea helped transform medicine from ritual into investigation.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::hippocratic-corpus",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::humoral-theory",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::hippocratic-corpus": {
+      "id": "history-of-physiology-and-psychology::hippocratic-corpus",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "The Hippocratic Corpus",
+      "summary": "A collection of medical writings associated with Hippocrates. It became one of the foundational texts of Western medicine.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::alexandria-school",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::humoral-theory": {
+      "id": "history-of-physiology-and-psychology::humoral-theory",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "The Four Humors",
+      "summary": "Health was believed to depend on balancing blood, phlegm, yellow bile, and black bile. Though incorrect, this theory influenced medicine for centuries.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::galen",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::aristotle": {
+      "id": "history-of-physiology-and-psychology::aristotle",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Aristotle",
+      "summary": "Aristotle studied animals extensively and attempted to explain life through observation. He believed the heart, not the brain, was the center of thought.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::comparative-anatomy",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::comparative-anatomy": {
+      "id": "history-of-physiology-and-psychology::comparative-anatomy",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Comparative Anatomy",
+      "summary": "By comparing different animals, Aristotle created one of the earliest systematic biological research programs.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::alexandria-school",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::alexandria-school": {
+      "id": "history-of-physiology-and-psychology::alexandria-school",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Alexandria Anatomists",
+      "summary": "In ancient Alexandria, scholars gained opportunities to study human anatomy more directly than many earlier physicians.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::herophilus",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::erasistratus",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::herophilus": {
+      "id": "history-of-physiology-and-psychology::herophilus",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Herophilus",
+      "summary": "Herophilus distinguished nerves from blood vessels and argued that the brain played a major role in intelligence.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::galen",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::erasistratus": {
+      "id": "history-of-physiology-and-psychology::erasistratus",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Erasistratus",
+      "summary": "Erasistratus proposed mechanical explanations for bodily processes and contributed early ideas about circulation.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::galen",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::galen": {
+      "id": "history-of-physiology-and-psychology::galen",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Galen",
+      "summary": "Galen became the most influential medical authority in history. His writings dominated medicine for over a millennium.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::galen-books",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::islamic-golden-age",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      },
+      "prediction": {
+        "question": "What happens when one scientist becomes the accepted authority for 1,500 years?",
+        "choices": [
+          {
+            "id": "choice-1",
+            "text": "Rapid progress",
+            "correct": false,
+            "feedback": "Good guess, but \"Rapid progress\" is not the strongest answer here."
+          },
+          {
+            "id": "choice-2",
+            "text": "Progress slows",
+            "correct": true,
+            "feedback": "Correct. \"Progress slows\" is the strongest answer for this historical moment."
+          },
+          {
+            "id": "choice-3",
+            "text": "Nothing changes",
+            "correct": false,
+            "feedback": "Good guess, but \"Nothing changes\" is not the strongest answer here."
+          },
+          {
+            "id": "choice-4",
+            "text": "Knowledge disappears",
+            "correct": false,
+            "feedback": "Good guess, but \"Knowledge disappears\" is not the strongest answer here."
+          }
+        ]
+      }
+    },
+    "history-of-physiology-and-psychology::galen-books": {
+      "id": "history-of-physiology-and-psychology::galen-books",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "The Books of Galen",
+      "summary": "Works such as 'On the Usefulness of the Parts of the Body' became standard medical references throughout Europe and the Middle East.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::islamic-golden-age",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::islamic-golden-age": {
+      "id": "history-of-physiology-and-psychology::islamic-golden-age",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Islamic Golden Age",
+      "summary": "Scholars preserved, translated, criticized, and expanded classical medical knowledge.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::al-razi",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::avicenna",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::al-razi": {
+      "id": "history-of-physiology-and-psychology::al-razi",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Al-Razi",
+      "summary": "Al-Razi emphasized observation and clinical medicine, helping move medical practice toward evidence.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::avicenna",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::avicenna": {
+      "id": "history-of-physiology-and-psychology::avicenna",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Avicenna",
+      "summary": "Avicenna's Canon of Medicine became one of the most influential medical textbooks ever written.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::canon-of-medicine",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::canon-of-medicine": {
+      "id": "history-of-physiology-and-psychology::canon-of-medicine",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Canon of Medicine",
+      "summary": "For centuries, students across multiple civilizations learned medicine from this book.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::renaissance",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::renaissance": {
+      "id": "history-of-physiology-and-psychology::renaissance",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "The Renaissance",
+      "summary": "European scholars increasingly questioned ancient authorities and returned to direct observation.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::vesalius",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::vesalius": {
+      "id": "history-of-physiology-and-psychology::vesalius",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Andreas Vesalius",
+      "summary": "Vesalius carefully studied anatomy and found numerous errors in Galen's descriptions.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::de-humani",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::de-humani": {
+      "id": "history-of-physiology-and-psychology::de-humani",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "De Humani Corporis Fabrica",
+      "summary": "Published in 1543, this landmark anatomy book challenged centuries of accepted medical doctrine.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::harvey",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::harvey": {
+      "id": "history-of-physiology-and-psychology::harvey",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "William Harvey",
+      "summary": "Harvey demonstrated that blood circulates continuously through the body, overturning major elements of Galenic physiology.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::de-motu-cordis",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::alternate-harvey-ignored",
+          "edgeType": "consequence"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::de-motu-cordis": {
+      "id": "history-of-physiology-and-psychology::de-motu-cordis",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "De Motu Cordis",
+      "summary": "Harvey's book used observation and measurement to explain circulation.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::haller",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::alternate-harvey-ignored": {
+      "id": "history-of-physiology-and-psychology::alternate-harvey-ignored",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "consequence",
+      "title": "What If Harvey Had Been Ignored?",
+      "summary": "If physicians had rejected Harvey's evidence, modern physiology might have been delayed by generations.",
+      "factuality": "alternate",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::haller",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Counterfactual Compass",
+        "text": "You tested a what-if path. Ask what changed, what stayed the same, and what evidence still matters."
+      }
+    },
+    "history-of-physiology-and-psychology::haller": {
+      "id": "history-of-physiology-and-psychology::haller",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Albrecht von Haller",
+      "summary": "Often called the father of modern physiology, Haller investigated how muscles and nerves function.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::elements-of-physiology",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::muller",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::elements-of-physiology": {
+      "id": "history-of-physiology-and-psychology::elements-of-physiology",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Elements of Physiology",
+      "summary": "Haller's monumental physiology text synthesized knowledge of bodily functions.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::muller",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::muller": {
+      "id": "history-of-physiology-and-psychology::muller",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Johannes Müller",
+      "summary": "Müller connected anatomy, physiology, and sensory experience, influencing both physiology and psychology.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::helmholtz",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::wundt",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::helmholtz": {
+      "id": "history-of-physiology-and-psychology::helmholtz",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Hermann von Helmholtz",
+      "summary": "Helmholtz measured nerve conduction speed, proving that nervous processes were measurable physical events.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::bernard",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::bernard": {
+      "id": "history-of-physiology-and-psychology::bernard",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Claude Bernard",
+      "summary": "Bernard established experimental physiology and introduced the idea of the body's internal environment.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::experimental-medicine",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::pavlov",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::experimental-medicine": {
+      "id": "history-of-physiology-and-psychology::experimental-medicine",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Introduction to Experimental Medicine",
+      "summary": "Bernard argued that controlled experimentation should guide medical science.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::pavlov",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::wundt": {
+      "id": "history-of-physiology-and-psychology::wundt",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Wilhelm Wundt",
+      "summary": "In 1879, Wundt established a psychology laboratory, helping create psychology as an independent scientific discipline.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::first-psychology-lab",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::james",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::first-psychology-lab": {
+      "id": "history-of-physiology-and-psychology::first-psychology-lab",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "The First Psychology Laboratory",
+      "summary": "Psychology began moving from philosophy toward experimental science.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::james",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::james": {
+      "id": "history-of-physiology-and-psychology::james",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "William James",
+      "summary": "James explored consciousness, attention, habits, and adaptation.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::principles-psychology",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::freud",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::principles-psychology": {
+      "id": "history-of-physiology-and-psychology::principles-psychology",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Principles of Psychology",
+      "summary": "One of the most influential psychology books ever written.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::freud",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::freud": {
+      "id": "history-of-physiology-and-psychology::freud",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Sigmund Freud",
+      "summary": "Freud proposed that unconscious processes shape behavior and personality.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::book-freud",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::behaviorism",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::pavlov": {
+      "id": "history-of-physiology-and-psychology::pavlov",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Ivan Pavlov",
+      "summary": "While studying digestion, Pavlov discovered that animals could learn associations between stimuli. His work connected physiology and psychology more directly than ever before.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::conditioned-reflexes",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::behaviorism",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [
+        {
+          "targetNodeId": "history-of-physiology-and-psychology::watson",
+          "label": "Related idea: John B. Watson"
+        }
+      ],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::conditioned-reflexes": {
+      "id": "history-of-physiology-and-psychology::conditioned-reflexes",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Conditioned Reflexes",
+      "summary": "A neutral stimulus could become associated with a biological response through learning.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::behaviorism",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::behaviorism": {
+      "id": "history-of-physiology-and-psychology::behaviorism",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Behaviorism",
+      "summary": "Behaviorists argued that psychology should focus on observable behavior rather than invisible mental processes.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::watson",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::gestalt",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::watson": {
+      "id": "history-of-physiology-and-psychology::watson",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "John B. Watson",
+      "summary": "Watson launched behaviorism as a major movement, arguing that behavior could be explained scientifically through learning.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::little-albert",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::skinner",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::little-albert": {
+      "id": "history-of-physiology-and-psychology::little-albert",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Little Albert Experiment",
+      "summary": "Watson attempted to demonstrate how fears could be learned through conditioning.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::skinner",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::skinner": {
+      "id": "history-of-physiology-and-psychology::skinner",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "B. F. Skinner",
+      "summary": "Skinner developed operant conditioning, explaining behavior through reinforcement and consequences.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::operant-conditioning",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::alternate-behaviorism-wins",
+          "edgeType": "consequence"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::operant-conditioning": {
+      "id": "history-of-physiology-and-psychology::operant-conditioning",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Operant Conditioning",
+      "summary": "Behavior can increase or decrease depending on rewards and punishments.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::cognitive-revolution",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::gestalt": {
+      "id": "history-of-physiology-and-psychology::gestalt",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Gestalt Psychology",
+      "summary": "Gestalt psychologists argued that perception cannot be understood by studying isolated parts alone.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::humanistic-psychology",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::humanistic-psychology": {
+      "id": "history-of-physiology-and-psychology::humanistic-psychology",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Humanistic Psychology",
+      "summary": "Humanistic psychologists emphasized meaning, growth, creativity, and personal experience.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::cognitive-revolution",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::cognitive-revolution": {
+      "id": "history-of-physiology-and-psychology::cognitive-revolution",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "The Cognitive Revolution",
+      "summary": "Psychologists returned to studying memory, attention, language, and thinking using scientific methods.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::cognitive-science",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::neuron-doctrine",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      },
+      "prediction": {
+        "question": "What technology would most accelerate understanding of thought itself?",
+        "choices": [
+          {
+            "id": "choice-1",
+            "text": "Computers",
+            "correct": true,
+            "feedback": "Correct. \"Computers\" is the strongest answer for this historical moment."
+          },
+          {
+            "id": "choice-2",
+            "text": "Microscopes",
+            "correct": false,
+            "feedback": "Good guess, but \"Microscopes\" is not the strongest answer here."
+          },
+          {
+            "id": "choice-3",
+            "text": "Brain Scans",
+            "correct": false,
+            "feedback": "Good guess, but \"Brain Scans\" is not the strongest answer here."
+          },
+          {
+            "id": "choice-4",
+            "text": "Genetics",
+            "correct": false,
+            "feedback": "Good guess, but \"Genetics\" is not the strongest answer here."
+          }
+        ]
+      }
+    },
+    "history-of-physiology-and-psychology::cognitive-science": {
+      "id": "history-of-physiology-and-psychology::cognitive-science",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Cognitive Science",
+      "summary": "Psychology, neuroscience, linguistics, computer science, and philosophy began working together.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::cognitive-neuroscience",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::neuron-doctrine": {
+      "id": "history-of-physiology-and-psychology::neuron-doctrine",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Neuron Doctrine",
+      "summary": "Scientists gradually discovered that the nervous system is composed of individual cells called neurons.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::golgi",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::ramon-cajal",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::golgi": {
+      "id": "history-of-physiology-and-psychology::golgi",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Camillo Golgi",
+      "summary": "Golgi invented a staining technique that made neurons visible under microscopes.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::ramon-cajal",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::ramon-cajal": {
+      "id": "history-of-physiology-and-psychology::ramon-cajal",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Santiago Ramón y Cajal",
+      "summary": "Using Golgi's stain, Cajal demonstrated that neurons are separate cells communicating through connections.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::synapse",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::modern-neuroscience",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::synapse": {
+      "id": "history-of-physiology-and-psychology::synapse",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "The Synapse",
+      "summary": "Signals travel between neurons through specialized junctions called synapses.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::brain-localization",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::brain-localization": {
+      "id": "history-of-physiology-and-psychology::brain-localization",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Localization of Function",
+      "summary": "Researchers discovered that different brain regions specialize in different tasks.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::eeg",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::eeg": {
+      "id": "history-of-physiology-and-psychology::eeg",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "EEG",
+      "summary": "Scientists learned to measure electrical activity of the brain from outside the skull.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::ct-scan",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::ct-scan": {
+      "id": "history-of-physiology-and-psychology::ct-scan",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "CT Scan",
+      "summary": "For the first time, physicians could see inside the living brain without surgery.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::mri",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::mri": {
+      "id": "history-of-physiology-and-psychology::mri",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "MRI",
+      "summary": "MRI provided dramatically more detailed images of anatomy and physiology.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::fmri",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::fmri": {
+      "id": "history-of-physiology-and-psychology::fmri",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "fMRI",
+      "summary": "Scientists could now observe changes associated with thinking, memory, language, and emotion.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::cognitive-neuroscience",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::cognitive-neuroscience": {
+      "id": "history-of-physiology-and-psychology::cognitive-neuroscience",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Cognitive Neuroscience",
+      "summary": "The ancient question of mind and body became a shared project of psychology and neuroscience.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::homeostasis",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::homeostasis": {
+      "id": "history-of-physiology-and-psychology::homeostasis",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Walter Cannon and Homeostasis",
+      "summary": "Building on Claude Bernard's ideas, Cannon explained how the body actively maintains internal stability.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::fight-or-flight",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::endocrinology",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::fight-or-flight": {
+      "id": "history-of-physiology-and-psychology::fight-or-flight",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Fight or Flight",
+      "summary": "The body rapidly prepares for danger through coordinated physiological responses.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::endocrinology",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::endocrinology": {
+      "id": "history-of-physiology-and-psychology::endocrinology",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Endocrinology",
+      "summary": "Scientists discovered hormones and the body's chemical communication systems.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::cellular-physiology",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::cellular-physiology": {
+      "id": "history-of-physiology-and-psychology::cellular-physiology",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Cellular Physiology",
+      "summary": "Researchers began investigating how individual cells function and communicate.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::molecular-physiology",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::molecular-physiology": {
+      "id": "history-of-physiology-and-psychology::molecular-physiology",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Molecular Physiology",
+      "summary": "Life processes were increasingly explained through proteins, genes, and biochemical pathways.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::systems-biology",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::systems-biology": {
+      "id": "history-of-physiology-and-psychology::systems-biology",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Systems Biology",
+      "summary": "Rather than studying parts alone, scientists began analyzing entire biological networks.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::modern-medicine",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::modern-neuroscience": {
+      "id": "history-of-physiology-and-psychology::modern-neuroscience",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Modern Neuroscience",
+      "summary": "Neuroscience became one of the largest scientific fields, integrating biology, medicine, psychology, and computation.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::brain-computer-interfaces",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::brain-computer-interfaces": {
+      "id": "history-of-physiology-and-psychology::brain-computer-interfaces",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Brain-Computer Interfaces",
+      "summary": "Scientists developed systems that allow direct communication between neural activity and machines.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::future-medicine",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::future-medicine": {
+      "id": "history-of-physiology-and-psychology::future-medicine",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "AI-Assisted Medicine",
+      "summary": "Machine learning systems increasingly assist diagnosis, drug discovery, and personalized treatment.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::digital-twins",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::alternate-ai-doctors",
+          "edgeType": "consequence"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::digital-twins": {
+      "id": "history-of-physiology-and-psychology::digital-twins",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Digital Twins",
+      "summary": "Future medicine may use computational models of entire individuals to predict disease and treatment outcomes.",
+      "factuality": "speculative",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::gene-editing",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Future Lens",
+        "text": "You explored a plausible future. Separate what science can do now from what it may do later."
+      }
+    },
+    "history-of-physiology-and-psychology::gene-editing": {
+      "id": "history-of-physiology-and-psychology::gene-editing",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Gene Editing",
+      "summary": "Future generations may directly modify genetic causes of disease.",
+      "factuality": "speculative",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::final-convergence",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Future Lens",
+        "text": "You explored a plausible future. Separate what science can do now from what it may do later."
+      }
+    },
+    "history-of-physiology-and-psychology::alternate-behaviorism-wins": {
+      "id": "history-of-physiology-and-psychology::alternate-behaviorism-wins",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "consequence",
+      "title": "What If Behaviorism Had Won Completely?",
+      "summary": "Psychology might have ignored memory, language, and consciousness for much longer.",
+      "factuality": "alternate",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::cognitive-revolution",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Counterfactual Compass",
+        "text": "You tested a what-if path. Ask what changed, what stayed the same, and what evidence still matters."
+      }
+    },
+    "history-of-physiology-and-psychology::alternate-no-wundt": {
+      "id": "history-of-physiology-and-psychology::alternate-no-wundt",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "consequence",
+      "title": "What If Wundt Never Opened His Laboratory?",
+      "summary": "Psychology may have remained part of philosophy rather than becoming an experimental science.",
+      "factuality": "alternate",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::james",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Counterfactual Compass",
+        "text": "You tested a what-if path. Ask what changed, what stayed the same, and what evidence still matters."
+      }
+    },
+    "history-of-physiology-and-psychology::alternate-freud-dominates": {
+      "id": "history-of-physiology-and-psychology::alternate-freud-dominates",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "consequence",
+      "title": "What If Freud Dominated All Psychology?",
+      "summary": "Experimental psychology might have developed more slowly.",
+      "factuality": "alternate",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::behaviorism",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Counterfactual Compass",
+        "text": "You tested a what-if path. Ask what changed, what stayed the same, and what evidence still matters."
+      }
+    },
+    "history-of-physiology-and-psychology::alternate-no-brain-imaging": {
+      "id": "history-of-physiology-and-psychology::alternate-no-brain-imaging",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "consequence",
+      "title": "What If Brain Imaging Never Existed?",
+      "summary": "Understanding of cognition and neurological disease would be dramatically more limited.",
+      "factuality": "alternate",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::cognitive-neuroscience",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Counterfactual Compass",
+        "text": "You tested a what-if path. Ask what changed, what stayed the same, and what evidence still matters."
+      }
+    },
+    "history-of-physiology-and-psychology::alternate-galen-correct": {
+      "id": "history-of-physiology-and-psychology::alternate-galen-correct",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "consequence",
+      "title": "What If Galen Had Been Correct About Everything?",
+      "summary": "Modern physiology would look radically different because many discoveries would never have occurred.",
+      "factuality": "alternate",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::modern-medicine",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Counterfactual Compass",
+        "text": "You tested a what-if path. Ask what changed, what stayed the same, and what evidence still matters."
+      }
+    },
+    "history-of-physiology-and-psychology::modern-medicine": {
+      "id": "history-of-physiology-and-psychology::modern-medicine",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Modern Medicine",
+      "summary": "Physiology, psychology, neuroscience, genetics, and computing now work together to understand and improve human health.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::final-convergence",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::final-convergence": {
+      "id": "history-of-physiology-and-psychology::final-convergence",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "The Mind and Body Reunited",
+      "summary": "Ancient physicians asked where thoughts came from and how the body worked. Today, physiology, psychology, and neuroscience form a connected scientific enterprise. The journey that began with Hippocrates and Aristotle continues as humanity explores consciousness, intelligence, disease, and life itself.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::books-hub": {
+      "id": "history-of-physiology-and-psychology::books-hub",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Books That Changed Everything",
+      "summary": "Many discoveries survived not because of laboratories, but because they were written down, copied, translated, and taught.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::book-hippocratic",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::book-hippocratic": {
+      "id": "history-of-physiology-and-psychology::book-hippocratic",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "The Hippocratic Corpus",
+      "summary": "This collection of medical texts helped establish medicine as a profession grounded in observation.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::book-galen",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::book-galen": {
+      "id": "history-of-physiology-and-psychology::book-galen",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "On the Usefulness of the Parts",
+      "summary": "Galen attempted to explain why every body structure existed and what purpose it served.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::book-canon",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::book-canon": {
+      "id": "history-of-physiology-and-psychology::book-canon",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Canon of Medicine",
+      "summary": "Avicenna synthesized centuries of knowledge into a medical encyclopedia used for hundreds of years.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::book-fabrica",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::book-fabrica": {
+      "id": "history-of-physiology-and-psychology::book-fabrica",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "De Humani Corporis Fabrica",
+      "summary": "Vesalius replaced trust in authority with trust in direct observation.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::book-harvey",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::book-harvey": {
+      "id": "history-of-physiology-and-psychology::book-harvey",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "De Motu Cordis",
+      "summary": "Harvey used evidence and measurement to demonstrate circulation.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::book-haller",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::book-haller": {
+      "id": "history-of-physiology-and-psychology::book-haller",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Elements of Physiology",
+      "summary": "One of the first attempts to unify physiology into a coherent scientific discipline.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::book-bernard",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::book-bernard": {
+      "id": "history-of-physiology-and-psychology::book-bernard",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Introduction to Experimental Medicine",
+      "summary": "Claude Bernard argued that hypotheses must be tested experimentally.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::book-james",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::book-james": {
+      "id": "history-of-physiology-and-psychology::book-james",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Principles of Psychology",
+      "summary": "William James helped define psychology as a scientific study of mental life.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::book-freud",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::book-freud": {
+      "id": "history-of-physiology-and-psychology::book-freud",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "The Interpretation of Dreams",
+      "summary": "Freud popularized the concept of unconscious mental processes.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::books-conclusion",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::books-conclusion": {
+      "id": "history-of-physiology-and-psychology::books-conclusion",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "The Library of Human Understanding",
+      "summary": "Each generation inherited ideas through books, then challenged those ideas through evidence.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::women-pioneers",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::women-pioneers": {
+      "id": "history-of-physiology-and-psychology::women-pioneers",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Forgotten Pioneers",
+      "summary": "Many influential researchers helped build psychology and neuroscience despite facing barriers to education and recognition.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::mary-calkins",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::milner",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::mary-calkins": {
+      "id": "history-of-physiology-and-psychology::mary-calkins",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Mary Whiton Calkins",
+      "summary": "Calkins became a major psychologist despite being denied a Harvard doctorate.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::women-legacy",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::milner": {
+      "id": "history-of-physiology-and-psychology::milner",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Brenda Milner",
+      "summary": "Milner's work on memory transformed modern cognitive neuroscience.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::hm-case",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::hm-case": {
+      "id": "history-of-physiology-and-psychology::hm-case",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Patient H.M.",
+      "summary": "The study of a patient with severe memory impairment revealed that memory consists of multiple systems rather than a single faculty.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::women-legacy",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::women-legacy": {
+      "id": "history-of-physiology-and-psychology::women-legacy",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Expanding the Scientific Community",
+      "summary": "The growth of science depended not only on ideas but also on expanding access to education and research.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::brain-cases",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::brain-cases": {
+      "id": "history-of-physiology-and-psychology::brain-cases",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Famous Brain Cases",
+      "summary": "Unexpected accidents often revealed how the brain functions.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::phineas-gage",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "history-of-physiology-and-psychology::broca",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::phineas-gage": {
+      "id": "history-of-physiology-and-psychology::phineas-gage",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Phineas Gage",
+      "summary": "A brain injury dramatically altered Gage's personality, suggesting specific brain regions contribute to behavior.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::brain-localization",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::broca": {
+      "id": "history-of-physiology-and-psychology::broca",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "Paul Broca",
+      "summary": "Broca linked speech production to a specific region of the brain.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::brain-localization",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    },
+    "history-of-physiology-and-psychology::alternate-no-microscope": {
+      "id": "history-of-physiology-and-psychology::alternate-no-microscope",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "consequence",
+      "title": "What If Microscopes Were Never Invented?",
+      "summary": "Cells, neurons, bacteria, and many physiological processes would have remained hidden.",
+      "factuality": "alternate",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::modern-medicine",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Counterfactual Compass",
+        "text": "You tested a what-if path. Ask what changed, what stayed the same, and what evidence still matters."
+      }
+    },
+    "history-of-physiology-and-psychology::alternate-no-cajal": {
+      "id": "history-of-physiology-and-psychology::alternate-no-cajal",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "consequence",
+      "title": "What If Cajal Never Studied Neurons?",
+      "summary": "The neuron doctrine may have taken decades longer to emerge.",
+      "factuality": "alternate",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::modern-neuroscience",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Counterfactual Compass",
+        "text": "You tested a what-if path. Ask what changed, what stayed the same, and what evidence still matters."
+      }
+    },
+    "history-of-physiology-and-psychology::alternate-no-homeostasis": {
+      "id": "history-of-physiology-and-psychology::alternate-no-homeostasis",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "consequence",
+      "title": "What If Homeostasis Was Never Discovered?",
+      "summary": "Many diseases would remain poorly understood because scientists would lack a framework for internal regulation.",
+      "factuality": "alternate",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::modern-medicine",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Counterfactual Compass",
+        "text": "You tested a what-if path. Ask what changed, what stayed the same, and what evidence still matters."
+      }
+    },
+    "history-of-physiology-and-psychology::alternate-no-pavlov": {
+      "id": "history-of-physiology-and-psychology::alternate-no-pavlov",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "consequence",
+      "title": "What If Pavlov Never Found Conditioned Reflexes?",
+      "summary": "Behaviorism may have developed very differently.",
+      "factuality": "alternate",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::behaviorism",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Counterfactual Compass",
+        "text": "You tested a what-if path. Ask what changed, what stayed the same, and what evidence still matters."
+      }
+    },
+    "history-of-physiology-and-psychology::alternate-ai-doctors": {
+      "id": "history-of-physiology-and-psychology::alternate-ai-doctors",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "consequence",
+      "title": "What If AI Becomes Better Than Human Doctors?",
+      "summary": "Future medicine could shift toward human-AI partnerships where diagnosis and treatment planning are largely automated.",
+      "factuality": "speculative",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::future-ethics",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Future Lens",
+        "text": "You explored a plausible future. Separate what science can do now from what it may do later."
+      }
+    },
+    "history-of-physiology-and-psychology::future-ethics": {
+      "id": "history-of-physiology-and-psychology::future-ethics",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "The Ethics of Understanding Ourselves",
+      "summary": "As neuroscience and AI advance, society must decide how much control humans should have over memory, behavior, intelligence, and biology.",
+      "factuality": "speculative",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::future-consciousness",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Future Lens",
+        "text": "You explored a plausible future. Separate what science can do now from what it may do later."
+      }
+    },
+    "history-of-physiology-and-psychology::future-consciousness": {
+      "id": "history-of-physiology-and-psychology::future-consciousness",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "The Mystery of Consciousness",
+      "summary": "Despite thousands of years of progress, scientists still debate how subjective experience emerges from physical processes.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [
+        {
+          "targetId": "history-of-physiology-and-psychology::grand-finale",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": [],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      },
+      "prediction": {
+        "question": "Will consciousness be fully explained?",
+        "choices": [
+          {
+            "id": "choice-1",
+            "text": "Yes, this century",
+            "correct": false,
+            "feedback": "Good guess, but \"Yes, this century\" is not the strongest answer here."
+          },
+          {
+            "id": "choice-2",
+            "text": "Eventually",
+            "correct": true,
+            "feedback": "Correct. \"Eventually\" is the strongest answer for this historical moment."
+          },
+          {
+            "id": "choice-3",
+            "text": "Never",
+            "correct": false,
+            "feedback": "Good guess, but \"Never\" is not the strongest answer here."
+          },
+          {
+            "id": "choice-4",
+            "text": "It is the wrong question",
+            "correct": false,
+            "feedback": "Good guess, but \"It is the wrong question\" is not the strongest answer here."
+          }
+        ]
+      }
+    },
+    "history-of-physiology-and-psychology::grand-finale": {
+      "id": "history-of-physiology-and-psychology::grand-finale",
+      "narration": "history-of-physiology-and-psychology",
+      "type": "simple",
+      "title": "From Hippocrates to the Future",
+      "summary": "The story began with physicians trying to explain disease and philosophers wondering about thought. Over 2,400 years, physiology explained bodily functions, psychology explored behavior and cognition, and neuroscience connected mind to brain. The journey is unfinished. Future generations will continue asking the same question: how do bodies create minds, and how can understanding ourselves improve human life?",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": null,
+      "children": [],
+      "crossLinks": [
+        {
+          "targetNodeId": "history-of-physiology-and-psychology::root",
+          "label": "Related idea: How Did Humans Learn How the Body and Mind Work?"
+        },
+        {
+          "targetNodeId": "history-of-physiology-and-psychology::modern-medicine",
+          "label": "Related idea: Modern Medicine"
+        },
+        {
+          "targetNodeId": "history-of-physiology-and-psychology::future-medicine",
+          "label": "Related idea: AI-Assisted Medicine"
+        },
+        {
+          "targetNodeId": "history-of-physiology-and-psychology::final-convergence",
+          "label": "Related idea: The Mind and Body Reunited"
+        }
+      ],
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You found a historically grounded step. Watch how observation, texts, and experiments build knowledge."
+      }
+    }
+  }
+}

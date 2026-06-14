@@ -2,17 +2,17 @@
   "slug": "sample-narration-slug",
   "title": "Sample Narration Title",
   "version": 1,
-  "description": "Short player-facing description. Explain the historical question, the audience, and that green means historical, blue means speculative, purple means alternate.",
+  "description": "A short player-facing description. Explain the historical question and clearly say that historical = evidence, speculative = educated guess, alternate = what-if.",
   "theme": {
     "era": "archive",
     "accent": "#f59e0b",
     "accent2": "#38bdf8",
-    "motif": "short visual phrase for the era, e.g. maps, steam, satellites"
+    "motif": "maps, notes, instruments, and mystery clues"
   },
   "narrator": {
     "name": "Guide Name",
-    "persona": "Short persona, e.g. curious time-guide",
-    "intro": "One sentence greeting shown while exploring.",
+    "persona": "curious time-guide",
+    "intro": "Read the clue, make a brave guess, then reveal the branch.",
     "correctLines": [
       "Correct! You spotted the clue.",
       "Nice historical thinking."
@@ -22,16 +22,18 @@
       "Not quite. Test the next clue."
     ]
   },
-  "rootNodeIds": ["sample-narration-slug::n001"],
+  "rootNodeIds": [
+    "sample-narration-slug::n001"
+  ],
   "missions": [
     {
-      "id": "mission-one",
+      "id": "mission-main-path",
       "title": "Mission Title",
-      "description": "What the player is trying to trace.",
+      "description": "What the player is trying to trace through the web.",
       "nodeIds": [
         "sample-narration-slug::n001",
         "sample-narration-slug::n002",
-        "sample-narration-slug::n004"
+        "sample-narration-slug::n005"
       ]
     }
   ],
@@ -41,7 +43,7 @@
       "narration": "sample-narration-slug",
       "type": "root",
       "title": "Root Event or Big Question",
-      "summary": "Line 1: set the scene with real date/place/person.\nLine 2: explain why this matters.\nLine 3: end with a child-friendly guess prompt.",
+      "summary": "Line 1: set the scene with a real date, place, and person.\nLine 2: explain why this moment matters.\nLine 3: end with a child-friendly guess prompt.",
       "factuality": "historical",
       "sources": [
         {
@@ -81,16 +83,16 @@
             "feedback": "Explain why this is tempting but not right."
           },
           {
-            "id": "silly-choice",
-            "text": "A fun but clearly wrong answer for kids.",
+            "id": "funny-wrong-choice",
+            "text": "A playful but clearly wrong answer for younger users.",
             "correct": false,
-            "feedback": "Keep the tone playful but educational."
+            "feedback": "Keep the tone playful, but still educational."
           }
         ]
       },
       "powerUp": {
-        "title": "Skill Name",
-        "text": "One sentence explaining the historical thinking skill learned here."
+        "title": "Historical Skill Name",
+        "text": "One sentence explaining the thinking skill learned here."
       },
       "crossLinks": []
     },
@@ -109,6 +111,28 @@
           "edgeType": "causal"
         }
       ],
+      "prediction": {
+        "question": "Ask a focused question for this branch.",
+        "choices": [
+          {
+            "id": "correct-path",
+            "text": "The historically supported path.",
+            "correct": true,
+            "feedback": "Explain the evidence behind this path.",
+            "leadsTo": "sample-narration-slug::n005"
+          },
+          {
+            "id": "wrong-path",
+            "text": "A tempting misconception.",
+            "correct": false,
+            "feedback": "Correct the misconception gently."
+          }
+        ]
+      },
+      "powerUp": {
+        "title": "Evidence Radar",
+        "text": "You learned to connect a claim to evidence."
+      },
       "crossLinks": []
     },
     "sample-narration-slug::n003": {
@@ -126,6 +150,10 @@
           "edgeType": "causal"
         }
       ],
+      "powerUp": {
+        "title": "Careful What-If",
+        "text": "You separated evidence from possibility."
+      },
       "crossLinks": []
     },
     "sample-narration-slug::n004": {
@@ -138,6 +166,10 @@
       "sources": [],
       "consequences": "Explain the counterfactual ripple effect.",
       "children": [],
+      "powerUp": {
+        "title": "Counterfactual Compass",
+        "text": "You tested how one changed assumption can reshape a story."
+      },
       "crossLinks": [
         {
           "targetNodeId": "another-narration::n001",
@@ -155,6 +187,10 @@
       "sources": [],
       "consequences": "Explain what the convergence teaches.",
       "children": [],
+      "powerUp": {
+        "title": "Convergence Clue",
+        "text": "You saw how different causes can lead to the same result."
+      },
       "crossLinks": []
     }
   }
