@@ -1,0 +1,161 @@
+{
+  "slug": "sample-narration-slug",
+  "title": "Sample Narration Title",
+  "version": 1,
+  "description": "Short player-facing description. Explain the historical question, the audience, and that green means historical, blue means speculative, purple means alternate.",
+  "theme": {
+    "era": "archive",
+    "accent": "#f59e0b",
+    "accent2": "#38bdf8",
+    "motif": "short visual phrase for the era, e.g. maps, steam, satellites"
+  },
+  "narrator": {
+    "name": "Guide Name",
+    "persona": "Short persona, e.g. curious time-guide",
+    "intro": "One sentence greeting shown while exploring.",
+    "correctLines": [
+      "Correct! You spotted the clue.",
+      "Nice historical thinking."
+    ],
+    "wrongLines": [
+      "Good guess, but history took another path.",
+      "Not quite. Test the next clue."
+    ]
+  },
+  "rootNodeIds": ["sample-narration-slug::n001"],
+  "missions": [
+    {
+      "id": "mission-one",
+      "title": "Mission Title",
+      "description": "What the player is trying to trace.",
+      "nodeIds": [
+        "sample-narration-slug::n001",
+        "sample-narration-slug::n002",
+        "sample-narration-slug::n004"
+      ]
+    }
+  ],
+  "nodes": {
+    "sample-narration-slug::n001": {
+      "id": "sample-narration-slug::n001",
+      "narration": "sample-narration-slug",
+      "type": "root",
+      "title": "Root Event or Big Question",
+      "summary": "Line 1: set the scene with real date/place/person.\nLine 2: explain why this matters.\nLine 3: end with a child-friendly guess prompt.",
+      "factuality": "historical",
+      "sources": [
+        {
+          "label": "Reliable source label",
+          "url": "https://example.com"
+        }
+      ],
+      "consequences": "Explain the big significance of the root event.",
+      "children": [
+        {
+          "targetId": "sample-narration-slug::n002",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "sample-narration-slug::n003",
+          "edgeType": "causal"
+        },
+        {
+          "targetId": "sample-narration-slug::n004",
+          "edgeType": "consequence"
+        }
+      ],
+      "prediction": {
+        "question": "Ask what the player thinks happens next.",
+        "choices": [
+          {
+            "id": "correct-choice",
+            "text": "A plausible correct next step.",
+            "correct": true,
+            "feedback": "Explain why this is correct using the historical clue.",
+            "leadsTo": "sample-narration-slug::n002"
+          },
+          {
+            "id": "wrong-choice",
+            "text": "A tempting but wrong answer.",
+            "correct": false,
+            "feedback": "Explain why this is tempting but not right."
+          },
+          {
+            "id": "silly-choice",
+            "text": "A fun but clearly wrong answer for kids.",
+            "correct": false,
+            "feedback": "Keep the tone playful but educational."
+          }
+        ]
+      },
+      "powerUp": {
+        "title": "Skill Name",
+        "text": "One sentence explaining the historical thinking skill learned here."
+      },
+      "crossLinks": []
+    },
+    "sample-narration-slug::n002": {
+      "id": "sample-narration-slug::n002",
+      "narration": "sample-narration-slug",
+      "type": "simple",
+      "title": "Historical Branch",
+      "summary": "Ground this node in factual information.\nUse short lines so the Story Card is easy to read.\nEnd with a question if it branches.",
+      "factuality": "historical",
+      "sources": [],
+      "consequences": "Explain what this branch changes.",
+      "children": [
+        {
+          "targetId": "sample-narration-slug::n005",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": []
+    },
+    "sample-narration-slug::n003": {
+      "id": "sample-narration-slug::n003",
+      "narration": "sample-narration-slug",
+      "type": "simple",
+      "title": "Speculative Branch",
+      "summary": "This is a plausible extrapolation from real evidence.\nClearly explain what is known and what is guessed.",
+      "factuality": "speculative",
+      "sources": [],
+      "consequences": "Explain why this speculation matters.",
+      "children": [
+        {
+          "targetId": "sample-narration-slug::n005",
+          "edgeType": "causal"
+        }
+      ],
+      "crossLinks": []
+    },
+    "sample-narration-slug::n004": {
+      "id": "sample-narration-slug::n004",
+      "narration": "sample-narration-slug",
+      "type": "consequence",
+      "title": "Alternate What-If Branch",
+      "summary": "Clearly label this as alternate history.\nExplain the one changed assumption.\nAsk what would ripple outward.",
+      "factuality": "alternate",
+      "sources": [],
+      "consequences": "Explain the counterfactual ripple effect.",
+      "children": [],
+      "crossLinks": [
+        {
+          "targetNodeId": "another-narration::n001",
+          "label": "Optional cross-narration link label"
+        }
+      ]
+    },
+    "sample-narration-slug::n005": {
+      "id": "sample-narration-slug::n005",
+      "narration": "sample-narration-slug",
+      "type": "consequence",
+      "title": "Convergence Point",
+      "summary": "This node has two parents: n002 and n003.\nUse convergence to show different causes leading to the same result.",
+      "factuality": "speculative",
+      "sources": [],
+      "consequences": "Explain what the convergence teaches.",
+      "children": [],
+      "crossLinks": []
+    }
+  }
+}

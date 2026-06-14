@@ -14,11 +14,44 @@
       </div>
 
       <h2 class="panel-title">{{ node.title }}</h2>
+      <p v-if="!researchMode && narrator" class="story-guide">
+        {{ narrator.name }} says: read the clue, then follow the branch.
+      </p>
+
+      <section v-if="answer" class="panel-section guess-recap">
+        <h3 class="section-label">Your Guess</h3>
+        <div class="guess-card" :class="{ correct: answer.correct }">
+          <strong>{{ answer.correct ? 'Correct prediction' : 'Brave guess' }}</strong>
+          <p>{{ answer.choiceText }}</p>
+          <small>{{ answer.feedback }}</small>
+        </div>
+      </section>
 
       <!-- Summary -->
       <section class="panel-section">
-        <h3 class="section-label">Summary</h3>
-        <p class="panel-summary">{{ node.summary }}</p>
+        <h3 class="section-label">{{ researchMode ? 'Research Notes' : 'Story Card' }}</h3>
+        <ul class="summary-list">
+          <li v-for="(line, i) in summaryBullets" :key="i">{{ line }}</li>
+        </ul>
+      </section>
+
+      <section v-if="!researchMode && powerUp" class="panel-section power-up-section">
+        <h3 class="section-label">History Power-Up</h3>
+        <div class="power-up-card">
+          <strong>{{ powerUp.title }}</strong>
+          <p>{{ powerUp.text }}</p>
+        </div>
+      </section>
+
+      <section v-if="!researchMode && isLeaf && path.length > 1" class="panel-section path-recap-section">
+        <h3 class="section-label">End-of-Branch Recap</h3>
+        <div class="path-recap">
+          <p class="path-intro">You reached an end node. Your path was:</p>
+          <ol>
+            <li v-for="step in path" :key="step.id">{{ step.title }}</li>
+          </ol>
+          <p class="try-again">Close a branch or go back to try a different route.</p>
+        </div>
       </section>
 
       <!-- Sources -->
@@ -48,6 +81,14 @@
         </Transition>
       </section>
 
+      <!-- Branch controls -->
+      <section v-if="isExpanded && !isLeaf" class="panel-section branch-controls">
+        <button class="collapse-branch-btn" @click="$emit('collapseBranch')">
+          Close this branch
+        </button>
+        <p class="branch-hint">Hides this node's children and any deeper open paths.</p>
+      </section>
+
       <!-- Cross-links -->
       <section v-if="node.crossLinks && node.crossLinks.length" class="panel-section">
         <h3 class="section-label">Cross-Narration Links</h3>
@@ -67,20 +108,53 @@
 
       <!-- Node ID (dev reference) -->
       <div class="panel-footer">
-        <span class="node-id-label">id: {{ node.id }}</span>
+        <span class="node-id-label">{{ researchMode ? `research id: ${node.id}` : `id: ${node.id}` }}</span>
       </div>
     </aside>
   </Transition>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 
 const props = defineProps({
-  node: { type: Object, default: null }
+  node: { type: Object, default: null },
+  isExpanded: { type: Boolean, default: false },
+  isLeaf: { type: Boolean, default: true },
+  researchMode: { type: Boolean, default: false },
+  answer: { type: Object, default: null },
+  narrator: { type: Object, default: null },
+  path: { type: Array, default: () => [] }
 })
 
-defineEmits(['close'])
+defineEmits(['close', 'collapseBranch'])
+
+const summaryBullets = computed(() => {
+  if (!props.node?.summary) return []
+  const lines = props.node.summary.split('\n').map(s => s.trim()).filter(Boolean)
+  return lines.length ? lines : [props.node.summary]
+})
+
+const powerUp = computed(() => {
+  if (!props.node) return null
+  if (props.node.powerUp) return props.node.powerUp
+
+  const fallbacks = {
+    historical: {
+      title: 'Evidence Radar',
+      text: 'You found a branch grounded in real sources. Watch for dates, places, and primary evidence.'
+    },
+    speculative: {
+      title: 'Careful What-If',
+      text: 'You tested a plausible historical guess. The skill is separating evidence from possibility.'
+    },
+    alternate: {
+      title: 'Counterfactual Compass',
+      text: 'You entered an alternate path. Ask what changed, what stayed the same, and what evidence still matters.'
+    }
+  }
+  return fallbacks[props.node.factuality] || null
+})
 
 const consequencesOpen = ref(false)
 
@@ -109,8 +183,8 @@ const typeLabelMap = {
   right: 0;
   width: 340px;
   height: 100%;
-  background: #0f172a;
-  border-left: 1px solid #1e293b;
+  background: var(--theme-panel);
+  border-left: 1px solid color-mix(in srgb, var(--theme-accent) 25%, #1e293b);
   overflow-y: auto;
   padding: 20px 20px 40px;
   z-index: 20;
@@ -174,9 +248,45 @@ const typeLabelMap = {
 .panel-title {
   font-size: 18px;
   font-weight: 700;
-  color: #f1f5f9;
+  color: var(--theme-text);
   line-height: 1.3;
-  margin: 0 0 20px;
+  margin: 0 0 10px;
+}
+
+.story-guide {
+  margin: 0 0 18px;
+  color: var(--theme-accent);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.guess-card {
+  border: 1px solid #7f1d1d;
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(127, 29, 29, 0.2);
+}
+
+.guess-card.correct {
+  border-color: #166534;
+  background: rgba(20, 83, 45, 0.22);
+}
+
+.guess-card strong {
+  color: #f8fafc;
+  font-size: 13px;
+}
+
+.guess-card p {
+  margin: 6px 0;
+  color: #cbd5e1;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.guess-card small {
+  color: #94a3b8;
+  line-height: 1.4;
 }
 
 .panel-section {
@@ -190,15 +300,71 @@ const typeLabelMap = {
   font-weight: 700;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: #475569;
+  color: var(--theme-muted);
   margin: 0 0 10px;
 }
 
-.panel-summary {
+.summary-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.summary-list li {
   font-size: 14px;
   line-height: 1.65;
   color: #94a3b8;
+}
+
+.power-up-card {
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 52%, #334155);
+  border-radius: 14px;
+  padding: 12px;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--theme-accent) 18%, transparent), transparent 55%),
+    rgba(15, 23, 42, 0.62);
+}
+
+.power-up-card strong {
+  color: var(--theme-accent);
+  font-size: 13px;
+}
+
+.power-up-card p {
+  margin: 6px 0 0;
+  color: #cbd5e1;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.path-recap {
+  border: 1px solid color-mix(in srgb, var(--theme-accent-2) 42%, #334155);
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(15, 23, 42, 0.48);
+}
+
+.path-intro,
+.try-again {
   margin: 0;
+  color: #94a3b8;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.path-recap ol {
+  margin: 10px 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.path-recap li {
+  color: #e2e8f0;
+  font-size: 13px;
+  line-height: 1.35;
 }
 
 /* Sources */
@@ -212,7 +378,7 @@ const typeLabelMap = {
 }
 .source-link {
   font-size: 13px;
-  color: #60a5fa;
+  color: var(--theme-accent-2);
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -272,6 +438,35 @@ const typeLabelMap = {
   background: #0f172a;
   border: 1px solid #1e293b;
   border-radius: 6px;
+}
+
+/* Branch controls */
+.branch-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.collapse-branch-btn {
+  width: 100%;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 7px;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.collapse-branch-btn:hover {
+  background: #273549;
+  color: #e2e8f0;
+}
+.branch-hint {
+  font-size: 11px;
+  color: #475569;
+  margin: 0;
+  line-height: 1.4;
 }
 
 /* Cross-links */

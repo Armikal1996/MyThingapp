@@ -11,6 +11,10 @@ const VALID_EDGE_TYPES = new Set(['causal', 'consequence'])
 const VALID_NODE_TYPES = new Set(['root', 'simple', 'consequence'])
 const VALID_FACTUALITY = new Set(['historical', 'speculative', 'alternate'])
 
+function isPlainObject(value) {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
 let totalErrors = 0
 
 function err(nodeId, ruleNum, msg) {
@@ -39,6 +43,31 @@ function validateFile(filePath) {
 
   const allNodeIds = new Set(Object.keys(nodes || {}))
   console.log(`\nValidating "${fileName}"  (slug: ${slug}, ${allNodeIds.size} nodes)`)
+
+  if (narration.theme !== undefined && !isPlainObject(narration.theme)) {
+    console.error(`[ERROR] ${fileName}: optional "theme" must be an object when present`)
+    totalErrors++
+  }
+
+  if (narration.narrator !== undefined) {
+    if (!isPlainObject(narration.narrator)) {
+      console.error(`[ERROR] ${fileName}: optional "narrator" must be an object when present`)
+      totalErrors++
+    } else {
+      for (const key of ['name', 'persona', 'intro']) {
+        if (typeof narration.narrator[key] !== 'string' || !narration.narrator[key].trim()) {
+          console.error(`[ERROR] ${fileName}: narrator.${key} must be a non-empty string`)
+          totalErrors++
+        }
+      }
+      for (const key of ['correctLines', 'wrongLines']) {
+        if (!Array.isArray(narration.narrator[key])) {
+          console.error(`[ERROR] ${fileName}: narrator.${key} must be an array`)
+          totalErrors++
+        }
+      }
+    }
+  }
 
   for (const [mapKey, node] of Object.entries(nodes || {})) {
 
@@ -112,6 +141,60 @@ function validateFile(filePath) {
     for (const link of (node.crossLinks || [])) {
       if (!NODE_ID_REGEX.test(link.targetNodeId)) {
         err(node.id, 3, `crossLinks[].targetNodeId "${link.targetNodeId}" does not match NODE_ID_REGEX`)
+      }
+    }
+
+    // Optional game schema: authored predict-then-reveal prompts.
+    if (node.prediction !== undefined) {
+      if (!isPlainObject(node.prediction)) {
+        err(node.id, 'Game', 'prediction must be an object when present')
+      } else {
+        if (typeof node.prediction.question !== 'string' || !node.prediction.question.trim()) {
+          err(node.id, 'Game', 'prediction.question must be a non-empty string')
+        }
+
+        const choices = node.prediction.choices
+        if (!Array.isArray(choices) || choices.length < 2 || choices.length > 4) {
+          err(node.id, 'Game', 'prediction.choices must contain 2–4 choices')
+        } else {
+          let correctCount = 0
+          const ids = new Set()
+
+          for (const choice of choices) {
+            if (!isPlainObject(choice)) {
+              err(node.id, 'Game', 'each prediction choice must be an object')
+              continue
+            }
+            if (typeof choice.id !== 'string' || !choice.id.trim()) {
+              err(node.id, 'Game', 'prediction choice id must be a non-empty string')
+            } else if (ids.has(choice.id)) {
+              err(node.id, 'Game', `duplicate prediction choice id "${choice.id}"`)
+            } else {
+              ids.add(choice.id)
+            }
+            if (typeof choice.text !== 'string' || !choice.text.trim()) {
+              err(node.id, 'Game', `prediction choice "${choice.id}" text must be non-empty`)
+            }
+            if (typeof choice.correct !== 'boolean') {
+              err(node.id, 'Game', `prediction choice "${choice.id}" correct must be boolean`)
+            }
+            if (choice.correct === true) correctCount++
+            if (typeof choice.feedback !== 'string' || !choice.feedback.trim()) {
+              err(node.id, 'Game', `prediction choice "${choice.id}" feedback must be non-empty`)
+            }
+            if (choice.leadsTo !== undefined) {
+              if (!NODE_ID_REGEX.test(choice.leadsTo)) {
+                err(node.id, 'Game', `prediction choice "${choice.id}" leadsTo does not match NODE_ID_REGEX`)
+              } else if (!allNodeIds.has(choice.leadsTo)) {
+                err(node.id, 'Game', `prediction choice "${choice.id}" leadsTo does not resolve in this narration`)
+              }
+            }
+          }
+
+          if (correctCount < 1) {
+            err(node.id, 'Game', 'prediction must include at least one correct choice')
+          }
+        }
       }
     }
   }

@@ -47,10 +47,13 @@ const props = defineProps({
   error: { type: String, default: null },
   isExpanded: { type: Function, required: true },
   isVisited: { type: Function, required: true },
-  isLeaf: { type: Function, required: true }
+  isLeaf: { type: Function, required: true },
+  isAnswered: { type: Function, default: () => false },
+  guessedCorrect: { type: Function, default: () => false },
+  researchMode: { type: Boolean, default: false }
 })
 
-const emit = defineEmits(['nodeSelected'])
+const emit = defineEmits(['nodeClicked', 'collapseBranch'])
 
 // Register custom node types (use markRaw to avoid Vue reactivity on component def)
 const nodeTypes = {
@@ -75,7 +78,11 @@ const rawFlowNodes = computed(() => {
         isExpanded: props.isExpanded(id),
         isVisited: props.isVisited(id),
         isLeaf: props.isLeaf(id),
-        positionHint: node.position ?? null
+        isAnswered: props.isAnswered(id),
+        guessedCorrect: props.guessedCorrect(id),
+        researchMode: props.researchMode,
+        positionHint: node.position ?? null,
+        onCollapseBranch: () => emit('collapseBranch', id)
       }
     })
   }
@@ -111,10 +118,10 @@ const rawFlowEdges = computed(() => {
       animated: isCross,
       markerEnd: {
         type: MarkerType.ArrowClosed,
-        color: isCross ? '#8b5cf6' : isConsequence ? '#f97316' : '#6b7280'
+        color: isCross ? '#8b5cf6' : isConsequence ? 'var(--theme-accent-2)' : 'var(--theme-muted)'
       },
       style: {
-        stroke: isCross ? '#8b5cf6' : isConsequence ? '#f97316' : '#6b7280',
+        stroke: isCross ? '#8b5cf6' : isConsequence ? 'var(--theme-accent-2)' : 'var(--theme-muted)',
         strokeWidth: isCross ? 1.5 : 2,
         strokeDasharray: isCross ? '6 4' : isConsequence ? '4 3' : 'none'
       },
@@ -143,7 +150,7 @@ function onNodeClick({ node }) {
   if (node.data?.isCrossLink) return
 
   const histNode = props.allNodes[node.id]
-  if (histNode) emit('nodeSelected', histNode)
+  if (histNode) emit('nodeClicked', histNode)
 }
 </script>
 
@@ -152,7 +159,7 @@ function onNodeClick({ node }) {
   position: relative;
   width: 100%;
   height: 100%;
-  background: #0a0e1a;
+  background: var(--theme-bg);
 }
 
 .vue-flow-canvas {

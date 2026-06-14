@@ -8,6 +8,9 @@
       { 'is-expanded': data.isExpanded },
       { 'is-visited': data.isVisited },
       { 'is-leaf': data.isLeaf },
+      { 'is-answered': data.isAnswered },
+      { 'is-correct': data.guessedCorrect },
+      { 'has-prediction': nodeData.prediction && !data.researchMode },
     ]"
   >
     <Handle type="target" :position="Position.Top" class="handle handle-target" />
@@ -15,14 +18,27 @@
     <div class="node-inner">
       <div class="node-header">
         <span class="fact-badge">{{ factualityLabel }}</span>
-        <span v-if="data.isVisited" class="visited-mark" title="Visited">✓</span>
+        <div class="header-actions">
+          <button
+            v-if="data.isExpanded && !data.isLeaf"
+            class="collapse-btn"
+            title="Close this branch"
+            @click.stop="data.onCollapseBranch?.()"
+          >
+            −
+          </button>
+          <span v-if="data.isVisited" class="visited-mark" title="Visited">✓</span>
+        </div>
       </div>
 
       <div class="node-title">{{ nodeData.title }}</div>
 
       <!-- Expand hint — only for non-leaf, non-expanded nodes -->
       <div v-if="!data.isLeaf && !data.isExpanded" class="expand-hint">
-        <span class="expand-dot" /><span class="expand-dot" /><span class="expand-dot" />
+        <span v-if="nodeData.prediction && !data.researchMode" class="guess-label">Guess to open</span>
+        <template v-else>
+          <span class="expand-dot" /><span class="expand-dot" /><span class="expand-dot" />
+        </template>
       </div>
     </div>
 
@@ -52,8 +68,8 @@ const factualityLabel = computed(() => {
 <style scoped>
 .node-card {
   border-radius: 10px;
-  border: 2px solid var(--node-border, #4b5563);
-  background: var(--node-bg, #1a2235);
+  border: 2px solid var(--node-border, var(--theme-node-border, #4b5563));
+  background: var(--node-bg, var(--theme-node, #1a2235));
   color: #e2e8f0;
   cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
@@ -71,8 +87,8 @@ const factualityLabel = computed(() => {
 
 /* ── Type variants ── */
 .node-card.type-root {
-  --node-border: #f59e0b;
-  --node-bg: #1c1a0d;
+  --node-border: var(--theme-accent, #f59e0b);
+  --node-bg: color-mix(in srgb, var(--theme-accent) 15%, #0f172a);
   min-width: 210px;
   max-width: 230px;
   border-width: 2.5px;
@@ -80,13 +96,13 @@ const factualityLabel = computed(() => {
 }
 
 .node-card.type-consequence {
-  --node-border: #f97316;
-  --node-bg: #1c110a;
+  --node-border: var(--theme-accent-2, #f97316);
+  --node-bg: color-mix(in srgb, var(--theme-accent-2) 14%, #0f172a);
 }
 
 .node-card.type-simple {
-  --node-border: #3b82f6;
-  --node-bg: #0f1829;
+  --node-border: color-mix(in srgb, var(--theme-accent) 58%, #3b82f6);
+  --node-bg: color-mix(in srgb, var(--theme-accent) 8%, #0f172a);
 }
 
 /* ── Factuality ring ── */
@@ -107,6 +123,14 @@ const factualityLabel = computed(() => {
   border-style: dashed;
 }
 
+.node-card.has-prediction:not(.is-answered) {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-accent) 45%, transparent), 0 0 24px color-mix(in srgb, var(--theme-accent) 16%, transparent);
+}
+
+.node-card.is-correct {
+  box-shadow: 0 0 0 1px rgba(34,197,94,0.45), 0 0 24px rgba(34,197,94,0.2);
+}
+
 /* ── Inner layout ── */
 .node-inner {
   padding: 10px 12px;
@@ -119,6 +143,34 @@ const factualityLabel = computed(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.collapse-btn {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid #475569;
+  border-radius: 4px;
+  background: #1e293b;
+  color: #94a3b8;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.collapse-btn:hover {
+  background: #334155;
+  color: #e2e8f0;
+  border-color: #64748b;
 }
 
 .fact-badge {
@@ -164,6 +216,17 @@ const factualityLabel = computed(() => {
   height: 4px;
   border-radius: 50%;
   background: #4b5563;
+}
+
+.guess-label {
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 55%, #334155);
+  border-radius: 999px;
+  padding: 2px 7px;
+  color: var(--theme-accent);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 /* Vue Flow handles */

@@ -20,10 +20,12 @@ npm run validate   # validate all narration JSON files
 
 ## How to Add a New Narration
 
-1. Create `src/data/narrations/<your-slug>.json` — copy `alexander-rules-world.json` as a template.
+1. Create `src/data/narrations/<your-slug>.json` — copy `templates/sample-narration-for-ai.json` or an existing narration as a template.
 2. Register it in `src/data/index.json` by adding an entry to the `narrations` array.
 3. Run `npm run validate` — fix any errors it reports before proceeding.
 4. Restart the dev server — the narration card will appear on the Start Screen.
+
+For third-party AI generation, give the model `templates/sample-narration-for-ai.json` and ask it to replace the slug, titles, nodes, sources, predictions, power-ups, and missions while preserving the exact JSON shape.
 
 ---
 
@@ -49,9 +51,54 @@ Each node in a narration file must conform to the following shape:
   "crossLinks": [                       // references to nodes in OTHER narrations; optional
     { "targetNodeId": "other-narration::n001", "label": "Display label" }
   ],
+  "prediction": {                       // optional: kids-mode guess before reveal
+    "question": "What do you think happens next?",
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "A plausible answer",
+        "correct": true,
+        "feedback": "Exactly — here is why.",
+        "leadsTo": "my-narration::n002"  // optional; must resolve if present
+      }
+    ]
+  },
   "position": { "x": 100, "y": 200 }   // optional layout hint; omit to use auto-layout
 }
 ```
+
+Narration files may also include optional presentation metadata:
+
+```jsonc
+{
+  "theme": {
+    "era": "antiquity",
+    "accent": "#f59e0b",
+    "accent2": "#38bdf8",
+    "motif": "bronze maps and campfire parchment"
+  },
+  "narrator": {
+    "name": "Mira",
+    "persona": "curious time-guide",
+    "intro": "Read the clue, make a guess, then reveal the branch.",
+    "correctLines": ["Sharp thinking!"],
+    "wrongLines": ["Good guess — history swerved another way."]
+  }
+}
+```
+
+### Predict-then-Reveal Game Fields
+
+`prediction` is optional and backwards-compatible. If present, kids mode asks the question before expanding that node's children.
+
+Rules enforced by `npm run validate`:
+
+- `prediction.question` must be a non-empty string.
+- `prediction.choices` must contain 2–4 choices.
+- Each choice needs `id`, `text`, boolean `correct`, and `feedback`.
+- At least one choice must be correct.
+- Optional `leadsTo` must match the node ID regex and resolve inside the same narration.
+- Research mode skips the prediction overlay and reveals normally.
 
 ### Node ID Format
 

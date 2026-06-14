@@ -1,0 +1,592 @@
+{
+  "slug": "marx-lenin-stalin-mao",
+  "title": "From Marx to Modern Communism",
+  "version": 1,
+  "description": "Follow one explosive idea from a German library to revolutions across Russia, China, and the world. Real history mixed with bold 'what if' questions — Marxism, Leninism, Stalinism, Maoism, and communism today.",
+  "theme": {
+    "era": "industrial",
+    "accent": "#ef4444",
+    "accent2": "#f97316",
+    "motif": "factory smoke, pamphlets, red banners, and secret meetings"
+  },
+  "narrator": {
+    "name": "Comrade Clock",
+    "persona": "dramatic archive-machine for revolutions",
+    "intro": "I am Comrade Clock. Read the evidence, predict the next rupture, then reveal the branch.",
+    "correctLines": ["Dialectical detective work!", "You spotted the pressure point."],
+    "wrongLines": ["History took a sharper turn.", "Not quite — power moved through a different machine."]
+  },
+  "rootNodeIds": ["marx-lenin-stalin-mao::n001"],
+  "missions": [
+    {
+      "id": "book-to-party",
+      "title": "From Book to Party Machine",
+      "description": "Follow Marx's ideas into Lenin's disciplined revolutionary party.",
+      "nodeIds": ["marx-lenin-stalin-mao::n001", "marx-lenin-stalin-mao::n002", "marx-lenin-stalin-mao::n009", "marx-lenin-stalin-mao::n012"]
+    },
+    {
+      "id": "state-power",
+      "title": "When Revolution Becomes State Power",
+      "description": "Trace how Leninism turns into Stalinist industry and terror.",
+      "nodeIds": ["marx-lenin-stalin-mao::n012", "marx-lenin-stalin-mao::n014", "marx-lenin-stalin-mao::n016", "marx-lenin-stalin-mao::n017"]
+    },
+    {
+      "id": "china-path",
+      "title": "China Writes Its Own Version",
+      "description": "Explore how Mao adapts Marxism for peasants, war, and modern China.",
+      "nodeIds": ["marx-lenin-stalin-mao::n015", "marx-lenin-stalin-mao::n018", "marx-lenin-stalin-mao::n019", "marx-lenin-stalin-mao::n024", "marx-lenin-stalin-mao::n026"]
+    }
+  ],
+  "nodes": {
+    "marx-lenin-stalin-mao::n001": {
+      "id": "marx-lenin-stalin-mao::n001",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "root",
+      "title": "1848 — A Pamphlet Sets the World on Fire",
+      "summary": "Two young German writers — Karl Marx and Friedrich Engels — publish a short, furious book: The Communist Manifesto.\nIts opening line is famous: 'A spectre is haunting Europe — the spectre of communism.'\nThey claim history is a fight between classes: workers (proletarians) vs owners (bourgeoisie). They predict workers will one day take power.\nIn 1848, revolutions explode across Europe. Kings shiver. Nothing turns out exactly as Marx hoped — but the idea escapes the page and starts running through history.\nGuess: can a book change the world if most people who revolt never read it?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Marx & Engels: The Communist Manifesto (Gutenberg)", "url": "https://www.gutenberg.org/ebooks/61" },
+        { "label": "Britannica: Revolutions of 1848", "url": "https://www.britannica.com/event/Revolutions-of-1848" },
+        { "label": "Stanford Encyclopedia of Philosophy: Karl Marx", "url": "https://plato.stanford.edu/entries/marx/" }
+      ],
+      "consequences": "This narration traces Marx's idea through Lenin, Stalin, Mao, and into the 21st century. Green = documented history. Blue = debate and speculation. Purple = alternate paths and thought experiments. The real story is messy, violent, and still unfinished.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n002", "edgeType": "causal" },
+        { "targetId": "marx-lenin-stalin-mao::n003", "edgeType": "causal" },
+        { "targetId": "marx-lenin-stalin-mao::n004", "edgeType": "consequence" }
+      ],
+      "prediction": {
+        "question": "Marx predicts workers will overthrow capitalism. Where does the first successful Marxist revolution actually seize a huge country?",
+        "choices": [
+          {
+            "id": "russia",
+            "text": "Russia — poorer and less industrial than Marx expected.",
+            "correct": true,
+            "feedback": "Correct. Marx expected advanced industrial countries to lead, but the first successful Marxist state emerged from Russia's war, hunger, and collapse.",
+            "leadsTo": "marx-lenin-stalin-mao::n004"
+          },
+          {
+            "id": "britain",
+            "text": "Britain — the workshop of the world.",
+            "correct": false,
+            "feedback": "That would fit Marx's factory-focused theory, but Britain reformed without a communist revolution."
+          },
+          {
+            "id": "usa",
+            "text": "The United States — because factories were huge there.",
+            "correct": false,
+            "feedback": "American labour movements mattered, but the first Marxist state did not arise there."
+          }
+        ]
+      },
+      "crossLinks": [
+        {
+          "targetNodeId": "alexander-rules-world::n001",
+          "label": "Another conqueror who tried to reshape the world — Alexander the Great (available now)"
+        }
+      ]
+    },
+
+    "marx-lenin-stalin-mao::n002": {
+      "id": "marx-lenin-stalin-mao::n002",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "Marx — The Detective of Capitalism",
+      "summary": "Karl Marx (1818–1883) spends years in the British Library, studying factory reports, trade figures, and child labour records.\nHe is not a general or a king — he is a writer with bad teeth and enormous ambition: to explain WHY capitalism keeps growing and WHY it produces both wealth and misery.\nFriedrich Engels, his friend and co-author, runs a factory in Manchester and sends him real-world horror stories from the shop floor.\nMarx calls his life project Capital — an autopsy of the economic system Europe was building.\nGuess: do you need to run a country to change history, or can a pen be enough?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Marx: Capital Vol. I (Gutenberg)", "url": "https://www.gutenberg.org/ebooks/4493" },
+        { "label": "Britannica: Das Kapital", "url": "https://www.britannica.com/topic/Das-Kapital" }
+      ],
+      "consequences": "Marx never led a revolution. He died in London in 1883, still scribbling notes. His followers would argue for a century about what he 'really meant' — and leaders who claimed his name would do things he never imagined.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n005", "edgeType": "causal" },
+        { "targetId": "marx-lenin-stalin-mao::n006", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n003": {
+      "id": "marx-lenin-stalin-mao::n003",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "1848 — Barricades, Bread, and Broken Thrones",
+      "summary": "REAL HISTORY: In 1848, people riot from Paris to Prague. They want constitutions, bread, and national independence.\nWorkers and students build barricades in the streets. Some kings abdicate. Some armies shoot until the streets run red.\nMarx and Engels publish the Manifesto in this storm — but the revolutions mostly fail within months.\nMarx learns a bitter lesson: outrage is not the same as organisation.\nGuess: why do revolutions that feel unstoppable in spring sometimes collapse by winter?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Revolutions of 1848", "url": "https://www.britannica.com/event/Revolutions-of-1848" }
+      ],
+      "consequences": "1848 teaches Marx that a spontaneous crowd is not yet a ruling class. Someone else will solve the 'how do we actually take power?' question — his name is Lenin.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n007", "edgeType": "causal" },
+        { "targetId": "marx-lenin-stalin-mao::n008", "edgeType": "consequence" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n004": {
+      "id": "marx-lenin-stalin-mao::n004",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "Russia — Where the Idea Finds Ice and Hunger",
+      "summary": "While Marx writes in London, Russia is an empire of tsars, priests, and peasants who can barely read.\nSecret clubs smuggle banned books. Young radicals memorize Marx by candlelight.\nVladimir Ulyanov — later known as Lenin — grows up angry: his older brother was executed for trying to kill the tsar.\nRussia is backward by Western factory standards, but its misery is enormous. That makes it fertile soil for revolution.\nGuess: does revolution happen first where capitalism is strongest, or where suffering is worst?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Vladimir Lenin", "url": "https://www.britannica.com/biography/Vladimir-Lenin" },
+        { "label": "Britannica: Russian Empire", "url": "https://www.britannica.com/place/Russian-Empire" }
+      ],
+      "consequences": "Marx thought revolution might come first in advanced industrial Britain or Germany. History picked Russia — a surprise that would reshape the entire meaning of 'Marxism.'",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n009", "edgeType": "causal" },
+        { "targetId": "marx-lenin-stalin-mao::n010", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n005": {
+      "id": "marx-lenin-stalin-mao::n005",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "Das Kapital — Where Does Profit Come From?",
+      "summary": "Marx's big question in Capital: if workers are paid wages, and owners still get rich, where does the extra money come from?\nHis answer: surplus value — workers produce more value in a day than they are paid for. Owners keep the difference as profit.\nHe also describes how factories, machines, and competition push workers harder while crises throw people out of work.\nIt is dense reading. Even Marx joked: 'I am not a Marxist' when followers simplified him.\nGuess: if workers create the profit, why don't they automatically revolt?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Marx: Capital Vol. I, Ch. 1 (Gutenberg)", "url": "https://www.gutenberg.org/ebooks/4493" }
+      ],
+      "consequences": "Capital influenced unions, economists, and revolutionaries worldwide — including people who never read all three volumes. Stalin and Mao would cite 'Marxism-Leninism' without ever finishing Capital.",
+      "children": [],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n006": {
+      "id": "marx-lenin-stalin-mao::n006",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "Engels — The Factory Owner Who Funded the Revolution",
+      "summary": "Friedrich Engels (1820–1895) is the other half of the story.\nHe inherits money from a textile business — capitalism pays for anti-capitalism. He sends Marx cash so Marx can keep writing instead of starving.\nEngels co-writes the Manifesto and edits Capital after Marx dies.\nHe also describes the brutal lives of Manchester workers in The Condition of the Working Class in England — eyewitness journalism before the word existed.\nGuess: can you fight a system while still living inside it?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Engels: Condition of the Working Class (Marxists.org)", "url": "https://www.marxists.org/archive/marx/works/1845/condition-working-class/" },
+        { "label": "Britannica: Friedrich Engels", "url": "https://www.britannica.com/biography/Friedrich-Engels" }
+      ],
+      "consequences": "Without Engels, Marx might be a footnote. Partnership matters in history as much as lone geniuses.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n011", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n007": {
+      "id": "marx-lenin-stalin-mao::n007",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "The Paris Commune — 72 Days of Worker Rule",
+      "summary": "REAL HISTORY: March 1871. After France loses a war to Prussia, Parisians refuse the new conservative government.\nThey elect the Paris Commune — a city run by workers' councils, with wages capped for officials and churches turned into schools.\nWomen like Louise Michel fight on the barricades. Artists redesign the city in their heads.\nAfter 72 days, the French army storms Paris. Thousands are killed. Marx writes The Civil War in France, calling the Commune the first dictatorship of the proletariat — praise from afar.\nGuess: if the Commune had lasted longer, would it have become a model — or torn itself apart?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Paris Commune", "url": "https://www.britannica.com/event/Paris-Commune" },
+        { "label": "Marx: The Civil War in France (Marxists.org)", "url": "https://www.marxists.org/archive/marx/works/1871/civil-war-france/" }
+      ],
+      "consequences": "The Commune becomes a sacred memory for leftists. Lenin will dance in the snow when his revolution outlasts 72 days. The lesson he draws: be ruthless, be organised, never give the old order time to strike back.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n012", "edgeType": "consequence" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n008": {
+      "id": "marx-lenin-stalin-mao::n008",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "consequence",
+      "title": "Marx's Ghost Question — What If the Workers' Party Becomes a New Ruling Class?",
+      "summary": "SPECULATIVE — Marx did not live to see a Marxist state rule a whole country.\nBut he warned that the state can become its own master. He wrote about a future where classes disappear and the state 'withers away' — fades out like a scab after a wound heals.\nWhat if the party that claims to speak for workers becomes a new elite with secret police and special shops?\nHistorians still argue: did Marx's ideas contain this danger, or did later leaders betray them?\nGuess: is it easier to overthrow a king or to stop power from corrupting your own side?",
+      "factuality": "speculative",
+      "sources": [
+        { "label": "Marx: Critique of the Gotha Programme (Marxists.org)", "url": "https://www.marxists.org/archive/marx/works/1875/gotha/" }
+      ],
+      "consequences": "This question hangs over Lenin, Stalin, and Mao. Every branch below is partly an answer — and none of the answers are comfortable.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n012", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n009": {
+      "id": "marx-lenin-stalin-mao::n009",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "Lenin in Exile — Blueprint for a Conspiracy That Wins",
+      "summary": "Lenin reads Marx in Siberian exile and later in cafés in Switzerland and London.\nHe writes What Is to Be Done? (1902): workers will not become revolutionary by themselves, he argues — they need a 'vanguard party' of professional revolutionaries, disciplined and secret.\nHe splits the Russian Social Democratic Party. His faction: the Bolsheviks ('majority'). His rivals: the Mensheviks.\nDemocratic centralism: debate inside the party, then obey the decision — or leave.\nGuess: can tight discipline win a revolution and still leave room for free speech afterward?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Lenin: What Is to Be Done? (Marxists.org)", "url": "https://www.marxists.org/archive/lenin/works/1901/witbd/" },
+        { "label": "Britannica: Bolshevik", "url": "https://www.britannica.com/topic/Bolshevik" }
+      ],
+      "consequences": "Leninism = Marx's economics + Lenin's party machine. This formula will travel to China, Cuba, Vietnam, and dozens of rebel movements — each claiming the same lineage.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n012", "edgeType": "causal" },
+        { "targetId": "marx-lenin-stalin-mao::n013", "edgeType": "causal" }
+      ],
+      "prediction": {
+        "question": "Lenin says workers need a disciplined vanguard party. What is the biggest danger of that idea?",
+        "choices": [
+          {
+            "id": "new-elite",
+            "text": "The party can become a new ruling elite that speaks for workers but controls them.",
+            "correct": true,
+            "feedback": "Exactly. This danger haunts Leninism, Stalinism, and later communist states.",
+            "leadsTo": "marx-lenin-stalin-mao::n012"
+          },
+          {
+            "id": "too-fun",
+            "text": "Meetings become too fun and nobody wants to work.",
+            "correct": false,
+            "feedback": "Secret revolutionary parties were not famous for being too much fun."
+          },
+          {
+            "id": "no-organization",
+            "text": "The movement has no organization at all.",
+            "correct": false,
+            "feedback": "Lenin's whole point was strong organization. The risk was what that organization became."
+          }
+        ]
+      },
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n010": {
+      "id": "marx-lenin-stalin-mao::n010",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "1917 — Two Revolutions in One Year",
+      "summary": "REAL HISTORY: World War I breaks Russia. Soldiers desert. Bread lines stretch for miles. Tsar Nicholas II abdicates in February 1917.\nA provisional government takes over — but keeps fighting the war. Soviets (workers' and soldiers' councils) spring up in parallel, like a second government in the shadows.\nLenin returns from exile in a sealed train. His slogan: 'Peace, Land, Bread' and 'All power to the Soviets!'\nIn October (November by our calendar), Bolsheviks seize key buildings in Petrograd. The Winter Palace falls almost without a fight.\nGuess: was October a popular uprising or a well-timed coup — and does the difference matter?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Russian Revolution of 1917", "url": "https://www.britannica.com/event/Russian-Revolution" },
+        { "label": "Britannica: October Revolution", "url": "https://www.britannica.com/event/October-Revolution" }
+      ],
+      "consequences": "For the first time, a Marxist party controls a huge country. Marx's pamphlet has become an army, a secret police, and a new flag.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n012", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n011": {
+      "id": "marx-lenin-stalin-mao::n011",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "The First International Splits — Marx vs the Anarchists",
+      "summary": "REAL HISTORY: Marx helps build the First International — a federation of worker groups across countries.\nHe fights a bitter feud with Mikhail Bakunin, an anarchist who wants to abolish the state immediately, not take it over first.\nMarx wins the vote; Bakunin is expelled. The International collapses anyway.\nTwo rival traditions are born: Marxist state socialists vs anarchists who distrust any central power.\nGuess: who was right — the people who wanted a strong party, or the people who feared all authority?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: First International", "url": "https://www.britannica.com/topic/International-Workingmens-Association" }
+      ],
+      "consequences": "Every communist regime that builds a strong police state proves Bakunin's warning — at least to anarchists. Every failed anarchist commune proves Marx's warning about organisation — at least to Marxists. The argument never ends.",
+      "children": [],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n012": {
+      "id": "marx-lenin-stalin-mao::n012",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "Leninism — When an Idea Picks Up a Sword",
+      "summary": "CONVERGENCE: The Paris Commune's memory, Marx's warnings, Lenin's party theory, and the storm of 1917 all meet here.\nLeninism is not just Marx plus Russia. It adds: a vanguard party, revolutionary violence when needed, dictatorship of the proletariat (rule in workers' name), and world revolution — sparking fires in other countries.\nLenin renames the party the Communist Party. The Comintern (Communist International) tries to export revolution globally.\nCivil war follows: Red vs White, famine, foreign intervention, terror on both sides.\nGuess: can you build a fair society with secret police 'for a while' — or does 'for a while' become forever?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Leninism", "url": "https://www.britannica.com/topic/Leninism" },
+        { "label": "Britannica: Russian Civil War", "url": "https://www.britannica.com/event/Russian-Civil-War" }
+      ],
+      "consequences": "Lenin dies in 1924, aged 53, after strokes. A struggle opens for succession. Two very different pupils wait in line: Stalin and Trotsky — and far away, a young Mao watches.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n014", "edgeType": "causal" },
+        { "targetId": "marx-lenin-stalin-mao::n015", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n013": {
+      "id": "marx-lenin-stalin-mao::n013",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "War Communism & the NEP — Panic, Famine, Retreat",
+      "summary": "REAL HISTORY: To win the civil war, Lenin imposes War Communism — grain requisitioned at gunpoint, factories nationalised, money nearly worthless.\nPeasants hide food. Famine kills millions. Sailors revolt at Kronstadt — former Bolshevik allies. Lenin crushes them, then shocks everyone.\n1921: the New Economic Policy (NEP) — partial capitalism returns. Small shops reopen. Peasants sell on the market. 'One step back to take two steps forward,' Lenin says.\nGuess: if Lenin had lived longer, would the NEP have evolved into democratic socialism — or been abandoned anyway?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: War Communism", "url": "https://www.britannica.com/topic/War-Communism" },
+        { "label": "Britannica: New Economic Policy", "url": "https://www.britannica.com/topic/New-Economic-Policy-Soviet-history" }
+      ],
+      "consequences": "The NEP proves communist states can bend their own rules when reality bites. Deng Xiaoping will later say the same thing in China — with market reforms that confuse the world.",
+      "children": [],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n014": {
+      "id": "marx-lenin-stalin-mao::n014",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "Stalin — The Quiet Bureaucrat Who Won the Kremlin",
+      "summary": "Joseph Stalin ('man of steel') was not the charismatic speaker Lenin or Trotsky was.\nHe built power inside the party machine — General Secretary, appointments, files, favours.\nAfter Lenin's death, he outmanoeuvres rivals. Trotsky exiled. Others executed or silenced.\nStalin declares 'Socialism in One Country' — build communism in the USSR first, forget waiting for world revolution.\nGuess: do revolutions always get taken over by the most organised person, not the nicest?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Joseph Stalin", "url": "https://www.britannica.com/biography/Joseph-Stalin" },
+        { "label": "Britannica: Socialism in One Country", "url": "https://www.britannica.com/topic/socialism-in-one-country" }
+      ],
+      "consequences": "Stalinism adds to Leninism: personal cult, forced industrialisation, mass terror, and the belief that murdering millions can be justified as 'historical necessity.'",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n016", "edgeType": "causal" },
+        { "targetId": "marx-lenin-stalin-mao::n017", "edgeType": "consequence" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n015": {
+      "id": "marx-lenin-stalin-mao::n015",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "Mao — China Is Not Russia",
+      "summary": "While Stalin schemes in Moscow, Mao Zedong grows up in a Hunan village. China is humiliated by foreign powers, torn by warlords.\nMarxism arrives in Chinese translation. Mao adapts it: the revolution will be peasant-based, not factory-based. The countryside will surround the cities.\n1921: Chinese Communist Party founded. 1927: massacres by Nationalists force Mao into the mountains.\nHe will spend decades fighting — not from exile in Europe, but on the march with an army of farmers.\nGuess: can the same Marxist book produce two completely different revolutions?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Mao Zedong", "url": "https://www.britannica.com/biography/Mao-Zedong" },
+        { "label": "Britannica: Chinese Communist Party", "url": "https://www.britannica.com/topic/Chinese-Communist-Party" }
+      ],
+      "consequences": "Maoism will claim to be Marxism-Leninism upgraded for the Global South — for countries that are poor, rural, and colonised. Stalin and Mao will ally, then hate each other.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n018", "edgeType": "causal" },
+        { "targetId": "marx-lenin-stalin-mao::n019", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n016": {
+      "id": "marx-lenin-stalin-mao::n016",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "consequence",
+      "title": "Five-Year Plans — Steel, Dams, and Broken Bodies",
+      "summary": "REAL HISTORY: Stalin launches forced industrialisation. Five-Year Plans turn a farming empire into a factory empire — fast.\nCoal, steel, dams, and metros rise. Literacy jumps. The USSR goes from backward to superpower-capable in one generation.\nThe cost: famine in Ukraine (Holodomor), dekulakisation (destroying richer peasants), slave labour in the Gulag, and fear as daily life.\nPropaganda posters show smiling workers. Reality includes informants and midnight knocks on the door.\nGuess: can you modernise a country without crushing the people you claim to liberate?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Five-Year Plans (Soviet Union)", "url": "https://www.britannica.com/topic/Five-Year-Plans" },
+        { "label": "Britannica: Gulag", "url": "https://www.britannica.com/topic/Gulag" }
+      ],
+      "consequences": "The USSR industrial base helps defeat Nazi Germany in WWII — 27 million Soviet deaths. Victory makes Stalin a world colossus and convinces many that cruelty 'worked.'",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n021", "edgeType": "consequence" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n017": {
+      "id": "marx-lenin-stalin-mao::n017",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "consequence",
+      "title": "The Great Purge — Revolution Eats Its Children",
+      "summary": "REAL HISTORY: 1936–1938 — Stalin's Great Terror. Show trials. Old Bolsheviks confess to absurd crimes. Executions by the hundreds of thousands.\nThe party, army, and intelligentsia are decapitated. Stalin's portrait is everywhere — churches replaced by cult.\nMarx wanted the state to wither away. Stalin's state grows teeth.\nSPECULATIVE QUESTION: Was this a betrayal of Marx, or the logical end of one-party rule under panic and paranoia?\nGuess: could ANY leader hold absolute power without using terror — or does the system demand it?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Great Purge", "url": "https://www.britannica.com/event/Great-Purge" }
+      ],
+      "consequences": "Stalin dies in 1953. Khrushchev later denounces him — but keeps the one-party system. The word 'Stalinism' enters history as shorthand for totalitarian communism.",
+      "children": [],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n018": {
+      "id": "marx-lenin-stalin-mao::n018",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "The Long March — 90,000 Start, 8,000 Finish",
+      "summary": "REAL HISTORY: 1934–1935. Nationalist armies surround communist bases. Mao's Red Army breaks out and marches roughly 9,000 km across China — mountains, rivers, snow, constant fighting.\nOf about 90,000 who start, roughly 8,000 reach safety in Shaanxi. The march becomes legend — proof of endurance and Mao's rising leadership.\nAlong the way Mao tightens control over the party, sidelining rivals who wanted conventional urban revolution.\nGuess: when a journey kills most of the people who begin it, does survival make you a hero — or prove the plan was deadly wrong?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Long March", "url": "https://www.britannica.com/event/Long-March" }
+      ],
+      "consequences": "The Long March gives Mao the myth he needs. After WWII and civil war against the Nationalists, he will proclaim the People's Republic in 1949 — a fifth of humanity under communist rule.",
+      "children": [],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n019": {
+      "id": "marx-lenin-stalin-mao::n019",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "1949 — 'The Chinese People Have Stood Up'",
+      "summary": "REAL HISTORY: Mao stands in Tiananmen Square, October 1, 1949. The People's Republic of China is born.\nLand is redistributed to peasants. Marriage reform. Literacy campaigns. Pride after 'century of humiliation' by foreign powers.\nBut the new state is also authoritarian from day one: censorship, camps for opponents, and the belief that the party is always right.\nMao reads Stalin's playbook — and then writes his own, wilder chapters.\nGuess: can a revolution free a nation from foreigners while still oppressing its own people?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Proclamation of the People's Republic of China", "url": "https://www.britannica.com/event/Proclamation-of-the-Peoples-Republic-of-China" }
+      ],
+      "consequences": "Cold War becomes bipolar: USA vs USSR, with China as a third sun after the Sino-Soviet split. 'Communism' is no longer one thing — it is a family of rivals.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n020", "edgeType": "causal" },
+        { "targetId": "marx-lenin-stalin-mao::n022", "edgeType": "consequence" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n020": {
+      "id": "marx-lenin-stalin-mao::n020",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "consequence",
+      "title": "Great Leap Forward — When Utopia Caused Famine",
+      "summary": "REAL HISTORY: 1958 — Mao launches the Great Leap Forward. Backyard steel furnaces melt pots and pans. Communes merge farms into mega-units. Officials fake harvest numbers to please bosses.\nFamine follows — estimates range from 15 to 45 million deaths, the worst human-made disaster of the 20th century.\nMao retreats temporarily. Liu Shaoqi and others push pragmatism. Mao plots a comeback.\nGuess: why do leaders who survived real revolutions sometimes create fake statistics that kill their own people?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Great Leap Forward", "url": "https://www.britannica.com/event/Great-Leap-Forward" }
+      ],
+      "consequences": "The Great Leap proves that communist planning can fail as catastrophically as capitalist crashes — different mechanism, similar human cost.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n023", "edgeType": "consequence" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n021": {
+      "id": "marx-lenin-stalin-mao::n021",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "consequence",
+      "title": "Cold War — Two Worlds, One Planet",
+      "summary": "REAL + SPECULATIVE MIX.\nAfter WWII, the USSR controls Eastern Europe. NATO forms in the West. Nuclear weapons mean the superpowers cannot fight directly without ending civilisation.\nProxy wars burn in Korea, Vietnam, Angola, Afghanistan. Both sides claim moral superiority. Both arm dictators when convenient.\nCommunism is now a global brand — Soviet, Chinese, Cuban, Yugoslav, each different.\nGuess: if Marx saw nuclear missiles and spy satellites, would he still predict world revolution — or something stranger?",
+      "factuality": "speculative",
+      "sources": [
+        { "label": "Britannica: Cold War", "url": "https://www.britannica.com/event/Cold-War" }
+      ],
+      "consequences": "1991: Soviet Union collapses. Communism as a world force shrinks — but does not vanish. China survives, adapts, and grows rich. The story enters its weirdest phase.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n024", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n022": {
+      "id": "marx-lenin-stalin-mao::n022",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "consequence",
+      "title": "Cultural Revolution — Permanent Uprising Against Your Own Party",
+      "summary": "REAL HISTORY: 1966–1976 — Mao, ageing and paranoid, launches the Cultural Revolution.\nRed Guards — mostly teenagers — attack teachers, officials, temples, and even party leaders. 'Bombard the headquarters!'\nRevolution turns inward: children denounce parents. Books burned. Universities shut. Economy stalls.\nMao calls it perpetual revolution to stop bureaucrats from becoming a new ruling class. Critics call it national trauma.\nGuess: can you keep a revolution 'pure' by never stopping the fighting — or do you just destroy everything you built?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Cultural Revolution", "url": "https://www.britannica.com/event/Cultural-Revolution" }
+      ],
+      "consequences": "Mao dies 1976. The Gang of Four arrested. China slowly pivots — market reforms under Deng Xiaoping will confuse everyone who thought 'communist' meant 'no capitalism.'",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n023", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n023": {
+      "id": "marx-lenin-stalin-mao::n023",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "Sino-Soviet Split — Communist Brothers Go to War (Almost)",
+      "summary": "REAL HISTORY: By the 1960s, Mao and Khrushchev hate each other.\nMao calls the USSR 'revisionist' — betraying true communism. Soviets call Mao reckless. Border clashes erupt in 1969. Nukes are briefly considered.\nTwo rival churches of Marxism compete for global loyalty. Cuba tries to stay friends with both and nearly breaks in half.\nGuess: if communists cannot agree on what communism IS, was Marx's idea one thing — or a Rorschach inkblot everyone sees differently?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Sino-Soviet Split", "url": "https://www.britannica.com/event/Sino-Soviet-split" }
+      ],
+      "consequences": "The split proves 'the communist bloc' was never a bloc. Modern geopolitics still runs on China vs Russia vs West — different communisms, different capitalisms.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n024", "edgeType": "causal" },
+        { "targetId": "marx-lenin-stalin-mao::n025", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n024": {
+      "id": "marx-lenin-stalin-mao::n024",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "Deng Xiaoping — 'It Doesn't Matter If the Cat Is Black or White'",
+      "summary": "REAL HISTORY: After Mao, Deng Xiaoping opens China to market reforms (1978 onward).\nSpecial economic zones — capitalism in pockets, communist party still supreme. Factories boom. Poverty plummets for hundreds of millions.\nDeng's famous line: 'It doesn't matter whether a cat is black or white, as long as it catches mice.'\nThe party keeps Leninist control: no free elections, Tiananmen 1989, censorship, surveillance.\nGuess: is this still communism — or capitalism wearing a red hat?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Deng Xiaoping", "url": "https://www.britannica.com/biography/Deng-Xiaoping" },
+        { "label": "Britannica: Tiananmen Square incident", "url": "https://www.britannica.com/event/Tiananmen-Square-incident" }
+      ],
+      "consequences": "China becomes the world's factory. Marx's critique of capitalism now runs inside a party that still calls itself Marxist. Irony becomes policy.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n026", "edgeType": "consequence" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n025": {
+      "id": "marx-lenin-stalin-mao::n025",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "Cuban Revolution — Communism Sails to the Caribbean",
+      "summary": "REAL HISTORY: 1959 — Fidel Castro and Che Guevara overthrow the Batista dictatorship in Cuba.\nChe is an Argentine doctor who read Marx in Guatemala. Cuba becomes a Soviet ally 90 miles from Florida.\nMissile Crisis 1962 brings the world to the edge of nuclear war. Cuba survives with free healthcare and literacy — and one-party rule, exile, and poverty under embargo.\nGuess: can a small island be a laboratory for Marx's dreams — or is it always a pawn in superpower chess?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Cuban Revolution", "url": "https://www.britannica.com/event/Cuban-Revolution" },
+        { "label": "Britannica: Che Guevara", "url": "https://www.britannica.com/biography/Che-Guevara" }
+      ],
+      "consequences": "Cuba shows communism can export by charisma (Che's face on posters worldwide) as much as by tanks. Vietnam and others follow different paths.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n027", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n026": {
+      "id": "marx-lenin-stalin-mao::n026",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "consequence",
+      "title": "Modern China — Communist Party, Capitalist Superpower",
+      "summary": "SPECULATIVE + CURRENT EVENTS (facts change — verify in your own time).\nChina in the 2020s: high-speed rail, AI surveillance, space stations, and billionaires — all under a party that still celebrates Marx and Mao.\n'Socialism with Chinese characteristics' is the official label. Critics say it is state capitalism. Supporters say it lifted 800 million from poverty.\nXi Jinping tightens control: tech regulation, Hong Kong, emphasis on national greatness.\nGuess: will 22nd-century textbooks call this communism, capitalism, or something that needs a new word entirely?",
+      "factuality": "speculative",
+      "sources": [
+        { "label": "Britannica: China (country profile)", "url": "https://www.britannica.com/place/China" },
+        { "label": "World Bank: Poverty reduction in China", "url": "https://www.worldbank.org/en/country/china/overview" }
+      ],
+      "consequences": "Marx's ghost watches the world's largest communist party preside over the world's largest manufacturing economy. The contradiction would have fascinated him — and horrified him.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n028", "edgeType": "consequence" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n027": {
+      "id": "marx-lenin-stalin-mao::n027",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "simple",
+      "title": "Vietnam, Laos, and the Ghost of Ho Chi Minh",
+      "summary": "REAL HISTORY: Vietnam defeats French colonialism (Dien Bien Phu 1954) and then American intervention — unified under communist rule 1975.\nHo Chi Minh started as a nationalist seeking help from the USA; he ends quoting Lenin. 'Uncle Ho' becomes a unifying symbol.\nLaos and Cambodia follow turbulent paths — Cambodia's Khmer Rouge turns Marxist language into genocide (1975–79), a warning that any ideology can become a death cult.\nGuess: when anti-colonial freedom fighters choose Marx, are they copying Russia — or using whatever weapon works?",
+      "factuality": "historical",
+      "sources": [
+        { "label": "Britannica: Ho Chi Minh", "url": "https://www.britannica.com/biography/Ho-Chi-Minh" },
+        { "label": "Britannica: Khmer Rouge", "url": "https://www.britannica.com/topic/Khmer-Rouge" }
+      ],
+      "consequences": "Southeast Asia shows communism as anti-imperial toolkit — not just European class war imported wholesale.",
+      "children": [
+        { "targetId": "marx-lenin-stalin-mao::n028", "edgeType": "causal" }
+      ],
+      "crossLinks": []
+    },
+
+    "marx-lenin-stalin-mao::n028": {
+      "id": "marx-lenin-stalin-mao::n028",
+      "narration": "marx-lenin-stalin-mao",
+      "type": "consequence",
+      "title": "Communism in the 2020s — North Korea, Memes, and Millennials",
+      "summary": "CONVERGENCE toward the present — facts and speculation mixed.\nNorth Korea: hereditary rule, nuclear weapons, Juche ideology (self-reliance) — Marx would not recognise it.\nVietnam and Cuba still one-party states with different economies. Laos quiet. Former Soviet republics mostly capitalist now.\nIn the West, 'communism' survives as meme, protest slogan, and academic debate — rarely as a party seizing the Winter Palace.\nOnline: 'eat the rich' tweets from iPhones. Offline: unions, cooperatives, and climate activists borrow Marx without the Gulag.\nGuess: is Marx now a scientist of capitalism, a boogeyman, a prophet, or a meme — or all four at once?",
+      "factuality": "speculative",
+      "sources": [
+        { "label": "Britannica: North Korea", "url": "https://www.britannica.com/place/North-Korea" },
+        { "label": "Britannica: Collapse of the Soviet Union", "url": "https://www.britannica.com/event/the-collapse-of-the-Soviet-Union" }
+      ],
+      "consequences": "The story does not end — it forks. You can close branches and reopen them. Next: game mechanics where you PREDICT before you click. For now, sit with the question Marx asked in 1848: who wins the class struggle — and who gets to decide?",
+      "children": [],
+      "crossLinks": [
+        {
+          "targetNodeId": "napoleon-wins-waterloo::n001",
+          "label": "What if a general's empire had spread before Marx was born? (Coming Soon)"
+        }
+      ]
+    }
+  }
+}
