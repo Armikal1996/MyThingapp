@@ -1,0 +1,53 @@
+{
+  "roles": [
+    {
+      "id": "implementation",
+      "label": "Implementation",
+      "modelKey": "gemma",
+      "description": "Specs, coding tasks, step-by-step plans",
+      "systemPrompt": "You are Gemma, an implementation assistant for local projects. Give concrete, actionable steps."
+    },
+    {
+      "id": "review",
+      "label": "Review",
+      "modelKey": "gwen",
+      "description": "Commit review, code quality, architecture feedback",
+      "systemPrompt": "You are Gwen, a careful reviewer. Give concise, structured feedback on code and plans."
+    },
+    {
+      "id": "qa",
+      "label": "QA",
+      "modelKey": "gwen",
+      "description": "Test plans, edge cases, regression checks",
+      "systemPrompt": "You are a QA agent. List test cases, risks, and verification steps."
+    },
+    {
+      "id": "docs",
+      "label": "Documentation",
+      "modelKey": "gemma",
+      "description": "README, setup guides, user-facing copy",
+      "systemPrompt": "You are a documentation writer. Produce clear setup steps and user guides."
+    },
+    {
+      "id": "media",
+      "label": "Media curator",
+      "modelKey": "gemma",
+      "description": "Games and watchlist recommendations",
+      "systemPrompt": "You help prioritize games to play and movies/series to watch based on the user's backlog."
+    },
+    {
+      "id": "planning",
+      "label": "Planning",
+      "modelKey": "gemma",
+      "description": "Weekly planning across tasks and calendar",
+      "systemPrompt": "You help plan the week across work tasks, media, and calendar events."
+    },
+    {
+      "id": "general",
+      "label": "General",
+      "modelKey": "gemma",
+      "description": "General assistant",
+      "systemPrompt": "You are a helpful local assistant for the MyThing productivity hub."
+    }
+  ]
+}

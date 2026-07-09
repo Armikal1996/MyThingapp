@@ -2,6 +2,7 @@ import { invoke } from '@tauri-apps/api/core'
 import { getDatabase } from '@/services/database.js'
 import { isTauri } from '@/services/platform.js'
 import { MOVING_COLUMNS } from '@/services/tasks.js'
+import backupConfig from '../../config/backup.json'
 
 const BACKUP_VERSION = 1
 
@@ -345,4 +346,99 @@ export async function importBackup() {
   }
 
   return { importedAt: data.exportedAt, version: data.version ?? BACKUP_VERSION }
+}
+
+export async function pickBackupForImport() {
+  if (!isTauri()) throw new Error('Import requires the MyThing desktop app.')
+  const raw = await invoke('pick_and_read_backup')
+  if (!raw) return null
+  let data
+  try {
+    data = JSON.parse(raw)
+  } catch {
+    throw new Error('Invalid backup file: could not parse JSON.')
+  }
+  validateBackup(data)
+  const preview = await previewBackupImport(data)
+  return { raw, data, preview }
+}
+
+export async function importBackupData(data) {
+  if (!isTauri()) throw new Error('Import requires the MyThing desktop app.')
+  validateBackup(data)
+  const db = await getDatabase()
+  try {
+    await db.execute('BEGIN')
+    await clearAllTables(db)
+    await insertBackupRows(db, data)
+    await db.execute('COMMIT')
+  } catch (e) {
+    try {
+      await db.execute('ROLLBACK')
+    } catch {
+      /* ignore */
+    }
+    throw new Error(`Import failed: ${e.message || e}`)
+  }
+  return { importedAt: data.exportedAt, version: data.version ?? BACKUP_VERSION }
+}
+
+function countRows(data, key) {
+  return Array.isArray(data[key]) ? data[key].length : 0
+}
+
+export async function previewBackupImport(raw) {
+  const data = typeof raw === 'string' ? JSON.parse(raw) : raw
+  validateBackup(data)
+  const current = await collectBackupData()
+
+  const tables = [
+    'apps', 'tasks', 'favorites', 'calendarEvents', 'reminders',
+    'mediaGames', 'mediaWatchlist', 'aiThreads', 'agentAnnouncements'
+  ]
+
+  return tables.map(key => ({
+    key,
+    backup: countRows(data, key),
+    current: countRows(current, key)
+  }))
+}
+
+export async function getLastBackupTime() {
+  try {
+    const db = await getDatabase()
+    const rows = await db.select("SELECT value FROM meta WHERE key = 'last_auto_backup'")
+    return rows[0]?.value || null
+  } catch {
+    return null
+  }
+}
+
+async function setLastBackupTime(iso) {
+  const db = await getDatabase()
+  await db.execute(
+    `INSERT INTO meta (key, value) VALUES ('last_auto_backup', $1)
+     ON CONFLICT(key) DO UPDATE SET value = excluded.value`,
+    [iso]
+  )
+}
+
+export async function exportBackupToFolder(folder = backupConfig.folder) {
+  if (!isTauri()) throw new Error('Auto-backup requires desktop app.')
+  const data = await collectBackupData()
+  const path = await invoke('export_backup_to_folder', {
+    folder,
+    payload: JSON.stringify(data, null, 2)
+  })
+  await setLastBackupTime(new Date().toISOString())
+  return path
+}
+
+export async function autoBackupIfStale() {
+  if (!isTauri()) return null
+  const last = await getLastBackupTime()
+  const hours = backupConfig.intervalHours || 24
+  const staleMs = hours * 60 * 60 * 1000
+  if (last && Date.now() - new Date(last).getTime() < staleMs) return null
+  return exportBackupToFolder()
 }

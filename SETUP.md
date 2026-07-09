@@ -89,12 +89,22 @@ Re-scanning never overwrites commands you already set — only adds new folders.
 3. **Moving** — kanban board (Backlog → To Do → Doing → Done).
 4. **Cycling** — recurring tasks; click **Complete** to schedule the next due date.
 
+## Integration (Phase 7)
+
+- **Hub actions** — from Media, Tasks, Launcher cards: Ask AI, pin to Favorites, reminders, calendar sync, send to agent.
+- **AI context** — context tray and `@` picker in AI Chat; other modules open chat with `?context=` or `?thread=`.
+- **Streaming** — live token rendering in AI Chat.
+- **Global hotkey** — `Ctrl+Shift+M` focuses MyThing and opens Favorites.
+- **Auto-backup** — daily export to `C:\Users\khoub\OneDrive\MyThing-Backups` (see `config/backup.json`).
+- **Dashboard** — today's snapshot, LM Studio status, activity feed, import preview with table counts.
+
 ## Backup
 
-From **Dashboard** or **Tasks** toolbar:
+From **Dashboard**:
 
 - **Export backup** — saves apps, tasks, favorites, calendar, reminders, media, AI chats, announcements, and settings to JSON.
-- **Import backup** — restores from a JSON file (replaces current data; runs in a transaction).
+- **Import backup** — shows table count diff before replacing data.
+- **Auto-backup** — runs silently on launch when older than 24 hours (desktop only).
 
 Point exports at your OneDrive folder if you want cloud copies.
 
@@ -119,12 +129,20 @@ Point exports at your OneDrive folder if you want cloud copies.
 3. **Movies & Series** tab — watchlist with season/episode progress and ratings.
 4. Filter by status and search across titles.
 
-## AI Chat (Phase 6)
+## AI Chat (Phase 6–7)
 
 1. Start **Gemma** on port **1234** and **Gwen** on port **1235** in LM Studio.
 2. Open **AI Chat** → click **Check LM Studio** — green dots mean each model is reachable.
-3. **Chat** tab — create threads, pick Gemma (implementation) or Gwen (review), send messages.
-4. **Agent inbox** tab — post announcements for agents; **Send to chat** dispatches to the right model.
+3. **Chat** tab — context tray, `@` picker, streaming responses, quick prompts.
+4. **Agent inbox** tab — post announcements with agency roles; **Send to chat** dispatches to the right model.
+
+### Global hotkey
+
+`Ctrl+Shift+M` — show/focus MyThing and jump to Favorites (desktop only).
+
+### Production launcher
+
+After `npm run tauri:build`, double-click **`Launch-MyThing-Release.exe`** to start the release binary without a dev terminal.
 
 ## Database
 
@@ -138,6 +156,6 @@ Schema: `data/schema.sql` — applied automatically via migrations.
 src/              Vue hub UI + modules
 src-tauri/        Rust desktop shell
 data/             SQL schema
-config/           LM Studio ports
-agency/           (Phase 1+) agent role definitions
+config/           LM Studio ports, agency roles, backup folder
+agency/           Agent role markdown (reference)
 ```

@@ -1,4 +1,5 @@
 <template>
+  <DesktopRequired>
   <div class="calendar-module">
     <header class="toolbar">
       <div class="month-nav">
@@ -8,6 +9,7 @@
         <button class="btn" @click="goToday">Today</button>
       </div>
       <div class="toolbar-actions">
+        <button class="btn" @click="askAboutDay">Ask AI</button>
         <button class="btn" @click="openAddReminder">+ Reminder</button>
         <button class="btn primary" @click="openAddEvent">+ Event</button>
       </div>
@@ -49,6 +51,20 @@
         <h3>{{ selectedLabel }}</h3>
 
         <div class="section">
+          <h4>Due tasks</h4>
+          <article v-for="task in dayTasks" :key="task.id" class="item task">
+            <div class="item-body">
+              <p class="title">{{ task.title }}</p>
+              <p class="sub">{{ task.kind }} · {{ formatTime(task.dueAt) }}</p>
+            </div>
+            <div class="item-actions">
+              <button class="mini" @click="goToTask(task)">Open</button>
+            </div>
+          </article>
+          <p v-if="!dayTasks.length" class="empty">No tasks due this day.</p>
+        </div>
+
+        <div class="section">
           <h4>Events</h4>
           <article v-for="ev in dayEvents" :key="ev.id" class="item event">
             <span class="dot" :style="{ background: ev.color }" />
@@ -65,6 +81,30 @@
             </div>
           </article>
           <p v-if="!dayEvents.length" class="empty">No events this day.</p>
+        </div>
+
+        <div class="section">
+          <h4>Reminders this day</h4>
+          <article
+            v-for="rem in dayReminders"
+            :key="rem.id"
+            class="item"
+            :class="{ linked: rem.linkedType }"
+            @click="onReminderClick(rem)"
+          >
+            <div class="item-body">
+              <p class="title">{{ rem.title }}</p>
+              <p class="sub">
+                {{ formatDateTime(rem.remindAt) }}
+                <span v-if="rem.linkedType" class="link-hint"> · linked {{ rem.linkedType }}</span>
+              </p>
+            </div>
+            <div class="item-actions" @click.stop>
+              <button class="mini" @click="openEditReminder(rem)">Edit</button>
+              <button class="mini danger" @click="onDeleteReminder(rem)">×</button>
+            </div>
+          </article>
+          <p v-if="!dayReminders.length" class="empty">No reminders this day.</p>
         </div>
 
         <div class="section">
@@ -107,12 +147,18 @@
       </div>
     </div>
   </div>
+  </DesktopRequired>
 </template>
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import EventFormModal from '@/modules/calendar/components/EventFormModal.vue'
 import ReminderFormModal from '@/modules/calendar/components/ReminderFormModal.vue'
+import DesktopRequired from '@/components/DesktopRequired.vue'
+import { getTasksForDay } from '@/services/hubContext.js'
+import { askAiAbout } from '@/services/integrations.js'
+import { navigateToLinkedItem } from '@/services/integrations.js'
 import {
   buildMonthGrid,
   createEmptyEvent,
@@ -134,6 +180,7 @@ import {
   saveReminder
 } from '@/services/reminders.js'
 
+const router = useRouter()
 const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 const viewYear = ref(new Date().getFullYear())
@@ -143,6 +190,7 @@ const today = new Date()
 const events = ref([])
 const reminders = ref([])
 const upcomingReminders = ref([])
+const dayTasks = ref([])
 const message = ref('')
 const messageType = ref('info')
 
@@ -165,6 +213,10 @@ const selectedLabel = computed(() => formatDateLabel(selectedDate.value))
 
 const dayEvents = computed(() =>
   events.value.filter(e => isSameDay(e.startAt, selectedDate.value))
+)
+
+const dayReminders = computed(() =>
+  reminders.value.filter(r => isSameDay(r.remindAt, selectedDate.value))
 )
 
 const modalTitle = computed(() => {
@@ -257,10 +309,41 @@ function closeModal() {
   modalOpen.value = false
 }
 
+async function refreshDayTasks() {
+  dayTasks.value = await getTasksForDay(selectedDate.value)
+}
+
+function goToTask(task) {
+  router.push({ path: '/tasks', query: { highlight: task.id } })
+}
+
+async function onReminderClick(rem) {
+  if (rem.linkedType && rem.linkedId) {
+    await navigateToLinkedItem(rem.linkedType, rem.linkedId, router)
+  }
+}
+
+async function askAboutDay() {
+  const items = [
+    ...dayEvents.value.map(e => ({ type: 'event', id: e.id, title: e.title })),
+    ...dayTasks.value.map(t => ({ type: 'task', id: t.id, title: t.title }))
+  ]
+  if (!items.length) {
+    setMessage('Nothing scheduled — add events or due tasks first.', 'info')
+    return
+  }
+  try {
+    await askAiAbout(items[0], `Plan my day for ${selectedLabel.value}. Events: ${dayEvents.value.length}, due tasks: ${dayTasks.value.length}.`, router)
+  } catch (e) {
+    setMessage(e.message, 'error')
+  }
+}
+
 async function refresh() {
   events.value = await listEvents()
   reminders.value = await listReminders()
   upcomingReminders.value = await listUpcomingReminders()
+  await refreshDayTasks()
 }
 
 async function onSaveEvent(ev) {
@@ -304,6 +387,7 @@ async function onDeleteReminder(rem) {
 }
 
 watch([viewYear, viewMonth], refresh)
+watch(selectedDate, refreshDayTasks)
 
 onMounted(refresh)
 </script>
@@ -321,7 +405,7 @@ onMounted(refresh)
 .btn.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
 .message { padding: 10px 14px; border-radius: 8px; font-size: 13px; }
 .message.success { background: rgba(22,101,52,.25); border: 1px solid #166534; color: #86efac; }
-.message.error { background: rgba(127,29,29,.25); border: 1px solid #991b1b; color: #fca5a5; }
+.message.info { background: rgba(30,58,138,.25); border: 1px solid #1d4ed8; color: #93c5fd; }
 .layout { display: grid; grid-template-columns: 1fr 320px; gap: 16px; }
 .calendar-pane { background: #0f172a; border: 1px solid #1f2937; border-radius: 14px; padding: 14px; }
 .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 8px; }
@@ -357,7 +441,9 @@ onMounted(refresh)
   border-radius: 6px; padding: 2px 6px; font-size: 11px; cursor: pointer;
 }
 .mini.danger { color: #fca5a5; border-color: #7f1d1d; }
-.empty { font-size: 12px; color: #64748b; }
+.item.linked { cursor: pointer; }
+.item.linked:hover { border-color: #3b82f6; }
+.link-hint { color: #93c5fd; }
 .modal-backdrop {
   position: fixed; inset: 0; background: rgba(2,6,23,.75);
   display: grid; place-items: center; z-index: 100; padding: 24px;

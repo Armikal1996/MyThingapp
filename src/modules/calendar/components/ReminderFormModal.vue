@@ -15,6 +15,33 @@
       <input v-model="remindInput" type="datetime-local" required />
     </label>
 
+    <label class="field span-2">
+      <span>Link to hub item (optional)</span>
+      <input
+        v-model="linkQuery"
+        type="search"
+        placeholder="Search tasks, games, movies, apps…"
+        @input="onLinkSearch"
+      />
+      <div v-if="linkResults.length" class="link-results">
+        <button
+          v-for="item in linkResults"
+          :key="item.key"
+          type="button"
+          class="link-option"
+          :class="{ active: form.linkedType === item.type && form.linkedId === item.id }"
+          @click="selectLink(item)"
+        >
+          {{ hubItemIcon(item.type) }} {{ item.title }}
+          <span class="sub">{{ item.subtitle }}</span>
+        </button>
+      </div>
+      <p v-if="form.linkedType" class="linked-chip">
+        Linked: {{ form.linkedType }}:{{ form.linkedId }}
+        <button type="button" class="clear" @click="clearLink">×</button>
+      </p>
+    </label>
+
     <label class="checkbox span-2">
       <input v-model="form.enabled" type="checkbox" />
       <span>Enabled</span>
@@ -28,7 +55,8 @@
 </template>
 
 <script setup>
-import { computed, reactive, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
+import { hubItemIcon, searchHubItems } from '@/services/hubContext.js'
 
 const props = defineProps({
   reminder: { type: Object, required: true },
@@ -38,6 +66,9 @@ const props = defineProps({
 const emit = defineEmits(['save', 'cancel'])
 
 const form = reactive({ ...props.reminder })
+const linkQuery = ref('')
+const linkResults = ref([])
+let searchTimer = null
 
 function toLocalInput(iso) {
   if (!iso) return ''
@@ -52,6 +83,26 @@ const remindInput = computed({
 })
 
 watch(() => props.reminder, v => Object.assign(form, v), { deep: true })
+
+function onLinkSearch() {
+  clearTimeout(searchTimer)
+  searchTimer = setTimeout(async () => {
+    linkResults.value = await searchHubItems(linkQuery.value, 8)
+  }, 200)
+}
+
+function selectLink(item) {
+  form.linkedType = item.type
+  form.linkedId = item.id
+  linkQuery.value = item.title
+  linkResults.value = []
+}
+
+function clearLink() {
+  form.linkedType = null
+  form.linkedId = null
+  linkQuery.value = ''
+}
 
 function onSubmit() {
   emit('save', { ...form, fired: false })
@@ -71,4 +122,22 @@ function onSubmit() {
 .btn { border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; }
 .btn.primary { background: #2563eb; color: #fff; }
 .btn.ghost { background: transparent; border-color: #334155; color: #94a3b8; }
+.link-results {
+  display: flex; flex-direction: column; gap: 4px;
+  max-height: 160px; overflow: auto; margin-top: 6px;
+}
+.link-option {
+  text-align: left; background: #111827; border: 1px solid #334155;
+  border-radius: 8px; color: #e2e8f0; padding: 8px 10px; cursor: pointer;
+}
+.link-option.active, .link-option:hover { border-color: #3b82f6; }
+.link-option .sub { display: block; font-size: 11px; color: #64748b; margin-top: 2px; }
+.linked-chip {
+  margin-top: 6px; font-size: 12px; color: #93c5fd;
+  display: flex; align-items: center; gap: 8px;
+}
+.clear {
+  background: #1e293b; border: 1px solid #334155; color: #94a3b8;
+  border-radius: 4px; padding: 0 6px; cursor: pointer;
+}
 </style>

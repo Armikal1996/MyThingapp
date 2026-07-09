@@ -93,6 +93,24 @@ export function createEmptyWatchItem() {
   }
 }
 
+export async function getGame(id) {
+  const db = await getDatabase()
+  const rows = await db.select('SELECT * FROM media_games WHERE id = $1', [id])
+  return rows[0] ? rowToGame(rows[0]) : null
+}
+
+export async function getWatchItem(id) {
+  const db = await getDatabase()
+  const rows = await db.select('SELECT * FROM media_watchlist WHERE id = $1', [id])
+  return rows[0] ? rowToWatch(rows[0]) : null
+}
+
+export async function updateWatchItem(id, patch) {
+  const item = await getWatchItem(id)
+  if (!item) throw new Error('Watch item not found')
+  return saveWatchItem({ ...item, ...patch })
+}
+
 export async function listGames() {
   const db = await getDatabase()
   const rows = await db.select(

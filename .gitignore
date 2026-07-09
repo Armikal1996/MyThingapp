@@ -8,3 +8,4 @@ backups/
 src-tauri/target/
 launcher/target/
 Launch-MyThing.exe
+Launch-MyThing-Release.exe

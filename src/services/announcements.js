@@ -1,11 +1,8 @@
 import { getDatabase } from '@/services/database.js'
 import { createThread, deleteThread, sendChatMessage } from '@/services/aiChat.js'
+import { getAgencyRoles, modelKeyForAgencyRole } from '@/services/agency.js'
 
-export const AGENT_ROLES = [
-  { id: 'implementation', label: 'Implementation', modelKey: 'gemma' },
-  { id: 'review', label: 'Review', modelKey: 'gwen' },
-  { id: 'general', label: 'General', modelKey: 'gemma' }
-]
+export const AGENT_ROLES = getAgencyRoles()
 
 export const PRIORITIES = [
   { id: 'low', label: 'Low' },
@@ -139,8 +136,7 @@ export async function deleteAnnouncement(id) {
 }
 
 export function modelKeyForRole(agentRole) {
-  const role = AGENT_ROLES.find(r => r.id === agentRole)
-  return role?.modelKey || 'gemma'
+  return modelKeyForAgencyRole(agentRole)
 }
 
 export async function dispatchToChat(announcement) {

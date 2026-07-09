@@ -14,6 +14,7 @@
         <select v-model="form.agentRole">
           <option v-for="r in roles" :key="r.id" :value="r.id">{{ r.label }}</option>
         </select>
+        <span v-if="selectedRole?.description" class="role-hint">{{ selectedRole.description }}</span>
       </label>
       <label>
         Priority
@@ -36,8 +37,9 @@
 </template>
 
 <script setup>
-import { reactive, watch } from 'vue'
+import { reactive, watch, computed } from 'vue'
 import { AGENT_ROLES, PRIORITIES, STATUSES } from '@/services/announcements.js'
+import { getAgencyRole } from '@/services/agency.js'
 
 const props = defineProps({
   announcement: { type: Object, required: true },
@@ -57,6 +59,8 @@ const form = reactive({
   priority: 'normal',
   status: 'pending'
 })
+
+const selectedRole = computed(() => getAgencyRole(form.agentRole))
 
 watch(
   () => props.announcement,
@@ -133,5 +137,12 @@ footer {
 .btn.primary {
   background: #1d4ed8;
   border-color: #2563eb;
+}
+
+.role-hint {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 4px;
+  line-height: 1.4;
 }
 </style>

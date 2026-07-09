@@ -1,4 +1,5 @@
 <template>
+  <DesktopRequired>
   <div class="tasks-module">
     <section class="toolbar">
       <div class="tabs">
@@ -52,6 +53,7 @@
             </div>
           </div>
           <div class="row-actions">
+            <HubActionMenu item-type="task" :item="task" @done="onHubAction" @error="onHubError" />
             <select :value="task.status" @change="onStatusChange(task, $event.target.value)">
               <option v-for="s in workStatuses" :key="s.id" :value="s.id">{{ s.label }}</option>
             </select>
@@ -118,12 +120,15 @@
       </div>
     </div>
   </div>
+  </DesktopRequired>
 </template>
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import KanbanBoard from '@/modules/tasks/components/KanbanBoard.vue'
 import TaskFormModal from '@/modules/tasks/components/TaskFormModal.vue'
+import HubActionMenu from '@/components/HubActionMenu.vue'
+import DesktopRequired from '@/components/DesktopRequired.vue'
 import { exportBackup, importBackup } from '@/services/backup.js'
 import { isTauri } from '@/services/platform.js'
 import {
@@ -259,6 +264,15 @@ async function onImportBackup() {
   } catch (e) {
     setMessage(e.message, 'error')
   }
+}
+
+function onHubAction(action) {
+  setMessage(`Done: ${action}`, 'success')
+  refresh()
+}
+
+function onHubError(err) {
+  setMessage(err, 'error')
 }
 
 onMounted(async () => {

@@ -5,10 +5,13 @@
         <h3>{{ app.title }}</h3>
         <p class="folder">{{ app.folderName || app.name }}</p>
       </div>
-      <div class="badges">
+      <div class="head-right">
+        <HubActionMenu item-type="app" :item="app" @error="onHubError" />
+        <div class="badges">
         <span class="badge runtime">{{ app.runtime }}</span>
         <span v-if="app.autoDiscovered" class="badge auto">auto</span>
         <span v-if="!app.enabled" class="badge off">disabled</span>
+        </div>
       </div>
     </header>
 
@@ -45,11 +48,17 @@
 </template>
 
 <script setup>
+import HubActionMenu from '@/components/HubActionMenu.vue'
+
 defineProps({
   app: { type: Object, required: true }
 })
 
-defineEmits(['start', 'install', 'open-folder', 'edit', 'delete'])
+defineEmits(['start', 'install', 'open-folder', 'edit', 'delete', 'hub-error'])
+
+function onHubError(msg) {
+  console.warn('Hub action:', msg)
+}
 </script>
 
 <style scoped>
@@ -83,6 +92,13 @@ defineEmits(['start', 'install', 'open-folder', 'edit', 'delete'])
   color: #64748b;
   margin-top: 2px;
   word-break: break-all;
+}
+
+.head-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
 }
 
 .badges {

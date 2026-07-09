@@ -45,6 +45,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { getPlatformInfo, isTauri } from '@/services/platform.js'
 import { startReminderScheduler } from '@/services/reminders.js'
+import { autoBackupIfStale } from '@/services/backup.js'
 
 const route = useRoute()
 const runtime = ref('browser')
@@ -70,7 +71,14 @@ onMounted(async () => {
   const info = await getPlatformInfo()
   runtime.value = info.runtime
   platformVersion.value = info.version
-  if (isTauri()) startReminderScheduler()
+  if (isTauri()) {
+    startReminderScheduler()
+    try {
+      await autoBackupIfStale()
+    } catch {
+      /* silent */
+    }
+  }
 })
 </script>
 

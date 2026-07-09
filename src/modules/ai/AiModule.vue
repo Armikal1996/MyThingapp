@@ -1,4 +1,5 @@
 <template>
+  <DesktopRequired>
   <div class="ai-module">
     <section class="toolbar">
       <div class="tabs">
@@ -83,7 +84,29 @@
               <p class="role">{{ msg.role }}</p>
               <pre class="content">{{ msg.content }}</pre>
             </article>
-            <p v-if="sending" class="typing">Thinking…</p>
+            <p v-if="sending" class="typing">{{ streamingText || 'Thinking…' }}</p>
+          </div>
+
+          <div v-if="contextItems.length" class="context-tray">
+            <span v-for="item in contextItems" :key="item.key" class="ctx-chip">
+              {{ item.title }}
+              <button type="button" @click="removeContext(item.key)">×</button>
+            </span>
+          </div>
+
+          <div class="quick-prompts">
+            <button
+              v-for="chip in quickChips"
+              :key="chip.key"
+              type="button"
+              class="quick-chip"
+              @click="addContextChip(chip)"
+            >
+              {{ chip.title }}
+            </button>
+            <button type="button" class="quick-chip" @click="pickerOpen = true">@ Add context</button>
+            <button type="button" class="quick-chip" @click="applyQuickPrompt('What should I play or watch next?')">Plan media</button>
+            <button type="button" class="quick-chip" @click="applyQuickPrompt('Plan my week across tasks and calendar.')">Plan week</button>
           </div>
 
           <form class="composer" @submit.prevent="onSend">
@@ -160,12 +183,25 @@
         />
       </div>
     </div>
+    <div v-if="pickerOpen" class="modal-backdrop" @click.self="pickerOpen = false">
+      <div class="modal picker-modal">
+        <header>
+          <h2>Add context</h2>
+          <button class="close" @click="pickerOpen = false">×</button>
+        </header>
+        <ContextPicker :initial="contextItems" @confirm="onPickerConfirm" @cancel="pickerOpen = false" />
+      </div>
+    </div>
   </div>
+  </DesktopRequired>
 </template>
 
 <script setup>
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import AnnouncementFormModal from '@/modules/ai/components/AnnouncementFormModal.vue'
+import ContextPicker from '@/components/ContextPicker.vue'
+import DesktopRequired from '@/components/DesktopRequired.vue'
 import {
   createThread,
   deleteThread,
@@ -186,6 +222,9 @@ import {
   updateAnnouncementStatus
 } from '@/services/announcements.js'
 import { checkAllModels, getModelOptions } from '@/services/lmstudio.js'
+import { getContextItems, getQuickContextChips } from '@/services/hubContext.js'
+
+const route = useRoute()
 
 const tabs = ref([
   { id: 'chat', label: 'Chat', badge: 0 },
@@ -215,6 +254,10 @@ const statuses = STATUSES
 const modalOpen = ref(false)
 const modalMode = ref('add')
 const editingAnnouncement = ref(createEmptyAnnouncement())
+const contextItems = ref([])
+const quickChips = ref([])
+const pickerOpen = ref(false)
+const streamingText = ref('')
 
 const statusFilters = [
   { id: 'all', label: 'All' },
@@ -319,9 +362,13 @@ async function onSend() {
   const text = draft.value.trim()
   draft.value = ''
   sending.value = true
+  streamingText.value = ''
   try {
     const modelId = health.value[activeModelKey.value]?.modelId || null
-    await sendChatMessage(activeThread.value.id, text, modelId)
+    await sendChatMessage(activeThread.value.id, text, modelId, {
+      contextItems: contextItems.value,
+      onStreamChunk: (_chunk, full) => { streamingText.value = full }
+    })
     await loadMessages(activeThread.value.id)
     await loadThreads(activeThread.value.id)
   } catch (e) {
@@ -330,7 +377,27 @@ async function onSend() {
     await loadMessages(activeThread.value.id)
   } finally {
     sending.value = false
+    streamingText.value = ''
   }
+}
+
+function addContextChip(chip) {
+  if (!contextItems.value.find(c => c.key === chip.key)) {
+    contextItems.value.push(chip)
+  }
+}
+
+function removeContext(key) {
+  contextItems.value = contextItems.value.filter(c => c.key !== key)
+}
+
+function onPickerConfirm(items) {
+  contextItems.value = items
+  pickerOpen.value = false
+}
+
+function applyQuickPrompt(prompt) {
+  draft.value = prompt
 }
 
 async function loadInbox() {
@@ -387,9 +454,23 @@ async function onDispatch(item) {
 
 watch(inboxFilter, () => loadInbox())
 
+async function loadRouteContext() {
+  const raw = route.query.context
+  if (!raw) return
+  const keys = String(raw).split(',').filter(Boolean)
+  contextItems.value = await getContextItems(keys)
+  if (route.query.thread) {
+    activeThreadId.value = route.query.thread
+    await loadMessages(route.query.thread)
+  }
+  if (route.query.tab === 'inbox') activeTab.value = 'inbox'
+}
+
 onMounted(async () => {
   await refreshHealth()
-  await loadThreads()
+  quickChips.value = await getQuickContextChips()
+  await loadThreads(route.query.thread || null)
+  await loadRouteContext()
   await loadInbox()
 })
 </script>
@@ -818,6 +899,37 @@ select {
   color: #e2e8f0;
   padding: 6px 8px;
   font-size: 12px;
+}
+
+.context-tray,
+.quick-prompts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 12px 8px;
+}
+
+.ctx-chip,
+.quick-chip {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 999px;
+  color: #e2e8f0;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ctx-chip button {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+.picker-modal {
+  width: min(560px, 92vw);
 }
 
 @media (max-width: 900px) {
