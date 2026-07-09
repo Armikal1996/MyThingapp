@@ -11,6 +11,8 @@ async function collectBackupData() {
   const tasks = await db.select('SELECT * FROM tasks ORDER BY kind, sort_order')
   const favorites = await db.select('SELECT * FROM favorites ORDER BY sort_order')
   const taskColumns = await db.select('SELECT * FROM task_columns ORDER BY sort_order')
+  const calendarEvents = await db.select('SELECT * FROM calendar_events ORDER BY start_at')
+  const reminders = await db.select('SELECT * FROM reminders ORDER BY remind_at')
 
   return {
     version: BACKUP_VERSION,
@@ -19,7 +21,9 @@ async function collectBackupData() {
     apps,
     tasks,
     favorites,
-    taskColumns
+    taskColumns,
+    calendarEvents,
+    reminders
   }
 }
 
@@ -54,6 +58,8 @@ export async function importBackup() {
   const data = JSON.parse(raw)
   const db = await getDatabase()
 
+  await db.execute('DELETE FROM reminders')
+  await db.execute('DELETE FROM calendar_events')
   await db.execute('DELETE FROM favorites')
   await db.execute('DELETE FROM tasks')
   await db.execute('DELETE FROM apps')
@@ -110,6 +116,31 @@ export async function importBackup() {
       [
         row.id, row.label, row.icon, row.description, row.target_type, row.target_id,
         row.group_name || 'Pinned', row.sort_order, row.enabled ?? 1, row.created_at
+      ]
+    )
+  }
+
+  for (const row of data.calendarEvents || []) {
+    await db.execute(
+      `INSERT INTO calendar_events (
+        id, title, description, start_at, end_at, all_day, color, created_at, updated_at
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+      [
+        row.id, row.title, row.description, row.start_at, row.end_at,
+        row.all_day, row.color, row.created_at, row.updated_at
+      ]
+    )
+  }
+
+  for (const row of data.reminders || []) {
+    await db.execute(
+      `INSERT INTO reminders (
+        id, title, description, remind_at, linked_type, linked_id,
+        fired, enabled, created_at
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+      [
+        row.id, row.title, row.description, row.remind_at, row.linked_type,
+        row.linked_id, row.fired, row.enabled ?? 1, row.created_at
       ]
     )
   }

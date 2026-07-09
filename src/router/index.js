@@ -5,6 +5,7 @@ import HistoryGameModule from '@/modules/history-game/HistoryGameModule.vue'
 import LauncherModule from '@/modules/launcher/LauncherModule.vue'
 import TasksModule from '@/modules/tasks/TasksModule.vue'
 import FavoritesModule from '@/modules/favorites/FavoritesModule.vue'
+import CalendarModule from '@/modules/calendar/CalendarModule.vue'
 
 const routes = [
   {
@@ -34,6 +35,12 @@ const routes = [
         name: 'favorites',
         component: FavoritesModule,
         meta: { title: 'Favorites' }
+      },
+      {
+        path: 'calendar',
+        name: 'calendar',
+        component: CalendarModule,
+        meta: { title: 'Calendar' }
       },
       {
         path: 'history-game',

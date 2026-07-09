@@ -16,6 +16,7 @@ export const BUILTIN_ROUTES = [
   { id: '/launcher', label: 'Launcher' },
   { id: '/tasks', label: 'Tasks' },
   { id: '/favorites', label: 'Favorites' },
+  { id: '/calendar', label: 'Calendar' },
   { id: '/history-game', label: 'History Game' }
 ]
 

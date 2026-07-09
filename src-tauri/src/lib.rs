@@ -35,11 +35,18 @@ pub fn run() {
             sql: include_str!("../../data/migrations/004_favorites_panel.sql"),
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 5,
+            description: "calendar_reminders",
+            sql: include_str!("../../data/migrations/005_calendar_reminders.sql"),
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_notification::init())
         .plugin(
             tauri_plugin_sql::Builder::default()
                 .add_migrations("sqlite:mything.db", migrations)
@@ -74,7 +81,7 @@ pub fn run() {
 fn get_platform_info() -> serde_json::Value {
     serde_json::json!({
         "name": "MyThing",
-        "phase": 3,
+        "phase": 4,
         "version": env!("CARGO_PKG_VERSION")
     })
 }

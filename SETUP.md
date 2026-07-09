@@ -79,6 +79,13 @@ Point exports at your OneDrive folder if you want cloud copies.
 3. **Edit** mode — add, edit, delete, or pin apps from the launcher.
 4. Use the search bar to filter like Windows Start menu.
 
+## Calendar (Phase 4)
+
+1. Open **Calendar** in the sidebar.
+2. Click a day to view events; use **+ Event** to schedule.
+3. **+ Reminder** sets a one-shot desktop notification (checked every 30s while app is open).
+4. Allow notifications when Windows prompts on first reminder.
+
 ## Database
 
 SQLite file: `mything.db` (created by Tauri in app data dir on first launch).

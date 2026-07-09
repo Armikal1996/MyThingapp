@@ -3,7 +3,7 @@
     <section class="hero">
       <h2>Your local command center</h2>
       <p>
-        MyThing runs on your PC. Phase 3 adds a Start-menu style favorites panel for quick access.
+        MyThing runs on your PC. Phase 4 adds calendar events and desktop reminders.
       </p>
     </section>
 
@@ -124,9 +124,8 @@ const modules = [
     title: 'Calendar',
     description: 'Events and reminders',
     icon: '📅',
-    to: '/',
-    disabled: true,
-    phase: 4
+    to: '/calendar',
+    disabled: false
   },
   {
     id: 'media',

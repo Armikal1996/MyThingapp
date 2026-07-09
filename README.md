@@ -10,6 +10,8 @@ Local desktop hub for tasks, calendar, media, app launching, and AI agents.
 
 **Phase 3:** Favorites — Start-menu panel with modules, apps, links, and folders.
 
+**Phase 4:** Calendar — month view, events, and desktop reminder notifications.
+
 ## Quick start
 
 ```bash
