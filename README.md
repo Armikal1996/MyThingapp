@@ -12,6 +12,8 @@ Local desktop hub for tasks, calendar, media, app launching, and AI agents.
 
 **Phase 4:** Calendar — month view, events, and desktop reminder notifications.
 
+**Phase 5:** Media — games queue and movies/series watchlist.
+
 ## Quick start
 
 ```bash

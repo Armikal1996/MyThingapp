@@ -6,6 +6,7 @@ import LauncherModule from '@/modules/launcher/LauncherModule.vue'
 import TasksModule from '@/modules/tasks/TasksModule.vue'
 import FavoritesModule from '@/modules/favorites/FavoritesModule.vue'
 import CalendarModule from '@/modules/calendar/CalendarModule.vue'
+import MediaModule from '@/modules/media/MediaModule.vue'
 
 const routes = [
   {
@@ -41,6 +42,12 @@ const routes = [
         name: 'calendar',
         component: CalendarModule,
         meta: { title: 'Calendar' }
+      },
+      {
+        path: 'media',
+        name: 'media',
+        component: MediaModule,
+        meta: { title: 'Media' }
       },
       {
         path: 'history-game',

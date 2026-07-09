@@ -3,7 +3,7 @@
     <section class="hero">
       <h2>Your local command center</h2>
       <p>
-        MyThing runs on your PC. Phase 4 adds calendar events and desktop reminders.
+        MyThing runs on your PC. Phase 5 adds a games queue and movies/series watchlist.
       </p>
     </section>
 
@@ -21,8 +21,12 @@
         <p class="value">{{ counts.apps }}</p>
       </article>
       <article class="status-card">
-        <p class="label">Tasks</p>
-        <p class="value">{{ counts.tasks }}</p>
+        <p class="label">Games</p>
+        <p class="value">{{ counts.games ?? 0 }}</p>
+      </article>
+      <article class="status-card">
+        <p class="label">Watchlist</p>
+        <p class="value">{{ counts.watchlist ?? 0 }}</p>
       </article>
     </section>
 
@@ -82,7 +86,7 @@ import { getPlatformInfo, getLmStudioConfig } from '@/services/platform.js'
 
 const platform = ref({ runtime: 'loading' })
 const meta = ref({})
-const counts = ref({ apps: 0, tasks: 0, favorites: 0 })
+const counts = ref({ apps: 0, tasks: 0, favorites: 0, games: 0, watchlist: 0 })
 const backupMsg = ref('')
 const lmstudio = getLmStudioConfig()
 
@@ -132,9 +136,8 @@ const modules = [
     title: 'Media',
     description: 'Games to play and watchlists',
     icon: '▣',
-    to: '/',
-    disabled: true,
-    phase: 5
+    to: '/media',
+    disabled: false
   },
   {
     id: 'ai',
@@ -204,7 +207,7 @@ onMounted(async () => {
 
 .status-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
 }
 

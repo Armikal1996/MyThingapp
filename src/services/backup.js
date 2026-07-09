@@ -13,6 +13,8 @@ async function collectBackupData() {
   const taskColumns = await db.select('SELECT * FROM task_columns ORDER BY sort_order')
   const calendarEvents = await db.select('SELECT * FROM calendar_events ORDER BY start_at')
   const reminders = await db.select('SELECT * FROM reminders ORDER BY remind_at')
+  const mediaGames = await db.select('SELECT * FROM media_games ORDER BY title')
+  const mediaWatchlist = await db.select('SELECT * FROM media_watchlist ORDER BY title')
 
   return {
     version: BACKUP_VERSION,
@@ -23,7 +25,9 @@ async function collectBackupData() {
     favorites,
     taskColumns,
     calendarEvents,
-    reminders
+    reminders,
+    mediaGames,
+    mediaWatchlist
   }
 }
 
@@ -60,6 +64,8 @@ export async function importBackup() {
 
   await db.execute('DELETE FROM reminders')
   await db.execute('DELETE FROM calendar_events')
+  await db.execute('DELETE FROM media_watchlist')
+  await db.execute('DELETE FROM media_games')
   await db.execute('DELETE FROM favorites')
   await db.execute('DELETE FROM tasks')
   await db.execute('DELETE FROM apps')
@@ -141,6 +147,34 @@ export async function importBackup() {
       [
         row.id, row.title, row.description, row.remind_at, row.linked_type,
         row.linked_id, row.fired, row.enabled ?? 1, row.created_at
+      ]
+    )
+  }
+
+  for (const row of data.mediaGames || []) {
+    await db.execute(
+      `INSERT INTO media_games (
+        id, title, description, platform, status, priority,
+        hours_played, notes, tags, created_at, updated_at
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+      [
+        row.id, row.title, row.description, row.platform, row.status,
+        row.priority, row.hours_played, row.notes, row.tags,
+        row.created_at, row.updated_at
+      ]
+    )
+  }
+
+  for (const row of data.mediaWatchlist || []) {
+    await db.execute(
+      `INSERT INTO media_watchlist (
+        id, title, description, media_type, status, season, episode,
+        rating, notes, tags, created_at, updated_at
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+      [
+        row.id, row.title, row.description, row.media_type, row.status,
+        row.season, row.episode, row.rating, row.notes, row.tags,
+        row.created_at, row.updated_at
       ]
     )
   }

@@ -86,6 +86,13 @@ Point exports at your OneDrive folder if you want cloud copies.
 3. **+ Reminder** sets a one-shot desktop notification (checked every 30s while app is open).
 4. Allow notifications when Windows prompts on first reminder.
 
+## Media (Phase 5)
+
+1. Open **Media** in the sidebar.
+2. **Games** tab — track backlog, playing, completed, and dropped games with platform and hours.
+3. **Movies & Series** tab — watchlist with season/episode progress and ratings.
+4. Filter by status and search across titles.
+
 ## Database
 
 SQLite file: `mything.db` (created by Tauri in app data dir on first launch).

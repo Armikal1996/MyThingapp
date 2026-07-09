@@ -5,7 +5,7 @@
         <span class="brand-mark">M</span>
         <div>
           <p class="brand-title">MyThing</p>
-          <p class="brand-sub">Phase 4</p>
+          <p class="brand-sub">Phase 5</p>
         </div>
       </div>
 
@@ -56,8 +56,8 @@ const navItems = [
   { to: '/tasks', label: 'Tasks', icon: '☑' },
   { to: '/favorites', label: 'Favorites', icon: '★' },
   { to: '/calendar', label: 'Calendar', icon: '📅' },
+  { to: '/media', label: 'Media', icon: '▣' },
   { to: '/history-game', label: 'History Game', icon: '◎' },
-  { to: '/', label: 'Media', icon: '▣', soon: true },
   { to: '/', label: 'AI Chat', icon: '✦', soon: true }
 ]
 
