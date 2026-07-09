@@ -1,10 +1,10 @@
-# MyThing — Phase 0 Setup
+# MyThing — Setup
 
 ## Prerequisites
 
 - Node.js 18+ (you have v24)
 - Rust (via rustup) — ensure `%USERPROFILE%\.cargo\bin` is on your PATH
-- LM Studio (for AI phases later)
+- LM Studio (for AI Chat)
 
 If `tauri` says `cargo not found`, open a **new terminal** after installing Rust, or run:
 
@@ -67,8 +67,8 @@ Re-scanning never overwrites commands you already set — only adds new folders.
 
 From **Dashboard** or **Tasks** toolbar:
 
-- **Export backup** — saves apps, tasks, meta, and favorites to a JSON file.
-- **Import backup** — restores from a JSON file (replaces current data).
+- **Export backup** — saves apps, tasks, favorites, calendar, reminders, media, AI chats, announcements, and settings to JSON.
+- **Import backup** — restores from a JSON file (replaces current data; runs in a transaction).
 
 Point exports at your OneDrive folder if you want cloud copies.
 

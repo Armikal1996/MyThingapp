@@ -12,5 +12,3 @@ UPDATE apps SET title = name WHERE title IS NULL;
 UPDATE apps SET folder_name = name WHERE folder_name IS NULL;
 
 UPDATE meta SET value = '2' WHERE key = 'schema_version';
-
-INSERT OR IGNORE INTO meta (key, value) VALUES ('work_folder', 'C:/Users/khoub/OneDrive/Desktop/WOrK');

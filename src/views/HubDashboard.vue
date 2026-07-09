@@ -3,7 +3,7 @@
     <section class="hero">
       <h2>Your local command center</h2>
       <p>
-        MyThing runs on your PC. Phase 6 wires LM Studio chat and an agent announcement inbox.
+        MyThing runs on your PC — tasks, calendar, media, launcher, favorites, and local AI via LM Studio.
       </p>
     </section>
 
@@ -13,12 +13,24 @@
         <p class="value">{{ platform.runtime }}</p>
       </article>
       <article class="status-card">
-        <p class="label">Database</p>
-        <p class="value">SQLite v{{ meta.schema_version || '—' }}</p>
+        <p class="label">Schema</p>
+        <p class="value">v{{ meta.schema_version || '—' }}</p>
       </article>
       <article class="status-card">
-        <p class="label">Registered apps</p>
+        <p class="label">Apps</p>
         <p class="value">{{ counts.apps }}</p>
+      </article>
+      <article class="status-card">
+        <p class="label">Tasks</p>
+        <p class="value">{{ counts.tasks ?? 0 }}</p>
+      </article>
+      <article class="status-card">
+        <p class="label">Favorites</p>
+        <p class="value">{{ counts.favorites ?? 0 }}</p>
+      </article>
+      <article class="status-card">
+        <p class="label">Events</p>
+        <p class="value">{{ counts.events ?? 0 }}</p>
       </article>
       <article class="status-card">
         <p class="label">Games</p>
@@ -57,7 +69,7 @@
 
     <section class="backup">
       <h3>Backup</h3>
-      <p class="hint">Export all apps, tasks, and settings to a JSON file. Import restores everything.</p>
+      <p class="hint">Export apps, tasks, favorites, calendar, media, AI chats, and settings to JSON. Import replaces current data.</p>
       <div class="backup-actions">
         <button class="backup-btn" @click="onExport">Export backup</button>
         <button class="backup-btn" :disabled="platform.runtime !== 'desktop'" @click="onImport">Import backup</button>
@@ -90,19 +102,11 @@ import { getPlatformInfo, getLmStudioConfig } from '@/services/platform.js'
 
 const platform = ref({ runtime: 'loading' })
 const meta = ref({})
-const counts = ref({ apps: 0, tasks: 0, favorites: 0, games: 0, watchlist: 0, aiThreads: 0 })
+const counts = ref({ apps: 0, tasks: 0, favorites: 0, games: 0, watchlist: 0, aiThreads: 0, events: 0 })
 const backupMsg = ref('')
 const lmstudio = getLmStudioConfig()
 
 const modules = [
-  {
-    id: 'history-game',
-    title: 'History Game',
-    description: 'Time Web Academy — branching history explorer',
-    icon: '◎',
-    to: '/history-game',
-    disabled: false
-  },
   {
     id: 'launcher',
     title: 'App Launcher',
@@ -149,6 +153,14 @@ const modules = [
     description: 'LM Studio bots and agent inbox',
     icon: '✦',
     to: '/ai',
+    disabled: false
+  },
+  {
+    id: 'history-game',
+    title: 'History Game',
+    description: 'Time Web Academy — branching history explorer',
+    icon: '◎',
+    to: '/history-game',
     disabled: false
   }
 ]
@@ -210,7 +222,7 @@ onMounted(async () => {
 
 .status-grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 12px;
 }
 

@@ -115,11 +115,12 @@ export async function deleteFavorite(id) {
 
 export async function seedDefaultFavorites() {
   const existing = await listAllFavorites()
-  if (existing.length > 0) return { seeded: 0 }
-
+  const existingIds = new Set(existing.map(f => f.id))
   let count = 0
+
   for (const group of defaults.groups) {
     for (const item of group.items) {
+      if (existingIds.has(item.id)) continue
       await saveFavorite({
         ...item,
         groupName: group.name,

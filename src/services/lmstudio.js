@@ -47,6 +47,14 @@ export async function checkModelHealth(modelKey) {
 
     const models = data?.data || []
     const firstId = models[0]?.id || null
+    if (!models.length || !firstId) {
+      return {
+        online: false,
+        modelId: null,
+        count: 0,
+        error: 'Server up, but no model loaded'
+      }
+    }
     return { online: true, modelId: firstId, count: models.length }
   } catch (e) {
     return { online: false, error: e.message }

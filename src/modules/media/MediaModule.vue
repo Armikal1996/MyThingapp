@@ -25,6 +25,13 @@
     <section v-if="activeTab === 'games'" class="panel">
       <div class="filters">
         <button
+          class="filter"
+          :class="{ active: gameFilter === 'all' }"
+          @click="gameFilter = 'all'"
+        >
+          All ({{ games.length }})
+        </button>
+        <button
           v-for="s in gameStatuses"
           :key="s.id"
           class="filter"
@@ -62,6 +69,13 @@
     <!-- Watchlist -->
     <section v-else class="panel">
       <div class="filters">
+        <button
+          class="filter"
+          :class="{ active: watchFilter === 'all' }"
+          @click="watchFilter = 'all'"
+        >
+          All ({{ watchlist.length }})
+        </button>
         <button
           v-for="s in watchStatuses"
           :key="s.id"
@@ -145,8 +159,8 @@ import {
 } from '@/services/media.js'
 
 const activeTab = ref('games')
-const gameFilter = ref('backlog')
-const watchFilter = ref('backlog')
+const gameFilter = ref('all')
+const watchFilter = ref('all')
 const search = ref('')
 const games = ref([])
 const watchlist = ref([])

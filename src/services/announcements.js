@@ -1,6 +1,5 @@
 import { getDatabase } from '@/services/database.js'
-import { createThread, sendChatMessage } from '@/services/aiChat.js'
-import { roleForModelKey } from '@/services/lmstudio.js'
+import { createThread, deleteThread, sendChatMessage } from '@/services/aiChat.js'
 
 export const AGENT_ROLES = [
   { id: 'implementation', label: 'Implementation', modelKey: 'gemma' },
@@ -160,9 +159,13 @@ export async function dispatchToChat(announcement) {
     announcement.body
   ].join('\n')
 
-  await sendChatMessage(thread.id, prompt)
-  await updateAnnouncementStatus(announcement.id, 'in_progress')
-  await markAnnouncementRead(announcement.id)
-
-  return thread
+  try {
+    await sendChatMessage(thread.id, prompt)
+    await updateAnnouncementStatus(announcement.id, 'in_progress')
+    await markAnnouncementRead(announcement.id)
+    return thread
+  } catch (e) {
+    await deleteThread(thread.id)
+    throw e
+  }
 }

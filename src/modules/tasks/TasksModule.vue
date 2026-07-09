@@ -25,6 +25,13 @@
     <section v-if="activeTab === 'work'" class="panel">
       <div class="filters">
         <button
+          class="filter"
+          :class="{ active: workFilter === 'all' }"
+          @click="workFilter = 'all'"
+        >
+          All ({{ workTasks.length }})
+        </button>
+        <button
           v-for="s in workStatuses"
           :key="s.id"
           class="filter"
@@ -140,7 +147,7 @@ const tabs = [
 ]
 
 const activeTab = ref('work')
-const workFilter = ref('backlog')
+const workFilter = ref('all')
 const workStatuses = WORK_STATUSES
 const movingColumns = ref([])
 const allTasks = ref([])

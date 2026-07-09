@@ -16,6 +16,8 @@ Local desktop hub for tasks, calendar, media, app launching, and AI agents.
 
 **Phase 6:** AI Chat — LM Studio (Gemma/Gwen) and agent announcement inbox.
 
+Polish/QA pass completed after Phase 6.
+
 ## Quick start
 
 ```bash

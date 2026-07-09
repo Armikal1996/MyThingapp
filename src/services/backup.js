@@ -1,8 +1,16 @@
 import { invoke } from '@tauri-apps/api/core'
 import { getDatabase } from '@/services/database.js'
 import { isTauri } from '@/services/platform.js'
+import { MOVING_COLUMNS } from '@/services/tasks.js'
 
 const BACKUP_VERSION = 1
+
+const DEFAULT_TASK_COLUMNS = MOVING_COLUMNS.map((col, i) => ({
+  id: col.id,
+  board_id: 'moving',
+  label: col.label,
+  sort_order: i
+}))
 
 async function collectBackupData() {
   const db = await getDatabase()
@@ -37,6 +45,254 @@ async function collectBackupData() {
   }
 }
 
+function validateBackup(data) {
+  if (!data || typeof data !== 'object') {
+    throw new Error('Invalid backup file: not a JSON object.')
+  }
+  if (!Array.isArray(data.meta) && !Array.isArray(data.apps) && !Array.isArray(data.tasks)) {
+    throw new Error('Invalid backup file: missing expected MyThing tables.')
+  }
+}
+
+async function clearAllTables(db) {
+  await db.execute('DELETE FROM reminders')
+  await db.execute('DELETE FROM calendar_events')
+  await db.execute('DELETE FROM ai_messages')
+  await db.execute('DELETE FROM ai_threads')
+  await db.execute('DELETE FROM agent_announcements')
+  await db.execute('DELETE FROM media_watchlist')
+  await db.execute('DELETE FROM media_games')
+  await db.execute('DELETE FROM favorites')
+  await db.execute('DELETE FROM tasks')
+  await db.execute('DELETE FROM apps')
+  await db.execute('DELETE FROM task_columns')
+  await db.execute('DELETE FROM meta')
+}
+
+async function insertBackupRows(db, data) {
+  for (const row of data.meta || []) {
+    await db.execute('INSERT INTO meta (key, value) VALUES ($1, $2)', [
+      row.key,
+      row.value ?? ''
+    ])
+  }
+
+  const columns = data.taskColumns?.length ? data.taskColumns : DEFAULT_TASK_COLUMNS
+  for (const row of columns) {
+    await db.execute(
+      'INSERT INTO task_columns (id, board_id, label, sort_order) VALUES ($1,$2,$3,$4)',
+      [row.id, row.board_id || 'moving', row.label, row.sort_order ?? 0]
+    )
+  }
+
+  for (const row of data.apps || []) {
+    await db.execute(
+      `INSERT INTO apps (
+        id, name, title, description, root_path, folder_name, runtime,
+        install_cmd, start_cmd, open_terminal, port, tags,
+        auto_discovered, enabled, created_at, updated_at
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)`,
+      [
+        row.id,
+        row.name,
+        row.title || row.name,
+        row.description || '',
+        row.root_path,
+        row.folder_name || row.name,
+        row.runtime || 'node',
+        row.install_cmd || '',
+        row.start_cmd || '',
+        row.open_terminal ?? 1,
+        row.port ?? null,
+        row.tags || '',
+        row.auto_discovered ?? 0,
+        row.enabled ?? 1,
+        row.created_at || new Date().toISOString(),
+        row.updated_at || new Date().toISOString()
+      ]
+    )
+  }
+
+  for (const row of data.tasks || []) {
+    await db.execute(
+      `INSERT INTO tasks (
+        id, title, description, status, kind, priority, sort_order,
+        recurrence, last_completed_at, next_due_at, due_at, completed_at,
+        tags, created_at, updated_at
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
+      [
+        row.id,
+        row.title,
+        row.description || '',
+        row.status || 'backlog',
+        row.kind || 'work',
+        row.priority ?? 0,
+        row.sort_order ?? 0,
+        row.recurrence || null,
+        row.last_completed_at || null,
+        row.next_due_at || null,
+        row.due_at || null,
+        row.completed_at || null,
+        row.tags || '',
+        row.created_at || new Date().toISOString(),
+        row.updated_at || new Date().toISOString()
+      ]
+    )
+  }
+
+  for (const row of data.favorites || []) {
+    await db.execute(
+      `INSERT INTO favorites (
+        id, label, icon, description, target_type, target_id,
+        group_name, sort_order, enabled, created_at
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+      [
+        row.id,
+        row.label,
+        row.icon || '★',
+        row.description || '',
+        row.target_type,
+        row.target_id,
+        row.group_name || 'Pinned',
+        row.sort_order ?? 0,
+        row.enabled ?? 1,
+        row.created_at || new Date().toISOString()
+      ]
+    )
+  }
+
+  for (const row of data.calendarEvents || []) {
+    await db.execute(
+      `INSERT INTO calendar_events (
+        id, title, description, start_at, end_at, all_day, color, created_at, updated_at
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+      [
+        row.id,
+        row.title,
+        row.description || '',
+        row.start_at,
+        row.end_at || null,
+        row.all_day ?? 0,
+        row.color || null,
+        row.created_at || new Date().toISOString(),
+        row.updated_at || new Date().toISOString()
+      ]
+    )
+  }
+
+  for (const row of data.reminders || []) {
+    await db.execute(
+      `INSERT INTO reminders (
+        id, title, description, remind_at, linked_type, linked_id,
+        fired, enabled, created_at
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+      [
+        row.id,
+        row.title,
+        row.description || '',
+        row.remind_at,
+        row.linked_type || null,
+        row.linked_id || null,
+        row.fired ?? 0,
+        row.enabled ?? 1,
+        row.created_at || new Date().toISOString()
+      ]
+    )
+  }
+
+  for (const row of data.mediaGames || []) {
+    await db.execute(
+      `INSERT INTO media_games (
+        id, title, description, platform, status, priority,
+        hours_played, notes, tags, created_at, updated_at
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+      [
+        row.id,
+        row.title,
+        row.description || '',
+        row.platform || '',
+        row.status || 'backlog',
+        row.priority ?? 0,
+        row.hours_played ?? null,
+        row.notes || '',
+        row.tags || '',
+        row.created_at || new Date().toISOString(),
+        row.updated_at || new Date().toISOString()
+      ]
+    )
+  }
+
+  for (const row of data.mediaWatchlist || []) {
+    await db.execute(
+      `INSERT INTO media_watchlist (
+        id, title, description, media_type, status, season, episode,
+        rating, notes, tags, created_at, updated_at
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+      [
+        row.id,
+        row.title,
+        row.description || '',
+        row.media_type || 'movie',
+        row.status || 'backlog',
+        row.season ?? null,
+        row.episode ?? null,
+        row.rating ?? null,
+        row.notes || '',
+        row.tags || '',
+        row.created_at || new Date().toISOString(),
+        row.updated_at || new Date().toISOString()
+      ]
+    )
+  }
+
+  for (const row of data.aiThreads || []) {
+    await db.execute(
+      `INSERT INTO ai_threads (id, title, model_key, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [
+        row.id,
+        row.title || 'New chat',
+        row.model_key || 'gemma',
+        row.created_at || new Date().toISOString(),
+        row.updated_at || new Date().toISOString()
+      ]
+    )
+  }
+
+  for (const row of data.aiMessages || []) {
+    await db.execute(
+      `INSERT INTO ai_messages (id, thread_id, role, content, created_at)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [
+        row.id,
+        row.thread_id,
+        row.role,
+        row.content || '',
+        row.created_at || new Date().toISOString()
+      ]
+    )
+  }
+
+  for (const row of data.agentAnnouncements || []) {
+    await db.execute(
+      `INSERT INTO agent_announcements (
+        id, title, body, agent_role, priority, status, created_at, updated_at, read_at
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+      [
+        row.id,
+        row.title,
+        row.body || '',
+        row.agent_role || 'implementation',
+        row.priority || 'normal',
+        row.status || 'pending',
+        row.created_at || new Date().toISOString(),
+        row.updated_at || new Date().toISOString(),
+        row.read_at || null
+      ]
+    )
+  }
+}
+
 export async function exportBackup() {
   if (!isTauri()) {
     const data = await collectBackupData()
@@ -56,165 +312,37 @@ export async function exportBackup() {
 }
 
 export async function importBackup() {
-  let raw
-
   if (!isTauri()) {
     throw new Error('Import requires the MyThing desktop app.')
   }
 
-  raw = await invoke('pick_and_read_backup')
+  const raw = await invoke('pick_and_read_backup')
   if (!raw) return null
 
-  const data = JSON.parse(raw)
+  let data
+  try {
+    data = JSON.parse(raw)
+  } catch {
+    throw new Error('Invalid backup file: could not parse JSON.')
+  }
+
+  validateBackup(data)
+
   const db = await getDatabase()
 
-  await db.execute('DELETE FROM reminders')
-  await db.execute('DELETE FROM calendar_events')
-  await db.execute('DELETE FROM ai_messages')
-  await db.execute('DELETE FROM ai_threads')
-  await db.execute('DELETE FROM agent_announcements')
-  await db.execute('DELETE FROM media_watchlist')
-  await db.execute('DELETE FROM media_games')
-  await db.execute('DELETE FROM favorites')
-  await db.execute('DELETE FROM tasks')
-  await db.execute('DELETE FROM apps')
-  await db.execute('DELETE FROM task_columns')
-  await db.execute('DELETE FROM meta')
-
-  for (const row of data.meta || []) {
-    await db.execute('INSERT INTO meta (key, value) VALUES ($1, $2)', [row.key, row.value])
+  try {
+    await db.execute('BEGIN')
+    await clearAllTables(db)
+    await insertBackupRows(db, data)
+    await db.execute('COMMIT')
+  } catch (e) {
+    try {
+      await db.execute('ROLLBACK')
+    } catch {
+      /* ignore rollback errors */
+    }
+    throw new Error(`Import failed: ${e.message || e}`)
   }
 
-  for (const row of data.taskColumns || []) {
-    await db.execute(
-      'INSERT INTO task_columns (id, board_id, label, sort_order) VALUES ($1,$2,$3,$4)',
-      [row.id, row.board_id, row.label, row.sort_order]
-    )
-  }
-
-  for (const row of data.apps || []) {
-    await db.execute(
-      `INSERT INTO apps (
-        id, name, title, description, root_path, folder_name, runtime,
-        install_cmd, start_cmd, open_terminal, port, tags,
-        auto_discovered, enabled, created_at, updated_at
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)`,
-      [
-        row.id, row.name, row.title, row.description, row.root_path, row.folder_name,
-        row.runtime, row.install_cmd, row.start_cmd, row.open_terminal, row.port,
-        row.tags, row.auto_discovered, row.enabled, row.created_at, row.updated_at
-      ]
-    )
-  }
-
-  for (const row of data.tasks || []) {
-    await db.execute(
-      `INSERT INTO tasks (
-        id, title, description, status, kind, priority, sort_order,
-        recurrence, last_completed_at, next_due_at, due_at, completed_at,
-        tags, created_at, updated_at
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
-      [
-        row.id, row.title, row.description, row.status, row.kind, row.priority,
-        row.sort_order, row.recurrence, row.last_completed_at, row.next_due_at,
-        row.due_at, row.completed_at, row.tags, row.created_at, row.updated_at
-      ]
-    )
-  }
-
-  for (const row of data.favorites || []) {
-    await db.execute(
-      `INSERT INTO favorites (
-        id, label, icon, description, target_type, target_id,
-        group_name, sort_order, enabled, created_at
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
-      [
-        row.id, row.label, row.icon, row.description, row.target_type, row.target_id,
-        row.group_name || 'Pinned', row.sort_order, row.enabled ?? 1, row.created_at
-      ]
-    )
-  }
-
-  for (const row of data.calendarEvents || []) {
-    await db.execute(
-      `INSERT INTO calendar_events (
-        id, title, description, start_at, end_at, all_day, color, created_at, updated_at
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
-      [
-        row.id, row.title, row.description, row.start_at, row.end_at,
-        row.all_day, row.color, row.created_at, row.updated_at
-      ]
-    )
-  }
-
-  for (const row of data.reminders || []) {
-    await db.execute(
-      `INSERT INTO reminders (
-        id, title, description, remind_at, linked_type, linked_id,
-        fired, enabled, created_at
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
-      [
-        row.id, row.title, row.description, row.remind_at, row.linked_type,
-        row.linked_id, row.fired, row.enabled ?? 1, row.created_at
-      ]
-    )
-  }
-
-  for (const row of data.mediaGames || []) {
-    await db.execute(
-      `INSERT INTO media_games (
-        id, title, description, platform, status, priority,
-        hours_played, notes, tags, created_at, updated_at
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
-      [
-        row.id, row.title, row.description, row.platform, row.status,
-        row.priority, row.hours_played, row.notes, row.tags,
-        row.created_at, row.updated_at
-      ]
-    )
-  }
-
-  for (const row of data.mediaWatchlist || []) {
-    await db.execute(
-      `INSERT INTO media_watchlist (
-        id, title, description, media_type, status, season, episode,
-        rating, notes, tags, created_at, updated_at
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
-      [
-        row.id, row.title, row.description, row.media_type, row.status,
-        row.season, row.episode, row.rating, row.notes, row.tags,
-        row.created_at, row.updated_at
-      ]
-    )
-  }
-
-  for (const row of data.aiThreads || []) {
-    await db.execute(
-      `INSERT INTO ai_threads (id, title, model_key, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [row.id, row.title, row.model_key, row.created_at, row.updated_at]
-    )
-  }
-
-  for (const row of data.aiMessages || []) {
-    await db.execute(
-      `INSERT INTO ai_messages (id, thread_id, role, content, created_at)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [row.id, row.thread_id, row.role, row.content, row.created_at]
-    )
-  }
-
-  for (const row of data.agentAnnouncements || []) {
-    await db.execute(
-      `INSERT INTO agent_announcements (
-        id, title, body, agent_role, priority, status, created_at, updated_at, read_at
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
-      [
-        row.id, row.title, row.body, row.agent_role, row.priority, row.status,
-        row.created_at, row.updated_at, row.read_at
-      ]
-    )
-  }
-
-  return { importedAt: data.exportedAt, version: data.version }
+  return { importedAt: data.exportedAt, version: data.version ?? BACKUP_VERSION }
 }

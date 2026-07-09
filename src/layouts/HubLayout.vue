@@ -5,7 +5,7 @@
         <span class="brand-mark">M</span>
         <div>
           <p class="brand-title">MyThing</p>
-          <p class="brand-sub">Phase 6</p>
+          <p class="brand-sub">Local hub</p>
         </div>
       </div>
 

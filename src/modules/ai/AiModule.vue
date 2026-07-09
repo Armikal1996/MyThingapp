@@ -90,11 +90,11 @@
             <textarea
               v-model="draft"
               rows="3"
-              placeholder="Message Gemma or Gwen…"
-              :disabled="sending"
+              :placeholder="modelOnline ? 'Message Gemma or Gwen…' : 'Load a model in LM Studio first…'"
+              :disabled="sending || !modelOnline"
               @keydown.ctrl.enter.prevent="onSend"
             />
-            <button class="btn primary" type="submit" :disabled="sending || !draft.trim()">
+            <button class="btn primary" type="submit" :disabled="sending || !draft.trim() || !modelOnline">
               Send
             </button>
           </form>
@@ -225,6 +225,10 @@ const activeThread = computed(() =>
   threads.value.find(t => t.id === activeThreadId.value) || null
 )
 
+const modelOnline = computed(() =>
+  Boolean(health.value[activeModelKey.value]?.online)
+)
+
 function modelLabel(key) {
   return modelOptions.find(m => m.key === key)?.label || key
 }
@@ -311,7 +315,7 @@ async function onDeleteThread() {
 }
 
 async function onSend() {
-  if (!activeThread.value || !draft.value.trim() || sending.value) return
+  if (!activeThread.value || !draft.value.trim() || sending.value || !modelOnline.value) return
   const text = draft.value.trim()
   draft.value = ''
   sending.value = true
@@ -323,6 +327,7 @@ async function onSend() {
   } catch (e) {
     showMsg(e.message, 'error')
     draft.value = text
+    await loadMessages(activeThread.value.id)
   } finally {
     sending.value = false
   }

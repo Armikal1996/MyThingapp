@@ -111,28 +111,34 @@ export async function sendChatMessage(threadId, userContent, modelId = null) {
   const thread = await getThread(threadId)
   if (!thread) throw new Error('Thread not found')
 
-  await addMessage(threadId, 'user', userContent)
+  const userMsg = await addMessage(threadId, 'user', userContent)
 
-  const history = await listMessages(threadId)
-  const apiMessages = history.map(m => ({ role: m.role, content: m.content }))
+  try {
+    const history = await listMessages(threadId)
+    const apiMessages = history.map(m => ({ role: m.role, content: m.content }))
 
-  const model = getModelByKey(thread.modelKey)
-  const systemPrompt = model?.role === 'review'
-    ? 'You are Gwen, a careful reviewer. Give concise, structured feedback on code, commits, and implementation plans.'
-    : 'You are Gemma, an implementation assistant. Help with specs, coding tasks, and step-by-step plans for local projects.'
+    const model = getModelByKey(thread.modelKey)
+    const systemPrompt = model?.role === 'review'
+      ? 'You are Gwen, a careful reviewer. Give concise, structured feedback on code, commits, and implementation plans.'
+      : 'You are Gemma, an implementation assistant. Help with specs, coding tasks, and step-by-step plans for local projects.'
 
-  const messages = [
-    { role: 'system', content: systemPrompt },
-    ...apiMessages
-  ]
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      ...apiMessages
+    ]
 
-  const { content } = await chatCompletion(thread.modelKey, messages, modelId)
-  const assistant = await addMessage(threadId, 'assistant', content)
+    const { content } = await chatCompletion(thread.modelKey, messages, modelId)
+    const assistant = await addMessage(threadId, 'assistant', content)
 
-  if (thread.title === 'New chat' && userContent.length > 0) {
-    const title = userContent.slice(0, 48) + (userContent.length > 48 ? '…' : '')
-    await updateThread(threadId, { title })
+    if (thread.title === 'New chat' && userContent.length > 0) {
+      const title = userContent.slice(0, 48) + (userContent.length > 48 ? '…' : '')
+      await updateThread(threadId, { title })
+    }
+
+    return assistant
+  } catch (e) {
+    const db = await getDatabase()
+    await db.execute('DELETE FROM ai_messages WHERE id = $1', [userMsg.id])
+    throw e
   }
-
-  return assistant
 }
