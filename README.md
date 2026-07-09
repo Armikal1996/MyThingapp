@@ -16,6 +16,8 @@ Local desktop hub for tasks, calendar, media, app launching, and AI agents.
 
 **Phase 6:** AI Chat — LM Studio (Gemma/Gwen) and agent announcement inbox.
 
+**Phase 7:** Full integration — hub context on every module, AI streaming, Ctrl+Shift+M favorites hotkey, OneDrive auto-backup, production launcher.
+
 Polish/QA pass completed after Phase 6.
 
 ## Quick start
@@ -49,7 +51,9 @@ See [SETUP.md](./SETUP.md) for LM Studio ports and prerequisites.
 | Command | Description |
 |---------|-------------|
 | `Launch-MyThing.exe` | Double-click dev launcher (build with `launcher:build` first) |
-| `npm run launcher:build` | Build / refresh `Launch-MyThing.exe` |
+| `Launch-MyThing-Release.exe` | Starts built `mything.exe` — no terminal (after `tauri:build`) |
+| `npm run launcher:build` | Build / refresh both launcher exes |
+| `npm run launcher:build:release` | Same as `launcher:build` |
 | `npm run tauri:dev` | Desktop app (recommended) |
 | `npm run dev` | Browser preview only |
 | `npm run tauri:build` | Production installer (`.msi` / setup `.exe`) |

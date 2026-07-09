@@ -7,3 +7,7 @@ description = "Double-click launcher for MyThing dev (npm run tauri:dev)"
 [[bin]]
 name = "Launch-MyThing"
 path = "src/main.rs"
+
+[[bin]]
+name = "Launch-MyThing-Release"
+path = "src/release.rs"

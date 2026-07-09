@@ -2,13 +2,15 @@ import { openUrl } from '@tauri-apps/plugin-opener'
 import { getDatabase } from '@/services/database.js'
 import { getApp, listApps, openAppFolder, runAppCommand } from '@/services/launcher.js'
 import { isTauri } from '@/services/platform.js'
+import { resolveHubFavorite } from '@/services/integrations.js'
 import defaults from '../../config/favorites-defaults.json'
 
 export const TARGET_TYPES = [
   { id: 'route', label: 'MyThing module', hint: 'e.g. /launcher' },
   { id: 'app', label: 'Registered app', hint: 'Start command from launcher' },
   { id: 'url', label: 'Web link', hint: 'https://...' },
-  { id: 'folder', label: 'Folder', hint: 'Opens in Explorer' }
+  { id: 'folder', label: 'Folder', hint: 'Opens in Explorer' },
+  { id: 'hub_item', label: 'Hub item', hint: 'Game, task, movie, etc.' }
 ]
 
 export const BUILTIN_ROUTES = [
@@ -173,6 +175,9 @@ export async function launchFavorite(fav, router) {
       await openAppFolder({ rootPath: fav.targetId })
       return { action: 'folder', path: fav.targetId }
     }
+    case 'hub_item': {
+      return resolveHubFavorite(fav, router)
+    }
     default:
       throw new Error(`Unknown target type: ${fav.targetType}`)
   }
@@ -181,6 +186,13 @@ export async function launchFavorite(fav, router) {
 export async function getAppsForPicker() {
   const apps = await listApps()
   return apps.filter(a => a.enabled)
+}
+
+export async function reorderFavorites(orderedIds) {
+  const db = await getDatabase()
+  for (let i = 0; i < orderedIds.length; i += 1) {
+    await db.execute('UPDATE favorites SET sort_order = $1 WHERE id = $2', [i, orderedIds[i]])
+  }
 }
 
 export async function pinAppAsFavorite(app) {

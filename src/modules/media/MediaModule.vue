@@ -1,4 +1,5 @@
 <template>
+  <DesktopRequired>
   <div class="media-module">
     <section class="toolbar">
       <div class="tabs">
@@ -45,7 +46,10 @@
         <article v-for="game in filteredGames" :key="game.id" class="card">
           <header>
             <h3>{{ game.title }}</h3>
-            <span class="badge">{{ game.platform || 'PC' }}</span>
+            <div class="card-head-actions">
+              <span class="badge">{{ game.platform || 'PC' }}</span>
+              <HubActionMenu item-type="game" :item="game" @done="onHubAction" @error="onHubError" />
+            </div>
           </header>
           <p v-if="game.description" class="desc">{{ game.description }}</p>
           <div class="meta">
@@ -90,7 +94,10 @@
         <article v-for="item in filteredWatch" :key="item.id" class="card">
           <header>
             <h3>{{ item.title }}</h3>
-            <span class="badge">{{ item.mediaType === 'series' ? 'Series' : 'Movie' }}</span>
+            <div class="card-head-actions">
+              <span class="badge">{{ item.mediaType === 'series' ? 'Series' : 'Movie' }}</span>
+              <HubActionMenu item-type="watch" :item="item" @done="onHubAction" @error="onHubError" />
+            </div>
           </header>
           <p v-if="item.description" class="desc">{{ item.description }}</p>
           <div class="meta">
@@ -137,12 +144,15 @@
       </div>
     </div>
   </div>
+  </DesktopRequired>
 </template>
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import GameFormModal from '@/modules/media/components/GameFormModal.vue'
 import WatchFormModal from '@/modules/media/components/WatchFormModal.vue'
+import HubActionMenu from '@/components/HubActionMenu.vue'
+import DesktopRequired from '@/components/DesktopRequired.vue'
 import {
   GAME_STATUSES,
   WATCH_STATUSES,
@@ -311,6 +321,17 @@ async function onWatchStatus(item, status) {
 }
 
 onMounted(refresh)
+
+function onHubAction(action) {
+  message.value = `Done: ${action}`
+  messageType.value = 'info'
+  refresh()
+}
+
+function onHubError(err) {
+  message.value = err
+  messageType.value = 'error'
+}
 </script>
 
 <style scoped>

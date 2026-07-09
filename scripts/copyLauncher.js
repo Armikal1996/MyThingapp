@@ -1,15 +1,24 @@
-import { copyFileSync, existsSync, mkdirSync } from 'node:fs'
+import { copyFileSync, existsSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const built = join(root, 'launcher', 'target', 'release', 'Launch-MyThing.exe')
-const dest = join(root, 'Launch-MyThing.exe')
+const releaseDir = join(root, 'launcher', 'target', 'release')
 
-if (!existsSync(built)) {
-  console.error('Launcher exe not found. Run: npm run launcher:build')
-  process.exit(1)
+const copies = [
+  { built: join(releaseDir, 'Launch-MyThing.exe'), dest: join(root, 'Launch-MyThing.exe') },
+  { built: join(releaseDir, 'Launch-MyThing-Release.exe'), dest: join(root, 'Launch-MyThing-Release.exe') }
+]
+
+let copied = 0
+for (const { built, dest } of copies) {
+  if (!existsSync(built)) continue
+  copyFileSync(built, dest)
+  console.log(`Copied to ${dest}`)
+  copied += 1
 }
 
-copyFileSync(built, dest)
-console.log(`Copied to ${dest}`)
+if (!copied) {
+  console.error('No launcher exe found. Run: npm run launcher:build')
+  process.exit(1)
+}

@@ -1,5 +1,6 @@
 <template>
-  <div class="favorites-panel">
+  <DesktopRequired>
+  <div class="favorites-panel" tabindex="0" @keydown="onKeydown">
     <header class="start-header">
       <div class="search-wrap">
         <span class="search-icon">⌕</span>
@@ -25,7 +26,16 @@
       <div v-for="group in filteredGroups" :key="group.name" class="group">
         <h3 class="group-title">{{ group.name }}</h3>
         <div class="tile-grid">
-          <div v-for="fav in group.items" :key="fav.id" class="tile-wrap">
+          <div
+            v-for="(fav, idx) in group.items"
+            :key="fav.id"
+            class="tile-wrap"
+            :class="{ focused: flatIndex(group.name, idx) === focusIndex }"
+            :draggable="editMode && !fav.dynamic"
+            @dragstart="onDragStart(group.name, idx)"
+            @dragover.prevent
+            @drop="onDrop(group.name, idx)"
+          >
             <FavoriteTile :favorite="fav" @launch="onLaunch" />
             <div v-if="editMode" class="edit-actions">
               <button class="mini" @click="openEdit(fav)">Edit</button>
@@ -74,6 +84,7 @@
       </div>
     </div>
   </div>
+  </DesktopRequired>
 </template>
 
 <script setup>
@@ -81,6 +92,8 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import FavoriteFormModal from '@/modules/favorites/components/FavoriteFormModal.vue'
 import FavoriteTile from '@/modules/favorites/components/FavoriteTile.vue'
+import DesktopRequired from '@/components/DesktopRequired.vue'
+import { getHubDynamicTiles } from '@/services/hubContext.js'
 import {
   createEmptyFavorite,
   deleteFavorite,
@@ -89,6 +102,7 @@ import {
   listAllFavorites,
   newFavoriteId,
   pinAppAsFavorite,
+  reorderFavorites,
   saveFavorite,
   seedDefaultFavorites,
   getAppsForPicker
@@ -97,16 +111,29 @@ import { pickProjectFolder } from '@/services/launcher.js'
 
 const router = useRouter()
 const favorites = ref([])
+const hubTiles = ref([])
 const apps = ref([])
 const search = ref('')
 const editMode = ref(false)
+const focusIndex = ref(0)
+const dragFrom = ref(null)
 const message = ref('')
 const messageType = ref('info')
 const modalOpen = ref(false)
 const modalMode = ref('add')
 const editing = ref(createEmptyFavorite())
 
-const groups = computed(() => groupFavorites(favorites.value))
+const groups = computed(() => {
+  const base = groupFavorites(favorites.value)
+  if (!hubTiles.value.length) return base
+
+  const hubGroup = {
+    name: 'From your hub',
+    items: hubTiles.value
+  }
+  const withoutHub = base.filter(g => g.name !== 'From your hub')
+  return [hubGroup, ...withoutHub]
+})
 
 const groupNames = computed(() => {
   const names = new Set(groups.value.map(g => g.name))
@@ -131,6 +158,53 @@ const filteredGroups = computed(() => {
     .filter(g => g.items.length > 0)
 })
 
+const flatTiles = computed(() =>
+  filteredGroups.value.flatMap(g => g.items)
+)
+
+function flatIndex(groupName, itemIndex) {
+  let idx = 0
+  for (const group of filteredGroups.value) {
+    if (group.name === groupName) return idx + itemIndex
+    idx += group.items.length
+  }
+  return 0
+}
+
+function onKeydown(e) {
+  const total = flatTiles.value.length
+  if (!total) return
+
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    e.preventDefault()
+    focusIndex.value = (focusIndex.value + 1) % total
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault()
+    focusIndex.value = (focusIndex.value - 1 + total) % total
+  } else if (e.key === 'Enter') {
+    e.preventDefault()
+    const fav = flatTiles.value[focusIndex.value]
+    if (fav) onLaunch(fav)
+  }
+}
+
+function onDragStart(groupName, index) {
+  dragFrom.value = { groupName, index }
+}
+
+async function onDrop(groupName, index) {
+  if (!dragFrom.value || dragFrom.value.groupName !== groupName) return
+  const group = favorites.value.filter(f => f.groupName === groupName && f.enabled)
+  group.sort((a, b) => a.sortOrder - b.sortOrder)
+  const from = dragFrom.value.index
+  if (from === index) return
+  const [moved] = group.splice(from, 1)
+  group.splice(index, 0, moved)
+  await reorderFavorites(group.map(f => f.id))
+  dragFrom.value = null
+  await refresh()
+}
+
 function setMessage(text, type = 'info') {
   message.value = text
   messageType.value = type
@@ -138,6 +212,7 @@ function setMessage(text, type = 'info') {
 
 async function refresh() {
   favorites.value = await listAllFavorites()
+  hubTiles.value = await getHubDynamicTiles()
 }
 
 function openAdd() {
@@ -228,6 +303,7 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  outline: none;
 }
 
 .start-header {
@@ -331,6 +407,15 @@ onMounted(async () => {
 
 .tile-wrap {
   position: relative;
+}
+
+.tile-wrap.focused :deep(.tile) {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.tile-wrap[draggable="true"] {
+  cursor: grab;
 }
 
 .edit-actions {

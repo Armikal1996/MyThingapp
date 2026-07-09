@@ -82,6 +82,12 @@ export function computeNextDue(recurrence, fromDate = new Date()) {
   return d.toISOString()
 }
 
+export async function getTask(id) {
+  const db = await getDatabase()
+  const rows = await db.select('SELECT * FROM tasks WHERE id = $1', [id])
+  return rows[0] ? rowToTask(rows[0]) : null
+}
+
 export async function listTasks(kind = null) {
   const db = await getDatabase()
   const rows = kind

@@ -1,4 +1,5 @@
 import { invoke } from '@tauri-apps/api/core'
+import { listen } from '@tauri-apps/api/event'
 import { getLmStudioConfig, isTauri } from '@/services/platform.js'
 
 export function getModelOptions() {
@@ -104,5 +105,37 @@ export async function chatCompletion(modelKey, messages, modelId = null) {
     content,
     model: data?.model || modelId,
     usage: data?.usage || null
+  }
+}
+
+export async function chatCompletionStream(modelKey, messages, modelId = null, onChunk) {
+  const model = getModelByKey(modelKey)
+  if (!model) throw new Error(`Unknown model: ${modelKey}`)
+
+  if (!isTauri()) {
+    const { content } = await chatCompletion(modelKey, messages, modelId)
+    if (onChunk) onChunk(content)
+    return { content, model: modelId }
+  }
+
+  const streamId = `s-${Date.now()}`
+  const eventName = `lmstudio-stream-${streamId}`
+  let full = ''
+  const unlisten = await listen(eventName, (event) => {
+    const chunk = event.payload || ''
+    full += chunk
+    if (onChunk) onChunk(chunk, full)
+  })
+
+  try {
+    full = await invoke('lmstudio_chat_stream', {
+      streamId,
+      baseUrl: model.baseUrl,
+      model: modelId,
+      messages
+    })
+    return { content: full, model: modelId }
+  } finally {
+    unlisten()
   }
 }

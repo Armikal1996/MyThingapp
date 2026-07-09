@@ -1,5 +1,7 @@
 import { getDatabase } from '@/services/database.js'
-import { chatCompletion, getModelByKey } from '@/services/lmstudio.js'
+import { chatCompletionStream, getModelByKey } from '@/services/lmstudio.js'
+import { formatContextBlock } from '@/services/hubContext.js'
+import { systemPromptForRole, modelKeyForAgencyRole } from '@/services/agency.js'
 
 export const MODEL_KEYS = ['gemma', 'gwen']
 
@@ -107,7 +109,19 @@ export async function addMessage(threadId, role, content) {
   return { id, threadId, role, content, createdAt: now }
 }
 
-export async function sendChatMessage(threadId, userContent, modelId = null) {
+function buildSystemPrompt(thread, contextItems = []) {
+  const model = getModelByKey(thread.modelKey)
+  const base = model?.role === 'review'
+    ? systemPromptForRole('review')
+    : systemPromptForRole('implementation')
+
+  const contextBlock = formatContextBlock(contextItems)
+  if (!contextBlock) return base
+  return `${base}\n\n${contextBlock}`
+}
+
+export async function sendChatMessage(threadId, userContent, modelId = null, options = {}) {
+  const { contextItems = [], onStreamChunk = null } = options
   const thread = await getThread(threadId)
   if (!thread) throw new Error('Thread not found')
 
@@ -117,17 +131,26 @@ export async function sendChatMessage(threadId, userContent, modelId = null) {
     const history = await listMessages(threadId)
     const apiMessages = history.map(m => ({ role: m.role, content: m.content }))
 
-    const model = getModelByKey(thread.modelKey)
-    const systemPrompt = model?.role === 'review'
-      ? 'You are Gwen, a careful reviewer. Give concise, structured feedback on code, commits, and implementation plans.'
-      : 'You are Gemma, an implementation assistant. Help with specs, coding tasks, and step-by-step plans for local projects.'
-
     const messages = [
-      { role: 'system', content: systemPrompt },
+      { role: 'system', content: buildSystemPrompt(thread, contextItems) },
       ...apiMessages
     ]
 
-    const { content } = await chatCompletion(thread.modelKey, messages, modelId)
+    let content = ''
+    if (onStreamChunk) {
+      const result = await chatCompletionStream(
+        thread.modelKey,
+        messages,
+        modelId,
+        (chunk, full) => onStreamChunk(chunk, full)
+      )
+      content = result.content
+    } else {
+      const { chatCompletion } = await import('@/services/lmstudio.js')
+      const result = await chatCompletion(thread.modelKey, messages, modelId)
+      content = result.content
+    }
+
     const assistant = await addMessage(threadId, 'assistant', content)
 
     if (thread.title === 'New chat' && userContent.length > 0) {
@@ -141,4 +164,8 @@ export async function sendChatMessage(threadId, userContent, modelId = null) {
     await db.execute('DELETE FROM ai_messages WHERE id = $1', [userMsg.id])
     throw e
   }
+}
+
+export function modelKeyForAgentRole(roleId) {
+  return modelKeyForAgencyRole(roleId)
 }
