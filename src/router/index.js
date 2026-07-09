@@ -7,6 +7,7 @@ import TasksModule from '@/modules/tasks/TasksModule.vue'
 import FavoritesModule from '@/modules/favorites/FavoritesModule.vue'
 import CalendarModule from '@/modules/calendar/CalendarModule.vue'
 import MediaModule from '@/modules/media/MediaModule.vue'
+import AiModule from '@/modules/ai/AiModule.vue'
 
 const routes = [
   {
@@ -48,6 +49,12 @@ const routes = [
         name: 'media',
         component: MediaModule,
         meta: { title: 'Media' }
+      },
+      {
+        path: 'ai',
+        name: 'ai',
+        component: AiModule,
+        meta: { title: 'AI Chat' }
       },
       {
         path: 'history-game',

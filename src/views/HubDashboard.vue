@@ -3,7 +3,7 @@
     <section class="hero">
       <h2>Your local command center</h2>
       <p>
-        MyThing runs on your PC. Phase 5 adds a games queue and movies/series watchlist.
+        MyThing runs on your PC. Phase 6 wires LM Studio chat and an agent announcement inbox.
       </p>
     </section>
 
@@ -27,6 +27,10 @@
       <article class="status-card">
         <p class="label">Watchlist</p>
         <p class="value">{{ counts.watchlist ?? 0 }}</p>
+      </article>
+      <article class="status-card">
+        <p class="label">AI chats</p>
+        <p class="value">{{ counts.aiThreads ?? 0 }}</p>
       </article>
     </section>
 
@@ -62,7 +66,7 @@
     </section>
 
     <section class="lmstudio">
-      <h3>LM Studio (configured, not wired yet)</h3>
+      <h3>LM Studio</h3>
       <div class="lm-grid">
         <article v-for="(model, key) in lmstudio.models" :key="key" class="lm-card">
           <p class="lm-name">{{ model.label }}</p>
@@ -71,8 +75,8 @@
         </article>
       </div>
       <p class="hint">
-        Load Gemma on port <strong>1234</strong> and Gwen on port <strong>1235</strong> in LM Studio
-        before Phase 6 (AI chat). MyThing will call those OpenAI-compatible endpoints.
+        Load Gemma on port <strong>1234</strong> and Gwen on port <strong>1235</strong> in LM Studio,
+        then open <strong>AI Chat</strong> to check status and start a conversation.
       </p>
     </section>
   </div>
@@ -86,7 +90,7 @@ import { getPlatformInfo, getLmStudioConfig } from '@/services/platform.js'
 
 const platform = ref({ runtime: 'loading' })
 const meta = ref({})
-const counts = ref({ apps: 0, tasks: 0, favorites: 0, games: 0, watchlist: 0 })
+const counts = ref({ apps: 0, tasks: 0, favorites: 0, games: 0, watchlist: 0, aiThreads: 0 })
 const backupMsg = ref('')
 const lmstudio = getLmStudioConfig()
 
@@ -144,9 +148,8 @@ const modules = [
     title: 'AI Chat',
     description: 'LM Studio bots and agent inbox',
     icon: '✦',
-    to: '/',
-    disabled: true,
-    phase: 6
+    to: '/ai',
+    disabled: false
   }
 ]
 
@@ -207,7 +210,7 @@ onMounted(async () => {
 
 .status-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 12px;
 }
 

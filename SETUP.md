@@ -27,7 +27,7 @@ npm run dev
 
 ## LM Studio — when to load models
 
-**Not needed for Phase 0.** Load models when we start **Phase 6 (AI Chat)**.
+Load models for **AI Chat (Phase 6)**.
 
 | Model | Port | Role in MyThing |
 |-------|------|-----------------|
@@ -92,6 +92,13 @@ Point exports at your OneDrive folder if you want cloud copies.
 2. **Games** tab — track backlog, playing, completed, and dropped games with platform and hours.
 3. **Movies & Series** tab — watchlist with season/episode progress and ratings.
 4. Filter by status and search across titles.
+
+## AI Chat (Phase 6)
+
+1. Start **Gemma** on port **1234** and **Gwen** on port **1235** in LM Studio.
+2. Open **AI Chat** → click **Check LM Studio** — green dots mean each model is reachable.
+3. **Chat** tab — create threads, pick Gemma (implementation) or Gwen (review), send messages.
+4. **Agent inbox** tab — post announcements for agents; **Send to chat** dispatches to the right model.
 
 ## Database
 

@@ -29,14 +29,16 @@ export async function getTableCounts() {
     const [favorites] = await db.select('SELECT COUNT(*) as count FROM favorites')
     const [games] = await db.select('SELECT COUNT(*) as count FROM media_games')
     const [watchlist] = await db.select('SELECT COUNT(*) as count FROM media_watchlist')
+    const [aiThreads] = await db.select('SELECT COUNT(*) as count FROM ai_threads')
     return {
       apps: apps?.count ?? 0,
       tasks: tasks?.count ?? 0,
       favorites: favorites?.count ?? 0,
       games: games?.count ?? 0,
-      watchlist: watchlist?.count ?? 0
+      watchlist: watchlist?.count ?? 0,
+      aiThreads: aiThreads?.count ?? 0
     }
   } catch {
-    return { apps: 0, tasks: 0, favorites: 0, games: 0, watchlist: 0 }
+    return { apps: 0, tasks: 0, favorites: 0, games: 0, watchlist: 0, aiThreads: 0 }
   }
 }

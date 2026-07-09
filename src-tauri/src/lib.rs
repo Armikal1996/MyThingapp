@@ -1,7 +1,9 @@
 mod backup;
 mod launcher;
+mod lmstudio;
 
 use backup::{export_backup_file, pick_and_read_backup};
+use lmstudio::{lmstudio_chat_completion, lmstudio_list_models};
 use launcher::{
     get_default_work_folder, open_app_folder, pick_project_folder, pick_work_folder,
     run_app_command, scan_work_folder_cmd,
@@ -47,6 +49,12 @@ pub fn run() {
             sql: include_str!("../../data/migrations/006_media.sql"),
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 7,
+            description: "ai_chat",
+            sql: include_str!("../../data/migrations/007_ai_chat.sql"),
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri::Builder::default()
@@ -78,6 +86,8 @@ pub fn run() {
             pick_work_folder,
             export_backup_file,
             pick_and_read_backup,
+            lmstudio_list_models,
+            lmstudio_chat_completion,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -87,7 +97,7 @@ pub fn run() {
 fn get_platform_info() -> serde_json::Value {
     serde_json::json!({
         "name": "MyThing",
-        "phase": 5,
+        "phase": 6,
         "version": env!("CARGO_PKG_VERSION")
     })
 }

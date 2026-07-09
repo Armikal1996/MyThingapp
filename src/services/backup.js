@@ -15,6 +15,9 @@ async function collectBackupData() {
   const reminders = await db.select('SELECT * FROM reminders ORDER BY remind_at')
   const mediaGames = await db.select('SELECT * FROM media_games ORDER BY title')
   const mediaWatchlist = await db.select('SELECT * FROM media_watchlist ORDER BY title')
+  const aiThreads = await db.select('SELECT * FROM ai_threads ORDER BY updated_at')
+  const aiMessages = await db.select('SELECT * FROM ai_messages ORDER BY created_at')
+  const agentAnnouncements = await db.select('SELECT * FROM agent_announcements ORDER BY created_at')
 
   return {
     version: BACKUP_VERSION,
@@ -27,7 +30,10 @@ async function collectBackupData() {
     calendarEvents,
     reminders,
     mediaGames,
-    mediaWatchlist
+    mediaWatchlist,
+    aiThreads,
+    aiMessages,
+    agentAnnouncements
   }
 }
 
@@ -64,6 +70,9 @@ export async function importBackup() {
 
   await db.execute('DELETE FROM reminders')
   await db.execute('DELETE FROM calendar_events')
+  await db.execute('DELETE FROM ai_messages')
+  await db.execute('DELETE FROM ai_threads')
+  await db.execute('DELETE FROM agent_announcements')
   await db.execute('DELETE FROM media_watchlist')
   await db.execute('DELETE FROM media_games')
   await db.execute('DELETE FROM favorites')
@@ -175,6 +184,34 @@ export async function importBackup() {
         row.id, row.title, row.description, row.media_type, row.status,
         row.season, row.episode, row.rating, row.notes, row.tags,
         row.created_at, row.updated_at
+      ]
+    )
+  }
+
+  for (const row of data.aiThreads || []) {
+    await db.execute(
+      `INSERT INTO ai_threads (id, title, model_key, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [row.id, row.title, row.model_key, row.created_at, row.updated_at]
+    )
+  }
+
+  for (const row of data.aiMessages || []) {
+    await db.execute(
+      `INSERT INTO ai_messages (id, thread_id, role, content, created_at)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [row.id, row.thread_id, row.role, row.content, row.created_at]
+    )
+  }
+
+  for (const row of data.agentAnnouncements || []) {
+    await db.execute(
+      `INSERT INTO agent_announcements (
+        id, title, body, agent_role, priority, status, created_at, updated_at, read_at
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+      [
+        row.id, row.title, row.body, row.agent_role, row.priority, row.status,
+        row.created_at, row.updated_at, row.read_at
       ]
     )
   }

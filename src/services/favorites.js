@@ -18,6 +18,7 @@ export const BUILTIN_ROUTES = [
   { id: '/favorites', label: 'Favorites' },
   { id: '/calendar', label: 'Calendar' },
   { id: '/media', label: 'Media' },
+  { id: '/ai', label: 'AI Chat' },
   { id: '/history-game', label: 'History Game' }
 ]
 

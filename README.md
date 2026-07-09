@@ -14,6 +14,8 @@ Local desktop hub for tasks, calendar, media, app launching, and AI agents.
 
 **Phase 5:** Media — games queue and movies/series watchlist.
 
+**Phase 6:** AI Chat — LM Studio (Gemma/Gwen) and agent announcement inbox.
+
 ## Quick start
 
 ```bash
