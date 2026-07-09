@@ -20,6 +20,23 @@ Polish/QA pass completed after Phase 6.
 
 ## Quick start
 
+### Double-click launcher (easiest)
+
+1. Build the launcher once:
+
+```powershell
+cd "C:\Users\khoub\OneDrive\Desktop\My thing app v2.0"
+npm run launcher:build
+```
+
+2. Double-click **`Launch-MyThing.exe`** in the project folder.
+
+It loads your full Windows PATH (so Node and Cargo are found), installs npm deps if needed, then runs `npm run tauri:dev`. Pin it to the taskbar or keep a Desktop shortcut — the `.exe` must stay in the project folder.
+
+Alternative: run **`Launch-MyThing.ps1`** (same behavior via PowerShell).
+
+### Terminal
+
 ```bash
 npm install
 npm run tauri:dev
@@ -31,7 +48,9 @@ See [SETUP.md](./SETUP.md) for LM Studio ports and prerequisites.
 
 | Command | Description |
 |---------|-------------|
+| `Launch-MyThing.exe` | Double-click dev launcher (build with `launcher:build` first) |
+| `npm run launcher:build` | Build / refresh `Launch-MyThing.exe` |
 | `npm run tauri:dev` | Desktop app (recommended) |
 | `npm run dev` | Browser preview only |
-| `npm run tauri:build` | Production installer |
+| `npm run tauri:build` | Production installer (`.msi` / setup `.exe`) |
 | `npm run validate` | Validate history narration JSON |

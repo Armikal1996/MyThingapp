@@ -1,0 +1,9 @@
+[package]
+name = "mything-launcher"
+version = "0.1.0"
+edition = "2021"
+description = "Double-click launcher for MyThing dev (npm run tauri:dev)"
+
+[[bin]]
+name = "Launch-MyThing"
+path = "src/main.rs"
