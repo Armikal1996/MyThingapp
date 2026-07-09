@@ -6,6 +6,8 @@ Local desktop hub for tasks, calendar, media, app launching, and AI agents.
 
 **Phase 1:** App Launcher — scan WOrK folder, add/edit/delete apps, run install/start in terminal.
 
+**Phase 2:** Tasks — work list, moving kanban, cycling recurring tasks, JSON backup export/import.
+
 ## Quick start
 
 ```bash

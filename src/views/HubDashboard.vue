@@ -3,8 +3,7 @@
     <section class="hero">
       <h2>Your local command center</h2>
       <p>
-        MyThing runs on your PC. Phase 1 adds the app launcher for your WOrK projects.
-        More modules plug in from here.
+        MyThing runs on your PC. Phase 2 adds tasks (work, moving, cycling) and local backup export/import.
       </p>
     </section>
 
@@ -48,6 +47,16 @@
       </div>
     </section>
 
+    <section class="backup">
+      <h3>Backup</h3>
+      <p class="hint">Export all apps, tasks, and settings to a JSON file. Import restores everything.</p>
+      <div class="backup-actions">
+        <button class="backup-btn" @click="onExport">Export backup</button>
+        <button class="backup-btn" :disabled="platform.runtime !== 'desktop'" @click="onImport">Import backup</button>
+      </div>
+      <p v-if="backupMsg" class="backup-msg">{{ backupMsg }}</p>
+    </section>
+
     <section class="lmstudio">
       <h3>LM Studio (configured, not wired yet)</h3>
       <div class="lm-grid">
@@ -68,11 +77,13 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { getPlatformMeta, getTableCounts } from '@/services/database.js'
+import { exportBackup, importBackup } from '@/services/backup.js'
 import { getPlatformInfo, getLmStudioConfig } from '@/services/platform.js'
 
 const platform = ref({ runtime: 'loading' })
 const meta = ref({})
 const counts = ref({ apps: 0, tasks: 0, favorites: 0 })
+const backupMsg = ref('')
 const lmstudio = getLmStudioConfig()
 
 const modules = [
@@ -97,9 +108,8 @@ const modules = [
     title: 'Tasks',
     description: 'Work, moving, and cycling tasks',
     icon: '☑',
-    to: '/',
-    disabled: true,
-    phase: 2
+    to: '/tasks',
+    disabled: false
   },
   {
     id: 'favorites',
@@ -142,6 +152,29 @@ const modules = [
 function onModuleClick(event, module) {
   if (module.disabled) {
     event.preventDefault()
+  }
+}
+
+async function onExport() {
+  try {
+    const r = await exportBackup()
+    backupMsg.value = r.path ? `Saved to ${r.path}` : 'Backup exported.'
+    counts.value = await getTableCounts()
+  } catch (e) {
+    backupMsg.value = e.message
+  }
+}
+
+async function onImport() {
+  if (!confirm('Import replaces all current data. Continue?')) return
+  try {
+    const r = await importBackup()
+    if (!r) return
+    backupMsg.value = 'Backup restored.'
+    meta.value = await getPlatformMeta()
+    counts.value = await getTableCounts()
+  } catch (e) {
+    backupMsg.value = e.message
   }
 }
 
@@ -197,7 +230,8 @@ onMounted(async () => {
 }
 
 .modules h3,
-.lmstudio h3 {
+.lmstudio h3,
+.backup h3 {
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -288,6 +322,33 @@ onMounted(async () => {
   font-size: 13px;
   color: #94a3b8;
   line-height: 1.5;
+}
+
+.backup-actions {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.backup-btn {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.backup-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.backup-msg {
+  font-size: 13px;
+  color: #86efac;
 }
 
 @media (max-width: 900px) {

@@ -3,6 +3,7 @@ import HubLayout from '@/layouts/HubLayout.vue'
 import HubDashboard from '@/views/HubDashboard.vue'
 import HistoryGameModule from '@/modules/history-game/HistoryGameModule.vue'
 import LauncherModule from '@/modules/launcher/LauncherModule.vue'
+import TasksModule from '@/modules/tasks/TasksModule.vue'
 
 const routes = [
   {
@@ -20,6 +21,12 @@ const routes = [
         name: 'launcher',
         component: LauncherModule,
         meta: { title: 'App Launcher' }
+      },
+      {
+        path: 'tasks',
+        name: 'tasks',
+        component: TasksModule,
+        meta: { title: 'Tasks' }
       },
       {
         path: 'history-game',

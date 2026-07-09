@@ -1,5 +1,7 @@
+mod backup;
 mod launcher;
 
+use backup::{export_backup_file, pick_and_read_backup};
 use launcher::{
     get_default_work_folder, open_app_folder, pick_project_folder, pick_work_folder,
     run_app_command, scan_work_folder_cmd,
@@ -19,6 +21,12 @@ pub fn run() {
             version: 2,
             description: "launcher_apps",
             sql: include_str!("../../data/migrations/002_launcher_apps.sql"),
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 3,
+            description: "tasks_and_backup",
+            sql: include_str!("../../data/migrations/003_tasks_and_backup.sql"),
             kind: MigrationKind::Up,
         },
     ];
@@ -49,6 +57,8 @@ pub fn run() {
             open_app_folder,
             pick_project_folder,
             pick_work_folder,
+            export_backup_file,
+            pick_and_read_backup,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -58,7 +68,7 @@ pub fn run() {
 fn get_platform_info() -> serde_json::Value {
     serde_json::json!({
         "name": "MyThing",
-        "phase": 1,
+        "phase": 2,
         "version": env!("CARGO_PKG_VERSION")
     })
 }

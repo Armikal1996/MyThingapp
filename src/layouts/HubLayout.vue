@@ -5,7 +5,7 @@
         <span class="brand-mark">M</span>
         <div>
           <p class="brand-title">MyThing</p>
-          <p class="brand-sub">Phase 1</p>
+          <p class="brand-sub">Phase 2</p>
         </div>
       </div>
 
@@ -52,8 +52,8 @@ const platformVersion = ref('0.1.0')
 const navItems = [
   { to: '/', label: 'Dashboard', icon: '⌂' },
   { to: '/launcher', label: 'Launcher', icon: '▶' },
+  { to: '/tasks', label: 'Tasks', icon: '☑' },
   { to: '/history-game', label: 'History Game', icon: '◎' },
-  { to: '/', label: 'Tasks', icon: '☑', soon: true },
   { to: '/', label: 'Calendar', icon: '📅', soon: true },
   { to: '/', label: 'Media', icon: '▣', soon: true },
   { to: '/', label: 'AI Chat', icon: '✦', soon: true },

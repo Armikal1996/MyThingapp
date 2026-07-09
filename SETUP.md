@@ -56,6 +56,22 @@ Ports are configured in `config/lmstudio.json`.
 
 Re-scanning never overwrites commands you already set — only adds new folders.
 
+## Tasks (Phase 2)
+
+1. Open **Tasks** in the sidebar.
+2. **Work** — filter by Backlog / Active / Done.
+3. **Moving** — kanban board (Backlog → To Do → Doing → Done).
+4. **Cycling** — recurring tasks; click **Complete** to schedule the next due date.
+
+## Backup
+
+From **Dashboard** or **Tasks** toolbar:
+
+- **Export backup** — saves apps, tasks, meta, and favorites to a JSON file.
+- **Import backup** — restores from a JSON file (replaces current data).
+
+Point exports at your OneDrive folder if you want cloud copies.
+
 ## Database
 
 SQLite file: `mything.db` (created by Tauri in app data dir on first launch).
