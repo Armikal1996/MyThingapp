@@ -72,6 +72,13 @@ From **Dashboard** or **Tasks** toolbar:
 
 Point exports at your OneDrive folder if you want cloud copies.
 
+## Favorites (Phase 3)
+
+1. Open **Favorites** in the sidebar.
+2. Click tiles to open modules, start apps, open links, or folders.
+3. **Edit** mode — add, edit, delete, or pin apps from the launcher.
+4. Use the search bar to filter like Windows Start menu.
+
 ## Database
 
 SQLite file: `mything.db` (created by Tauri in app data dir on first launch).

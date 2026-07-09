@@ -1,0 +1,13 @@
+{
+  "groups": [
+    {
+      "name": "Modules",
+      "items": [
+        { "id": "fav-dashboard", "label": "Dashboard", "icon": "⌂", "targetType": "route", "targetId": "/", "sortOrder": 0 },
+        { "id": "fav-launcher", "label": "Launcher", "icon": "▶", "targetType": "route", "targetId": "/launcher", "sortOrder": 1 },
+        { "id": "fav-tasks", "label": "Tasks", "icon": "☑", "targetType": "route", "targetId": "/tasks", "sortOrder": 2 },
+        { "id": "fav-history", "label": "History Game", "icon": "◎", "targetType": "route", "targetId": "/history-game", "sortOrder": 3 }
+      ]
+    }
+  ]
+}

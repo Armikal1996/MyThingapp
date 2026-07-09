@@ -4,6 +4,7 @@ import HubDashboard from '@/views/HubDashboard.vue'
 import HistoryGameModule from '@/modules/history-game/HistoryGameModule.vue'
 import LauncherModule from '@/modules/launcher/LauncherModule.vue'
 import TasksModule from '@/modules/tasks/TasksModule.vue'
+import FavoritesModule from '@/modules/favorites/FavoritesModule.vue'
 
 const routes = [
   {
@@ -27,6 +28,12 @@ const routes = [
         name: 'tasks',
         component: TasksModule,
         meta: { title: 'Tasks' }
+      },
+      {
+        path: 'favorites',
+        name: 'favorites',
+        component: FavoritesModule,
+        meta: { title: 'Favorites' }
       },
       {
         path: 'history-game',

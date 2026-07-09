@@ -3,7 +3,7 @@
     <section class="hero">
       <h2>Your local command center</h2>
       <p>
-        MyThing runs on your PC. Phase 2 adds tasks (work, moving, cycling) and local backup export/import.
+        MyThing runs on your PC. Phase 3 adds a Start-menu style favorites panel for quick access.
       </p>
     </section>
 
@@ -116,9 +116,8 @@ const modules = [
     title: 'Favorites',
     description: 'Start-menu style quick panel',
     icon: '★',
-    to: '/',
-    disabled: true,
-    phase: 3
+    to: '/favorites',
+    disabled: false
   },
   {
     id: 'calendar',

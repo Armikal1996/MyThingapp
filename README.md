@@ -8,6 +8,8 @@ Local desktop hub for tasks, calendar, media, app launching, and AI agents.
 
 **Phase 2:** Tasks — work list, moving kanban, cycling recurring tasks, JSON backup export/import.
 
+**Phase 3:** Favorites — Start-menu panel with modules, apps, links, and folders.
+
 ## Quick start
 
 ```bash

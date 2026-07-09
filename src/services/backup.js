@@ -103,8 +103,14 @@ export async function importBackup() {
 
   for (const row of data.favorites || []) {
     await db.execute(
-      'INSERT INTO favorites (id, label, target_type, target_id, sort_order, created_at) VALUES ($1,$2,$3,$4,$5,$6)',
-      [row.id, row.label, row.target_type, row.target_id, row.sort_order, row.created_at]
+      `INSERT INTO favorites (
+        id, label, icon, description, target_type, target_id,
+        group_name, sort_order, enabled, created_at
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+      [
+        row.id, row.label, row.icon, row.description, row.target_type, row.target_id,
+        row.group_name || 'Pinned', row.sort_order, row.enabled ?? 1, row.created_at
+      ]
     )
   }
 

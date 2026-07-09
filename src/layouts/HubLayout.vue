@@ -5,7 +5,7 @@
         <span class="brand-mark">M</span>
         <div>
           <p class="brand-title">MyThing</p>
-          <p class="brand-sub">Phase 2</p>
+          <p class="brand-sub">Phase 3</p>
         </div>
       </div>
 
@@ -53,11 +53,11 @@ const navItems = [
   { to: '/', label: 'Dashboard', icon: '⌂' },
   { to: '/launcher', label: 'Launcher', icon: '▶' },
   { to: '/tasks', label: 'Tasks', icon: '☑' },
+  { to: '/favorites', label: 'Favorites', icon: '★' },
   { to: '/history-game', label: 'History Game', icon: '◎' },
   { to: '/', label: 'Calendar', icon: '📅', soon: true },
   { to: '/', label: 'Media', icon: '▣', soon: true },
-  { to: '/', label: 'AI Chat', icon: '✦', soon: true },
-  { to: '/', label: 'Favorites', icon: '★', soon: true }
+  { to: '/', label: 'AI Chat', icon: '✦', soon: true }
 ]
 
 const pageTitle = computed(() => route.meta.title || 'MyThing')

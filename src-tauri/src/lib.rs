@@ -29,6 +29,12 @@ pub fn run() {
             sql: include_str!("../../data/migrations/003_tasks_and_backup.sql"),
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 4,
+            description: "favorites_panel",
+            sql: include_str!("../../data/migrations/004_favorites_panel.sql"),
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri::Builder::default()
@@ -68,7 +74,7 @@ pub fn run() {
 fn get_platform_info() -> serde_json::Value {
     serde_json::json!({
         "name": "MyThing",
-        "phase": 2,
+        "phase": 3,
         "version": env!("CARGO_PKG_VERSION")
     })
 }
