@@ -13,7 +13,8 @@
     "validate": "node scripts/validateNarration.js",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build"
+    "tauri:build": "tauri build",
+    "launcher:build": "cargo build --release --manifest-path launcher/Cargo.toml --target-dir launcher/target && node scripts/copyLauncher.js"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.11.1",

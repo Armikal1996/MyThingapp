@@ -20,10 +20,14 @@ Polish/QA pass completed after Phase 6.
 
 ## Quick start
 
+**Double-click** `Launch-MyThing.exe` in the project folder (build it once with `npm run launcher:build`), or run:
+
 ```bash
 npm install
 npm run tauri:dev
 ```
+
+Or use `Launch-MyThing.ps1` if you prefer PowerShell.
 
 See [SETUP.md](./SETUP.md) for LM Studio ports and prerequisites.
 

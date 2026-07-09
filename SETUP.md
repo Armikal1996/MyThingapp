@@ -14,6 +14,32 @@ $env:Path = "$env:USERPROFILE\.cargo\bin;" + $env:Path
 
 ## Run the desktop app
 
+### Option A — double-click launcher (recommended)
+
+1. Build the launcher once (needs Rust installed):
+
+```powershell
+cd "C:\Users\khoub\OneDrive\Desktop\My thing app v2.0"
+npm run launcher:build
+```
+
+2. Double-click **`Launch-MyThing.exe`** in the project folder.
+
+The exe prepends `%USERPROFILE%\.cargo\bin` to PATH, installs npm deps if needed, then runs `npm run tauri:dev`.
+
+You can pin `Launch-MyThing.exe` to the taskbar or copy it to your Desktop (keep it in the project folder, or it won't find the app).
+
+### Option B — PowerShell script
+
+Right-click **`Launch-MyThing.ps1`** → **Run with PowerShell**, or:
+
+```powershell
+cd "C:\Users\khoub\OneDrive\Desktop\My thing app v2.0"
+.\Launch-MyThing.ps1
+```
+
+### Option C — terminal
+
 ```bash
 npm install
 npm run tauri:dev
