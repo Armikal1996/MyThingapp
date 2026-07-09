@@ -1,10 +1,10 @@
-# MyThing — Phase 0 Setup
+# MyThing — Setup
 
 ## Prerequisites
 
 - Node.js 18+ (you have v24)
 - Rust (via rustup) — ensure `%USERPROFILE%\.cargo\bin` is on your PATH
-- LM Studio (for AI phases later)
+- LM Studio (for AI Chat)
 
 If `tauri` says `cargo not found`, open a **new terminal** after installing Rust, or run:
 
@@ -27,7 +27,7 @@ npm run dev
 
 ## LM Studio — when to load models
 
-**Not needed for Phase 0.** Load models when we start **Phase 6 (AI Chat)**.
+Load models for **AI Chat (Phase 6)**.
 
 | Model | Port | Role in MyThing |
 |-------|------|-----------------|
@@ -55,6 +55,50 @@ Ports are configured in `config/lmstudio.json`.
 6. Use **Install** / **Start** to open a terminal and run your commands.
 
 Re-scanning never overwrites commands you already set — only adds new folders.
+
+## Tasks (Phase 2)
+
+1. Open **Tasks** in the sidebar.
+2. **Work** — filter by Backlog / Active / Done.
+3. **Moving** — kanban board (Backlog → To Do → Doing → Done).
+4. **Cycling** — recurring tasks; click **Complete** to schedule the next due date.
+
+## Backup
+
+From **Dashboard** or **Tasks** toolbar:
+
+- **Export backup** — saves apps, tasks, favorites, calendar, reminders, media, AI chats, announcements, and settings to JSON.
+- **Import backup** — restores from a JSON file (replaces current data; runs in a transaction).
+
+Point exports at your OneDrive folder if you want cloud copies.
+
+## Favorites (Phase 3)
+
+1. Open **Favorites** in the sidebar.
+2. Click tiles to open modules, start apps, open links, or folders.
+3. **Edit** mode — add, edit, delete, or pin apps from the launcher.
+4. Use the search bar to filter like Windows Start menu.
+
+## Calendar (Phase 4)
+
+1. Open **Calendar** in the sidebar.
+2. Click a day to view events; use **+ Event** to schedule.
+3. **+ Reminder** sets a one-shot desktop notification (checked every 30s while app is open).
+4. Allow notifications when Windows prompts on first reminder.
+
+## Media (Phase 5)
+
+1. Open **Media** in the sidebar.
+2. **Games** tab — track backlog, playing, completed, and dropped games with platform and hours.
+3. **Movies & Series** tab — watchlist with season/episode progress and ratings.
+4. Filter by status and search across titles.
+
+## AI Chat (Phase 6)
+
+1. Start **Gemma** on port **1234** and **Gwen** on port **1235** in LM Studio.
+2. Open **AI Chat** → click **Check LM Studio** — green dots mean each model is reachable.
+3. **Chat** tab — create threads, pick Gemma (implementation) or Gwen (review), send messages.
+4. **Agent inbox** tab — post announcements for agents; **Send to chat** dispatches to the right model.
 
 ## Database
 

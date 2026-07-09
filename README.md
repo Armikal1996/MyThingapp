@@ -6,6 +6,18 @@ Local desktop hub for tasks, calendar, media, app launching, and AI agents.
 
 **Phase 1:** App Launcher — scan WOrK folder, add/edit/delete apps, run install/start in terminal.
 
+**Phase 2:** Tasks — work list, moving kanban, cycling recurring tasks, JSON backup export/import.
+
+**Phase 3:** Favorites — Start-menu panel with modules, apps, links, and folders.
+
+**Phase 4:** Calendar — month view, events, and desktop reminder notifications.
+
+**Phase 5:** Media — games queue and movies/series watchlist.
+
+**Phase 6:** AI Chat — LM Studio (Gemma/Gwen) and agent announcement inbox.
+
+Polish/QA pass completed after Phase 6.
+
 ## Quick start
 
 ```bash

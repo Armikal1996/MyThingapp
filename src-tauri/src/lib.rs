@@ -1,5 +1,9 @@
+mod backup;
 mod launcher;
+mod lmstudio;
 
+use backup::{export_backup_file, pick_and_read_backup};
+use lmstudio::{lmstudio_chat_completion, lmstudio_list_models};
 use launcher::{
     get_default_work_folder, open_app_folder, pick_project_folder, pick_work_folder,
     run_app_command, scan_work_folder_cmd,
@@ -21,11 +25,42 @@ pub fn run() {
             sql: include_str!("../../data/migrations/002_launcher_apps.sql"),
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 3,
+            description: "tasks_and_backup",
+            sql: include_str!("../../data/migrations/003_tasks_and_backup.sql"),
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 4,
+            description: "favorites_panel",
+            sql: include_str!("../../data/migrations/004_favorites_panel.sql"),
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 5,
+            description: "calendar_reminders",
+            sql: include_str!("../../data/migrations/005_calendar_reminders.sql"),
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 6,
+            description: "media",
+            sql: include_str!("../../data/migrations/006_media.sql"),
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 7,
+            description: "ai_chat",
+            sql: include_str!("../../data/migrations/007_ai_chat.sql"),
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_notification::init())
         .plugin(
             tauri_plugin_sql::Builder::default()
                 .add_migrations("sqlite:mything.db", migrations)
@@ -49,6 +84,10 @@ pub fn run() {
             open_app_folder,
             pick_project_folder,
             pick_work_folder,
+            export_backup_file,
+            pick_and_read_backup,
+            lmstudio_list_models,
+            lmstudio_chat_completion,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -58,7 +97,7 @@ pub fn run() {
 fn get_platform_info() -> serde_json::Value {
     serde_json::json!({
         "name": "MyThing",
-        "phase": 1,
+        "phase": 6,
         "version": env!("CARGO_PKG_VERSION")
     })
 }

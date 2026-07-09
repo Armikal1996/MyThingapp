@@ -3,8 +3,7 @@
     <section class="hero">
       <h2>Your local command center</h2>
       <p>
-        MyThing runs on your PC. Phase 1 adds the app launcher for your WOrK projects.
-        More modules plug in from here.
+        MyThing runs on your PC — tasks, calendar, media, launcher, favorites, and local AI via LM Studio.
       </p>
     </section>
 
@@ -14,16 +13,36 @@
         <p class="value">{{ platform.runtime }}</p>
       </article>
       <article class="status-card">
-        <p class="label">Database</p>
-        <p class="value">SQLite v{{ meta.schema_version || '—' }}</p>
+        <p class="label">Schema</p>
+        <p class="value">v{{ meta.schema_version || '—' }}</p>
       </article>
       <article class="status-card">
-        <p class="label">Registered apps</p>
+        <p class="label">Apps</p>
         <p class="value">{{ counts.apps }}</p>
       </article>
       <article class="status-card">
         <p class="label">Tasks</p>
-        <p class="value">{{ counts.tasks }}</p>
+        <p class="value">{{ counts.tasks ?? 0 }}</p>
+      </article>
+      <article class="status-card">
+        <p class="label">Favorites</p>
+        <p class="value">{{ counts.favorites ?? 0 }}</p>
+      </article>
+      <article class="status-card">
+        <p class="label">Events</p>
+        <p class="value">{{ counts.events ?? 0 }}</p>
+      </article>
+      <article class="status-card">
+        <p class="label">Games</p>
+        <p class="value">{{ counts.games ?? 0 }}</p>
+      </article>
+      <article class="status-card">
+        <p class="label">Watchlist</p>
+        <p class="value">{{ counts.watchlist ?? 0 }}</p>
+      </article>
+      <article class="status-card">
+        <p class="label">AI chats</p>
+        <p class="value">{{ counts.aiThreads ?? 0 }}</p>
       </article>
     </section>
 
@@ -48,8 +67,18 @@
       </div>
     </section>
 
+    <section class="backup">
+      <h3>Backup</h3>
+      <p class="hint">Export apps, tasks, favorites, calendar, media, AI chats, and settings to JSON. Import replaces current data.</p>
+      <div class="backup-actions">
+        <button class="backup-btn" @click="onExport">Export backup</button>
+        <button class="backup-btn" :disabled="platform.runtime !== 'desktop'" @click="onImport">Import backup</button>
+      </div>
+      <p v-if="backupMsg" class="backup-msg">{{ backupMsg }}</p>
+    </section>
+
     <section class="lmstudio">
-      <h3>LM Studio (configured, not wired yet)</h3>
+      <h3>LM Studio</h3>
       <div class="lm-grid">
         <article v-for="(model, key) in lmstudio.models" :key="key" class="lm-card">
           <p class="lm-name">{{ model.label }}</p>
@@ -58,8 +87,8 @@
         </article>
       </div>
       <p class="hint">
-        Load Gemma on port <strong>1234</strong> and Gwen on port <strong>1235</strong> in LM Studio
-        before Phase 6 (AI chat). MyThing will call those OpenAI-compatible endpoints.
+        Load Gemma on port <strong>1234</strong> and Gwen on port <strong>1235</strong> in LM Studio,
+        then open <strong>AI Chat</strong> to check status and start a conversation.
       </p>
     </section>
   </div>
@@ -68,22 +97,16 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { getPlatformMeta, getTableCounts } from '@/services/database.js'
+import { exportBackup, importBackup } from '@/services/backup.js'
 import { getPlatformInfo, getLmStudioConfig } from '@/services/platform.js'
 
 const platform = ref({ runtime: 'loading' })
 const meta = ref({})
-const counts = ref({ apps: 0, tasks: 0, favorites: 0 })
+const counts = ref({ apps: 0, tasks: 0, favorites: 0, games: 0, watchlist: 0, aiThreads: 0, events: 0 })
+const backupMsg = ref('')
 const lmstudio = getLmStudioConfig()
 
 const modules = [
-  {
-    id: 'history-game',
-    title: 'History Game',
-    description: 'Time Web Academy — branching history explorer',
-    icon: '◎',
-    to: '/history-game',
-    disabled: false
-  },
   {
     id: 'launcher',
     title: 'App Launcher',
@@ -97,51 +120,77 @@ const modules = [
     title: 'Tasks',
     description: 'Work, moving, and cycling tasks',
     icon: '☑',
-    to: '/',
-    disabled: true,
-    phase: 2
+    to: '/tasks',
+    disabled: false
   },
   {
     id: 'favorites',
     title: 'Favorites',
     description: 'Start-menu style quick panel',
     icon: '★',
-    to: '/',
-    disabled: true,
-    phase: 3
+    to: '/favorites',
+    disabled: false
   },
   {
     id: 'calendar',
     title: 'Calendar',
     description: 'Events and reminders',
     icon: '📅',
-    to: '/',
-    disabled: true,
-    phase: 4
+    to: '/calendar',
+    disabled: false
   },
   {
     id: 'media',
     title: 'Media',
     description: 'Games to play and watchlists',
     icon: '▣',
-    to: '/',
-    disabled: true,
-    phase: 5
+    to: '/media',
+    disabled: false
   },
   {
     id: 'ai',
     title: 'AI Chat',
     description: 'LM Studio bots and agent inbox',
     icon: '✦',
-    to: '/',
-    disabled: true,
-    phase: 6
+    to: '/ai',
+    disabled: false
+  },
+  {
+    id: 'history-game',
+    title: 'History Game',
+    description: 'Time Web Academy — branching history explorer',
+    icon: '◎',
+    to: '/history-game',
+    disabled: false
   }
 ]
 
 function onModuleClick(event, module) {
   if (module.disabled) {
     event.preventDefault()
+  }
+}
+
+async function onExport() {
+  try {
+    const r = await exportBackup()
+    backupMsg.value = r.path ? `Saved to ${r.path}` : 'Backup exported.'
+    counts.value = await getTableCounts()
+  } catch (e) {
+    backupMsg.value = e.message
+  }
+}
+
+async function onImport() {
+  if (!confirm('Import replaces all current data. Continue?')) return
+  try {
+    const r = await importBackup()
+    if (!r) return
+    backupMsg.value = 'Backup restored.'
+    meta.value = await getPlatformMeta()
+    counts.value = await getTableCounts()
+  } catch (e) {
+    backupMsg.value = e.message
   }
 }
 
@@ -173,7 +222,7 @@ onMounted(async () => {
 
 .status-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 12px;
 }
 
@@ -197,7 +246,8 @@ onMounted(async () => {
 }
 
 .modules h3,
-.lmstudio h3 {
+.lmstudio h3,
+.backup h3 {
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -288,6 +338,33 @@ onMounted(async () => {
   font-size: 13px;
   color: #94a3b8;
   line-height: 1.5;
+}
+
+.backup-actions {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.backup-btn {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.backup-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.backup-msg {
+  font-size: 13px;
+  color: #86efac;
 }
 
 @media (max-width: 900px) {

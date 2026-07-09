@@ -1,0 +1,17 @@
+{
+  "groups": [
+    {
+      "name": "Modules",
+      "items": [
+        { "id": "fav-dashboard", "label": "Dashboard", "icon": "⌂", "targetType": "route", "targetId": "/", "sortOrder": 0 },
+        { "id": "fav-launcher", "label": "Launcher", "icon": "▶", "targetType": "route", "targetId": "/launcher", "sortOrder": 1 },
+        { "id": "fav-tasks", "label": "Tasks", "icon": "☑", "targetType": "route", "targetId": "/tasks", "sortOrder": 2 },
+        { "id": "fav-favorites", "label": "Favorites", "icon": "★", "targetType": "route", "targetId": "/favorites", "sortOrder": 3 },
+        { "id": "fav-calendar", "label": "Calendar", "icon": "📅", "targetType": "route", "targetId": "/calendar", "sortOrder": 4 },
+        { "id": "fav-media", "label": "Media", "icon": "▣", "targetType": "route", "targetId": "/media", "sortOrder": 5 },
+        { "id": "fav-ai", "label": "AI Chat", "icon": "✦", "targetType": "route", "targetId": "/ai", "sortOrder": 6 },
+        { "id": "fav-history", "label": "History Game", "icon": "◎", "targetType": "route", "targetId": "/history-game", "sortOrder": 7 }
+      ]
+    }
+  ]
+}

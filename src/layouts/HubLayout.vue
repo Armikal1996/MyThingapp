@@ -5,7 +5,7 @@
         <span class="brand-mark">M</span>
         <div>
           <p class="brand-title">MyThing</p>
-          <p class="brand-sub">Phase 1</p>
+          <p class="brand-sub">Local hub</p>
         </div>
       </div>
 
@@ -43,7 +43,8 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { getPlatformInfo } from '@/services/platform.js'
+import { getPlatformInfo, isTauri } from '@/services/platform.js'
+import { startReminderScheduler } from '@/services/reminders.js'
 
 const route = useRoute()
 const runtime = ref('browser')
@@ -52,12 +53,12 @@ const platformVersion = ref('0.1.0')
 const navItems = [
   { to: '/', label: 'Dashboard', icon: '⌂' },
   { to: '/launcher', label: 'Launcher', icon: '▶' },
-  { to: '/history-game', label: 'History Game', icon: '◎' },
-  { to: '/', label: 'Tasks', icon: '☑', soon: true },
-  { to: '/', label: 'Calendar', icon: '📅', soon: true },
-  { to: '/', label: 'Media', icon: '▣', soon: true },
-  { to: '/', label: 'AI Chat', icon: '✦', soon: true },
-  { to: '/', label: 'Favorites', icon: '★', soon: true }
+  { to: '/tasks', label: 'Tasks', icon: '☑' },
+  { to: '/favorites', label: 'Favorites', icon: '★' },
+  { to: '/calendar', label: 'Calendar', icon: '📅' },
+  { to: '/media', label: 'Media', icon: '▣' },
+  { to: '/ai', label: 'AI Chat', icon: '✦' },
+  { to: '/history-game', label: 'History Game', icon: '◎' }
 ]
 
 const pageTitle = computed(() => route.meta.title || 'MyThing')
@@ -69,6 +70,7 @@ onMounted(async () => {
   const info = await getPlatformInfo()
   runtime.value = info.runtime
   platformVersion.value = info.version
+  if (isTauri()) startReminderScheduler()
 })
 </script>
 
