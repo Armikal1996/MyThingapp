@@ -5,7 +5,7 @@
         <template #center>
           <SearchInput
             v-model="search"
-            placeholder="Search favorites, apps, modules…"
+            placeholder="Search favorites and apps…"
           />
         </template>
         <template #trailing>
@@ -27,13 +27,22 @@
                 v-for="(fav, idx) in group.items"
                 :key="fav.id"
                 class="tile-wrap"
-                :class="{ focused: flatIndex(group.name, idx) === focusIndex }"
+                :class="{
+                  focused: flatIndex(group.name, idx) === focusIndex,
+                  'app-wrap': isAppFavorite(fav)
+                }"
                 :draggable="editMode && !fav.dynamic"
                 @dragstart="onDragStart(group.name, idx)"
                 @dragover.prevent
                 @drop="onDrop(group.name, idx)"
               >
-                <FavoriteTile :favorite="fav" @launch="onLaunch" />
+                <FavoriteTile
+                  :favorite="fav"
+                  @launch="onLaunch"
+                  @start="onStartApp"
+                  @open-folder="onOpenAppFolder"
+                  @open-cursor="onOpenInCursor"
+                />
                 <div v-if="editMode" class="edit-actions">
                   <BaseButton size="sm" @click="openEdit(fav)">Edit</BaseButton>
                   <BaseButton size="sm" variant="danger" @click="onDelete(fav)">×</BaseButton>
@@ -46,7 +55,7 @@
         <BaseEmptyState
           v-else
           title="No favorites match"
-          description="Add shortcuts to modules, apps, links, or folders."
+          description="Add shortcuts to apps, links, or folders."
         >
           <template #action>
             <BaseButton variant="primary" @click="openAdd">Add favorite</BaseButton>
@@ -109,13 +118,17 @@ import {
   createEmptyFavorite,
   deleteFavorite,
   groupFavorites,
+  isAppFavorite,
   launchFavorite,
   listAllFavorites,
   newFavoriteId,
+  openFavoriteAppFolder,
+  openFavoriteAppInCursor,
   pinAppAsFavorite,
   reorderFavorites,
   saveFavorite,
   seedDefaultFavorites,
+  startFavoriteApp,
   getAppsForPicker
 } from '@/services/favorites.js'
 import { pickProjectFolder } from '@/services/launcher.js'
@@ -135,7 +148,7 @@ const modalMode = ref('add')
 const editing = ref(createEmptyFavorite())
 
 const groups = computed(() => {
-  const base = groupFavorites(favorites.value)
+  const base = groupFavorites(favorites.value).filter(g => g.name !== 'Modules')
   if (!hubTiles.value.length) return base
 
   const hubGroup = {
@@ -148,7 +161,7 @@ const groups = computed(() => {
 
 const groupNames = computed(() => {
   const names = new Set(groups.value.map(g => g.name))
-  ;['Pinned', 'Modules', 'Apps', 'Links'].forEach(n => names.add(n))
+  ;['Pinned', 'Apps', 'Links'].forEach(n => names.add(n))
   return Array.from(names)
 })
 
@@ -195,7 +208,9 @@ function onKeydown(e) {
   } else if (e.key === 'Enter') {
     e.preventDefault()
     const fav = flatTiles.value[focusIndex.value]
-    if (fav) onLaunch(fav)
+    if (!fav) return
+    if (isAppFavorite(fav)) onStartApp(fav)
+    else onLaunch(fav)
   }
 }
 
@@ -284,6 +299,36 @@ async function onLaunch(fav) {
   }
 }
 
+async function onStartApp(fav) {
+  if (editMode.value) return
+  try {
+    const app = await startFavoriteApp(fav)
+    info(`Starting ${app.title}…`)
+  } catch (e) {
+    toastError(e.message)
+  }
+}
+
+async function onOpenAppFolder(fav) {
+  if (editMode.value) return
+  try {
+    const app = await openFavoriteAppFolder(fav)
+    success(`Opened folder for ${app.title}.`)
+  } catch (e) {
+    toastError(e.message)
+  }
+}
+
+async function onOpenInCursor(fav) {
+  if (editMode.value) return
+  try {
+    const app = await openFavoriteAppInCursor(fav)
+    success(`Opening ${app.title} in Cursor…`)
+  } catch (e) {
+    toastError(e.message)
+  }
+}
+
 async function onPinApp(app) {
   try {
     await pinAppAsFavorite(app)
@@ -338,13 +383,24 @@ onMounted(async () => {
   position: relative;
 }
 
-.tile-wrap.focused :deep(.tile) {
+.tile-wrap.focused :deep(.tile),
+.tile-wrap.focused :deep(.app-tile) {
   outline: 2px solid var(--accent-favorites);
   outline-offset: 2px;
 }
 
 .tile-wrap[draggable="true"] {
   cursor: grab;
+}
+
+.tile-wrap.app-wrap {
+  grid-column: span 2;
+}
+
+@media (max-width: 520px) {
+  .tile-wrap.app-wrap {
+    grid-column: span 1;
+  }
 }
 
 .edit-actions {

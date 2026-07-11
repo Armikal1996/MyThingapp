@@ -1,9 +1,16 @@
 import { openUrl } from '@tauri-apps/plugin-opener'
+import { invoke } from '@tauri-apps/api/core'
 import { getDatabase } from '@/services/database.js'
-import { getApp, listApps, openAppFolder, runAppCommand } from '@/services/launcher.js'
+import { getApp, listApps, openAppFolder, resolveAppRootPath, runAppCommand } from '@/services/launcher.js'
 import { isTauri } from '@/services/platform.js'
 import { resolveHubFavorite } from '@/services/integrations.js'
+import { parseHubItemKey } from '@/services/hubContext.js'
 import defaults from '../../config/favorites-defaults.json'
+
+const MODULE_DEFAULT_IDS = new Set([
+  'fav-dashboard', 'fav-launcher', 'fav-tasks', 'fav-favorites',
+  'fav-calendar', 'fav-media', 'fav-ai', 'fav-history'
+])
 
 export const TARGET_TYPES = [
   { id: 'route', label: 'MyThing module', hint: 'e.g. /launcher' },
@@ -116,6 +123,8 @@ export async function deleteFavorite(id) {
 }
 
 export async function seedDefaultFavorites() {
+  await removeModuleDefaults()
+
   const existing = await listAllFavorites()
   const existingIds = new Set(existing.map(f => f.id))
   let count = 0
@@ -132,6 +141,65 @@ export async function seedDefaultFavorites() {
     }
   }
   return { seeded: count }
+}
+
+/** Remove seeded module shortcuts from older installs. */
+export async function removeModuleDefaults() {
+  const db = await getDatabase()
+  const all = await listAllFavorites()
+  let removed = 0
+
+  for (const fav of all) {
+    const isModuleGroup = fav.groupName === 'Modules'
+    const isModuleRoute = fav.targetType === 'route' && MODULE_DEFAULT_IDS.has(fav.id)
+    if (isModuleGroup || isModuleRoute) {
+      await db.execute('DELETE FROM favorites WHERE id = $1', [fav.id])
+      removed += 1
+    }
+  }
+  return { removed }
+}
+
+export function isAppFavorite(fav) {
+  if (fav.targetType === 'app') return true
+  if (fav.targetType === 'hub_item') {
+    const parsed = parseHubItemKey(fav.targetId)
+    return parsed?.type === 'app'
+  }
+  return false
+}
+
+export async function getFavoriteApp(fav) {
+  if (fav.targetType === 'app') {
+    return getApp(fav.targetId)
+  }
+  if (fav.targetType === 'hub_item') {
+    const parsed = parseHubItemKey(fav.targetId)
+    if (parsed?.type === 'app') return getApp(parsed.id)
+  }
+  return null
+}
+
+export async function startFavoriteApp(fav) {
+  const app = await getFavoriteApp(fav)
+  if (!app) throw new Error('App not found for this favorite.')
+  await runAppCommand(app, 'start')
+  return app
+}
+
+export async function openFavoriteAppFolder(fav) {
+  const app = await getFavoriteApp(fav)
+  if (!app) throw new Error('App not found for this favorite.')
+  await openAppFolder(app)
+  return app
+}
+
+export async function openFavoriteAppInCursor(fav) {
+  if (!isTauri()) throw new Error('Opening in Cursor requires the desktop app.')
+  const app = await getFavoriteApp(fav)
+  if (!app) throw new Error('App not found for this favorite.')
+  const path = await resolveAppRootPath(app)
+  return invoke('open_with_cursor', { path })
 }
 
 export function groupFavorites(favorites) {

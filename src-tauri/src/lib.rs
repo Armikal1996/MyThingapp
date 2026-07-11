@@ -5,7 +5,7 @@ mod lmstudio;
 use backup::{export_backup_file, export_backup_to_folder, pick_and_read_backup};
 use lmstudio::{lmstudio_chat_completion, lmstudio_chat_stream, lmstudio_list_models};
 use launcher::{
-    get_default_work_folder, open_app_folder, pick_project_folder, pick_work_folder,
+    get_default_work_folder, open_app_folder, open_with_cursor, pick_project_folder, pick_work_folder,
     run_app_command, scan_work_folder_cmd,
 };
 use tauri_plugin_sql::{Migration, MigrationKind};
@@ -108,6 +108,7 @@ pub fn run() {
             scan_work_folder_cmd,
             run_app_command,
             open_app_folder,
+            open_with_cursor,
             pick_project_folder,
             pick_work_folder,
             export_backup_file,

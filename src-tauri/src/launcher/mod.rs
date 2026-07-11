@@ -270,5 +270,77 @@ pub fn open_in_explorer(path: &str) -> Result<(), String> {
     Ok(())
 }
 
+pub fn open_in_cursor(path: &str) -> Result<(), String> {
+    let dir = Path::new(path)
+        .canonicalize()
+        .map_err(|e| format!("Project folder not found: {path} ({e})"))?;
+
+    if !dir.is_dir() {
+        return Err(format!("Project folder not found: {path}"));
+    }
+
+    let path_str = dir.to_string_lossy().to_string();
+
+    #[cfg(target_os = "windows")]
+    {
+        if Command::new("cursor")
+            .arg(&path_str)
+            .spawn()
+            .is_ok()
+        {
+            return Ok(());
+        }
+
+        if let Some(local) = dirs::data_local_dir() {
+            let exe = local
+                .join("Programs")
+                .join("cursor")
+                .join("Cursor.exe");
+            if exe.is_file() {
+                return Command::new(exe)
+                    .arg(&path_str)
+                    .spawn()
+                    .map_err(|e| e.to_string())
+                    .map(|_| ());
+            }
+        }
+
+        return Err(
+            "Cursor not found. Install Cursor or run \"Shell Command: Install cursor command\" from the Command Palette.".to_string(),
+        );
+    }
+
+    #[cfg(target_os = "macos")]
+    {
+        if Command::new("cursor")
+            .arg(&path_str)
+            .spawn()
+            .is_ok()
+        {
+            return Ok(());
+        }
+
+        let exe = PathBuf::from("/Applications/Cursor.app/Contents/MacOS/Cursor");
+        if exe.is_file() {
+            return Command::new(exe)
+                .arg(&path_str)
+                .spawn()
+                .map_err(|e| e.to_string())
+                .map(|_| ());
+        }
+
+        return Err("Cursor not found. Install Cursor and add the cursor CLI to PATH.".to_string());
+    }
+
+    #[cfg(all(not(target_os = "windows"), not(target_os = "macos")))]
+    {
+        Command::new("cursor")
+            .arg(&path_str)
+            .spawn()
+            .map_err(|e| format!("Could not launch Cursor: {e}. Install Cursor and add it to PATH."))?;
+        Ok(())
+    }
+}
+
 pub mod commands;
 pub use commands::*;

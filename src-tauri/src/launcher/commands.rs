@@ -29,6 +29,11 @@ pub fn open_app_folder(path: String) -> Result<(), String> {
 }
 
 #[tauri::command]
+pub fn open_with_cursor(path: String) -> Result<(), String> {
+    super::open_in_cursor(&path)
+}
+
+#[tauri::command]
 pub async fn pick_project_folder(app: tauri::AppHandle) -> Result<Option<String>, String> {
     let path = app
         .dialog()
