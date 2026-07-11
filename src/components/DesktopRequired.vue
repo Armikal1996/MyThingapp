@@ -2,7 +2,7 @@
   <div v-if="!isDesktop" class="desktop-required">
     <h2>Desktop app required</h2>
     <p>{{ message }}</p>
-    <p class="hint">Run <code>Launch-MyThing.exe</code> or <code>npm run tauri:dev</code> for full features.</p>
+    <p class="hint">Double-click <code>Launch-MyThing.exe</code> (uses built desktop app) or run <code>npm run tauri:build</code> once if you see this in the launcher.</p>
   </div>
   <slot v-else />
 </template>

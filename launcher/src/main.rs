@@ -3,8 +3,17 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, ExitCode, Stdio};
 
 fn main() -> ExitCode {
-    let project_root = project_root();
+    let project_root = find_project_root();
     refresh_path();
+
+    // Prefer a built desktop binary — no browser preview, no dev server.
+    if let Some(exe) = find_mything_exe(&project_root) {
+        println!("Starting MyThing desktop app…\n{}", exe.display());
+        match launch_desktop(&exe) {
+            Ok(()) => return ExitCode::SUCCESS,
+            Err(e) => eprintln!("Failed to launch desktop app: {e}\nFalling back to dev mode…\n"),
+        }
+    }
 
     if let Some(dir) = cargo_bin_dir() {
         prepend_path(&dir);
@@ -35,7 +44,7 @@ fn main() -> ExitCode {
         return fail("cargo not found. Install Rust or fix your PATH.");
     }
 
-    println!("Starting MyThing from {}\n", project_root.display());
+    println!("Starting MyThing dev mode from {}\n", project_root.display());
 
     if !project_root.join("node_modules").is_dir() {
         println!("Installing npm dependencies…");
@@ -56,11 +65,53 @@ fn main() -> ExitCode {
     }
 }
 
-fn project_root() -> PathBuf {
-    env::current_exe()
+fn find_project_root() -> PathBuf {
+    let start = env::current_exe()
         .ok()
         .and_then(|p| p.parent().map(|d| d.to_path_buf()))
-        .unwrap_or_else(|| env::current_dir().unwrap_or_else(|_| PathBuf::from(".")))
+        .unwrap_or_else(|| env::current_dir().unwrap_or_else(|_| PathBuf::from(".")));
+
+    let mut dir = start.clone();
+    for _ in 0..6 {
+        if dir.join("package.json").is_file() && dir.join("src-tauri").is_dir() {
+            return dir;
+        }
+        if !dir.pop() {
+            break;
+        }
+    }
+    start
+}
+
+fn find_mything_exe(project_root: &Path) -> Option<PathBuf> {
+    let candidates = [
+        project_root
+            .join("src-tauri")
+            .join("target")
+            .join("release")
+            .join("mything.exe"),
+        project_root
+            .join("src-tauri")
+            .join("target")
+            .join("release")
+            .join("MyThing.exe"),
+        project_root
+            .join("src-tauri")
+            .join("target")
+            .join("debug")
+            .join("mything.exe"),
+    ];
+
+    candidates.into_iter().find(|p| p.is_file())
+}
+
+fn launch_desktop(exe: &Path) -> Result<(), std::io::Error> {
+    Command::new(exe)
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn()?;
+    Ok(())
 }
 
 fn refresh_path() {

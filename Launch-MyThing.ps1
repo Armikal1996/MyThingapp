@@ -35,6 +35,20 @@ foreach ($dir in $nodeCandidates) {
 Set-Location $ProjectRoot
 Write-Host "Starting MyThing from $ProjectRoot`n"
 
+$releaseExe = Join-Path $ProjectRoot 'src-tauri\target\release\mything.exe'
+$releaseExeAlt = Join-Path $ProjectRoot 'src-tauri\target\release\MyThing.exe'
+$debugExe = Join-Path $ProjectRoot 'src-tauri\target\debug\mything.exe'
+
+foreach ($exe in @($releaseExe, $releaseExeAlt, $debugExe)) {
+    if (Test-Path $exe) {
+        Write-Host "Launching desktop app: $exe"
+        Start-Process -FilePath $exe
+        exit 0
+    }
+}
+
+Write-Host 'No built desktop app found — starting dev mode (tauri:dev).'
+
 function Test-Command($name) {
     return [bool](Get-Command $name -ErrorAction SilentlyContinue)
 }
