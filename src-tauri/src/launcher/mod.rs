@@ -176,23 +176,33 @@ pub fn run_command(working_dir: &str, command: &str, open_terminal: bool) -> Res
         return Err("Command is empty".to_string());
     }
 
-    let dir = Path::new(working_dir);
+    let dir = Path::new(working_dir)
+        .canonicalize()
+        .map_err(|e| format!("Project folder not found: {working_dir} ({e})"))?;
+
     if !dir.is_dir() {
         return Err(format!("Project folder not found: {working_dir}"));
     }
 
+    let dir_str = dir.to_string_lossy().to_string();
+
     #[cfg(target_os = "windows")]
     {
+        use std::os::windows::process::CommandExt;
+        const CREATE_NEW_CONSOLE: u32 = 0x00000010;
+
         if open_terminal {
-            let script = format!("cd /d \"{working_dir}\" && {command}");
+            let script = format!("cd /d \"{dir_str}\" && {command}");
             Command::new("cmd")
-                .args(["/C", "start", "", "cmd", "/K", &script])
+                .args(["/K", &script])
+                .current_dir(&dir)
+                .creation_flags(CREATE_NEW_CONSOLE)
                 .spawn()
                 .map_err(|e| e.to_string())?;
         } else {
             Command::new("cmd")
                 .args(["/C", command])
-                .current_dir(working_dir)
+                .current_dir(&dir)
                 .spawn()
                 .map_err(|e| e.to_string())?;
         }
@@ -203,13 +213,19 @@ pub fn run_command(working_dir: &str, command: &str, open_terminal: bool) -> Res
     {
         if open_terminal {
             Command::new("x-terminal-emulator")
-                .args(["-e", "bash", "-lc", &format!("cd \"{working_dir}\" && {command}; exec bash")])
+                .args([
+                    "-e",
+                    "bash",
+                    "-lc",
+                    &format!("cd \"{dir_str}\" && {command}; exec bash"),
+                ])
+                .current_dir(&dir)
                 .spawn()
                 .map_err(|e| e.to_string())?;
         } else {
             Command::new("sh")
                 .args(["-c", command])
-                .current_dir(working_dir)
+                .current_dir(&dir)
                 .spawn()
                 .map_err(|e| e.to_string())?;
         }
@@ -223,10 +239,14 @@ pub fn open_in_explorer(path: &str) -> Result<(), String> {
         return Err(format!("Path not found: {path}"));
     }
 
+    let dir = target
+        .canonicalize()
+        .map_err(|e| format!("Could not resolve path: {path} ({e})"))?;
+
     #[cfg(target_os = "windows")]
     {
         Command::new("explorer")
-            .arg(path)
+            .arg(dir)
             .spawn()
             .map_err(|e| e.to_string())?;
     }
@@ -234,7 +254,7 @@ pub fn open_in_explorer(path: &str) -> Result<(), String> {
     #[cfg(target_os = "macos")]
     {
         Command::new("open")
-            .arg(path)
+            .arg(&dir)
             .spawn()
             .map_err(|e| e.to_string())?;
     }
@@ -242,7 +262,7 @@ pub fn open_in_explorer(path: &str) -> Result<(), String> {
     #[cfg(all(not(target_os = "windows"), not(target_os = "macos")))]
     {
         Command::new("xdg-open")
-            .arg(path)
+            .arg(&dir)
             .spawn()
             .map_err(|e| e.to_string())?;
     }

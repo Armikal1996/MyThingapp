@@ -204,6 +204,31 @@ function normalizePath(path) {
   return path.replace(/\\/g, '/').replace(/\/+$/, '').toLowerCase()
 }
 
+function isAbsolutePath(path) {
+  return /^([a-zA-Z]:[\\/]|\\\\|\/)/.test(path)
+}
+
+/** Resolve app root to an absolute project folder path before invoking Tauri. */
+export async function resolveAppRootPath(app) {
+  let path = (app.rootPath || '').trim()
+  if (!path) {
+    const workFolder = await getWorkFolder()
+    const folder = app.folderName || app.name
+    if (!folder) throw new Error('App has no project folder path. Edit the app and set its folder.')
+    path = joinPaths(workFolder, folder)
+  } else if (!isAbsolutePath(path)) {
+    const workFolder = await getWorkFolder()
+    path = joinPaths(workFolder, path)
+  }
+  return path
+}
+
+function joinPaths(base, child) {
+  const b = base.replace(/\\/g, '/').replace(/\/+$/, '')
+  const c = child.replace(/\\/g, '/').replace(/^\/+/, '')
+  return `${b}/${c}`
+}
+
 export async function runAppCommand(app, kind) {
   if (!isTauri()) {
     throw new Error('Running commands requires the MyThing desktop app.')
@@ -214,10 +239,12 @@ export async function runAppCommand(app, kind) {
     throw new Error(`No ${kind} command set for this app. Edit it first.`)
   }
 
+  const workingDir = await resolveAppRootPath(app)
+
   return invoke('run_app_command', {
-    workingDir: app.rootPath,
+    workingDir,
     command,
-    openTerminal: app.openTerminal
+    openTerminal: Boolean(app.openTerminal)
   })
 }
 
@@ -225,7 +252,8 @@ export async function openAppFolder(app) {
   if (!isTauri()) {
     throw new Error('Opening folders requires the MyThing desktop app.')
   }
-  return invoke('open_app_folder', { path: app.rootPath })
+  const path = await resolveAppRootPath(app)
+  return invoke('open_app_folder', { path })
 }
 
 export async function pickProjectFolder() {

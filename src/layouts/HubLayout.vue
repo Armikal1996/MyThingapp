@@ -17,8 +17,9 @@
             v-for="item in group.items"
             :key="item.to"
             :to="item.to"
-            class="nav-link"
-            active-class="active"
+            :class="['nav-link', { active: isNavActive(item) }]"
+            active-class=""
+            exact-active-class=""
             :title="item.label"
           >
             <component :is="item.icon" v-if="item.lucide" :size="18" class="nav-icon" />
@@ -127,6 +128,13 @@ const pageTitle = computed(() => route.meta.title || 'MyThing')
 const runtimeLabel = computed(() =>
   runtime.value === 'desktop' ? 'Desktop (Tauri)' : 'Browser preview'
 )
+
+function isNavActive(item) {
+  if (item.to === '/') {
+    return route.name === 'dashboard'
+  }
+  return route.path === item.to
+}
 
 onMounted(async () => {
   const info = await getPlatformInfo()
