@@ -59,8 +59,20 @@ pub fn scan_work_folder(work_folder: &str) -> Result<Vec<DiscoveredProject>, Str
             continue;
         }
 
-        if let Some(project) = detect_project(&folder_name, &path) {
+    if let Some(project) = detect_project(&folder_name, &path) {
             projects.push(project);
+            continue;
+        }
+
+        // Include any other subfolder so scan still finds projects without package.json yet.
+        if has_project_files(&path) {
+            projects.push(DiscoveredProject {
+                folder_name: folder_name.clone(),
+                root_path: path.to_string_lossy().to_string(),
+                runtime: "other".to_string(),
+                suggested_install: None,
+                suggested_start: None,
+            });
         }
     }
 
@@ -132,6 +144,12 @@ fn detect_project(folder_name: &str, path: &Path) -> Option<DiscoveredProject> {
     }
 
     None
+}
+
+fn has_project_files(path: &Path) -> bool {
+    fs::read_dir(path)
+        .map(|mut entries| entries.next().is_some())
+        .unwrap_or(false)
 }
 
 fn suggest_node_commands(package_json: &Path) -> (String, String) {

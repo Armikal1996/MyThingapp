@@ -1,14 +1,16 @@
 <template>
-  <form class="app-form" @submit.prevent="onSubmit">
+  <form class="app-form" novalidate @submit.prevent="onSubmit">
+    <p v-if="error" class="form-error">{{ error }}</p>
+
     <div class="form-grid">
       <label class="field span-2">
         <span>Title (display name)</span>
-        <input v-model="form.title" type="text" required placeholder="Game Marketplace" />
+        <input v-model="form.title" type="text" placeholder="Game Marketplace" />
       </label>
 
       <label class="field">
         <span>Internal name</span>
-        <input v-model="form.name" type="text" required placeholder="game-marketplace" />
+        <input v-model="form.name" type="text" placeholder="game-marketplace" />
       </label>
 
       <label class="field">
@@ -33,7 +35,7 @@
       <label class="field span-2">
         <span>Project folder</span>
         <div class="path-row">
-          <input v-model="form.rootPath" type="text" required placeholder="C:/Users/.../WOrK/MyProject" />
+          <input v-model="form.rootPath" type="text" placeholder="C:/Users/.../WOrK/MyProject" />
           <button type="button" class="btn secondary" @click="$emit('pick-folder')">Browse</button>
         </div>
       </label>
@@ -50,7 +52,7 @@
 
       <label class="field">
         <span>Port (optional)</span>
-        <input v-model.number="form.port" type="number" min="1" max="65535" placeholder="5173" />
+        <input v-model="portInput" type="text" inputmode="numeric" placeholder="5173" />
       </label>
 
       <label class="field">
@@ -71,27 +73,45 @@
 
     <div class="actions">
       <button type="button" class="btn ghost" @click="$emit('cancel')">Cancel</button>
-      <button type="submit" class="btn primary">{{ mode === 'edit' ? 'Save changes' : 'Add app' }}</button>
+      <button type="button" class="btn primary" :disabled="saving" @click="onSubmit">
+        {{ saving ? 'Saving…' : mode === 'edit' ? 'Save changes' : 'Add app' }}
+      </button>
     </div>
   </form>
 </template>
 
 <script setup>
-import { computed, reactive, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
+import { slugify } from '@/services/launcher.js'
 
 const props = defineProps({
   app: { type: Object, required: true },
-  mode: { type: String, default: 'add' }
+  mode: { type: String, default: 'add' },
+  error: { type: String, default: '' }
 })
 
 const emit = defineEmits(['save', 'cancel', 'pick-folder'])
 
 const form = reactive({ ...props.app })
+const saving = ref(false)
 
 const tagsInput = computed({
   get: () => (Array.isArray(form.tags) ? form.tags.join(', ') : form.tags || ''),
   set: value => {
     form.tags = value.split(',').map(t => t.trim()).filter(Boolean)
+  }
+})
+
+const portInput = computed({
+  get: () => (form.port == null || form.port === '' ? '' : String(form.port)),
+  set: value => {
+    const trimmed = value.trim()
+    if (!trimmed) {
+      form.port = null
+      return
+    }
+    const parsed = Number.parseInt(trimmed, 10)
+    form.port = Number.isFinite(parsed) ? parsed : null
   }
 })
 
@@ -101,8 +121,44 @@ watch(
   { deep: true }
 )
 
+watch(
+  () => props.error,
+  () => { saving.value = false }
+)
+
+function parsePort(value) {
+  if (value == null || value === '') return null
+  const parsed = Number.parseInt(String(value), 10)
+  return Number.isFinite(parsed) && parsed > 0 && parsed <= 65535 ? parsed : null
+}
+
 function onSubmit() {
-  emit('save', { ...form, port: form.port || null })
+  const title = form.title?.trim()
+  const rootPath = form.rootPath?.trim()
+
+  if (!title) {
+    emit('save', null, 'Title is required.')
+    return
+  }
+  if (!rootPath) {
+    emit('save', null, 'Project folder is required.')
+    return
+  }
+
+  const folderParts = rootPath.replace(/\\/g, '/').split('/')
+  const folderName = folderParts[folderParts.length - 1] || title
+  const internalName = slugify(form.name?.trim() || folderName || title) || slugify(title) || 'app'
+
+  saving.value = true
+  emit('save', {
+    ...form,
+    title,
+    name: internalName,
+    rootPath,
+    folderName: form.folderName?.trim() || folderName,
+    port: parsePort(form.port),
+    autoDiscovered: false
+  })
 }
 </script>
 
@@ -111,6 +167,15 @@ function onSubmit() {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.form-error {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(127, 29, 29, 0.25);
+  border: 1px solid #991b1b;
+  color: #fca5a5;
+  font-size: 13px;
 }
 
 .form-grid {
@@ -177,6 +242,11 @@ function onSubmit() {
   font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btn.primary {

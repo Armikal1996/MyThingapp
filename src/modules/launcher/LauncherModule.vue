@@ -59,6 +59,7 @@
         <AppFormModal
           :app="editingApp"
           :mode="modalMode"
+          :error="modalError"
           @save="onSave"
           @cancel="closeModal"
           @pick-folder="onPickFolderForForm"
@@ -98,6 +99,7 @@ const messageType = ref('info')
 
 const modalOpen = ref(false)
 const modalMode = ref('add')
+const modalError = ref('')
 const editingApp = ref(createEmptyApp())
 
 const filteredApps = computed(() => {
@@ -151,6 +153,7 @@ async function browseWorkFolder() {
 }
 
 function openAdd() {
+  modalError.value = ''
   editingApp.value = createEmptyApp({
     id: '',
     installCmd: 'npm install',
@@ -161,6 +164,7 @@ function openAdd() {
 }
 
 function openEdit(app) {
+  modalError.value = ''
   editingApp.value = { ...app, tags: [...(app.tags || [])] }
   modalMode.value = 'edit'
   modalOpen.value = true
@@ -168,6 +172,7 @@ function openEdit(app) {
 
 function closeModal() {
   modalOpen.value = false
+  modalError.value = ''
 }
 
 async function onPickFolderForForm() {
@@ -176,13 +181,20 @@ async function onPickFolderForForm() {
   editingApp.value.rootPath = picked
   const parts = picked.replace(/\\/g, '/').split('/')
   const folder = parts[parts.length - 1] || ''
-  if (!editingApp.value.name) editingApp.value.name = folder
+  if (!editingApp.value.name) editingApp.value.name = slugify(folder)
   if (!editingApp.value.title) editingApp.value.title = folder
   if (!editingApp.value.folderName) editingApp.value.folderName = folder
   if (!editingApp.value.id) editingApp.value.id = slugify(folder)
 }
 
-async function onSave(app) {
+async function onSave(app, validationError = null) {
+  if (validationError) {
+    modalError.value = validationError
+    return
+  }
+  if (!app) return
+
+  modalError.value = ''
   try {
     const payload = { ...app }
     if (!payload.id) {
@@ -197,7 +209,9 @@ async function onSave(app) {
     closeModal()
     setMessage(`Saved "${payload.title}".`, 'success')
   } catch (error) {
-    setMessage(error.message || String(error), 'error')
+    const msg = error.message || String(error)
+    modalError.value = msg
+    setMessage(msg, 'error')
   }
 }
 
@@ -241,8 +255,14 @@ async function onOpenFolder(app) {
 onMounted(async () => {
   await loadWorkFolder()
   await refresh()
-  if (isDesktop && apps.value.length === 0) {
-    await onScan()
+  if (isDesktop) {
+    try {
+      if (apps.value.length === 0) {
+        await onScan()
+      }
+    } catch (error) {
+      setMessage(error.message || String(error), 'error')
+    }
   }
 })
 </script>

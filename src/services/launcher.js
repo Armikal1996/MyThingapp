@@ -41,7 +41,10 @@ export async function getWorkFolder() {
     [META_WORK_FOLDER]
   )
   if (rows[0]?.value) return rows[0].value
-  return workFolderConfig.defaultPath
+
+  const def = workFolderConfig.defaultPath
+  await setWorkFolder(def)
+  return def
 }
 
 export async function setWorkFolder(path) {
@@ -131,7 +134,12 @@ export async function scanWorkFolder(workFolder) {
 export async function syncWorkFolder() {
   const workFolder = await getWorkFolder()
   const discovered = await scanWorkFolder(workFolder)
-  const existing = await listApps()
+
+  if (!Array.isArray(discovered)) {
+    throw new Error('Scan failed: unexpected response from desktop scanner.')
+  }
+
+  let existing = await listApps()
   const byPath = new Map(existing.map(app => [normalizePath(app.rootPath), app]))
   const byFolder = new Map(existing.map(app => [app.folderName?.toLowerCase(), app]))
 
@@ -176,6 +184,9 @@ export async function syncWorkFolder() {
       enabled: true
     })
     added += 1
+    existing = await listApps()
+    byPath.set(normalized, existing.find(a => a.id === id))
+    byFolder.set(project.folderName.toLowerCase(), existing.find(a => a.id === id))
   }
 
   return { added, updated, total: discovered.length }
