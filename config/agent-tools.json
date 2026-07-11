@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "tools": [
+    {
+      "name": "search_hub",
+      "tier": "auto",
+      "description": "Search tasks, games, watchlist, apps, and events by name."
+    },
+    {
+      "name": "get_hub_item",
+      "tier": "auto",
+      "description": "Get details for a hub item by type and id."
+    },
+    {
+      "name": "create_event",
+      "tier": "auto",
+      "description": "Create a calendar event."
+    },
+    {
+      "name": "create_reminder",
+      "tier": "auto",
+      "description": "Create a reminder, optionally linked to an event/task/game/watch/app."
+    },
+    {
+      "name": "create_event_with_reminder",
+      "tier": "auto",
+      "description": "Create a calendar event and an optional linked reminder in one step."
+    },
+    {
+      "name": "update_game",
+      "tier": "auto",
+      "description": "Update a game in Media by search query."
+    },
+    {
+      "name": "update_watch",
+      "tier": "auto",
+      "description": "Update a watchlist item by search query."
+    },
+    {
+      "name": "create_task",
+      "tier": "auto",
+      "description": "Create a work task."
+    },
+    {
+      "name": "start_app",
+      "tier": "confirm",
+      "description": "Start a registered launcher app."
+    },
+    {
+      "name": "open_app_folder",
+      "tier": "confirm",
+      "description": "Open a registered app project folder in Explorer."
+    },
+    {
+      "name": "open_app_in_cursor",
+      "tier": "confirm",
+      "description": "Open a registered app project folder in Cursor IDE."
+    }
+  ]
+}

@@ -2,6 +2,7 @@ import { getDatabase } from '@/services/database.js'
 import { chatCompletionStream, getModelByKey } from '@/services/lmstudio.js'
 import { formatContextBlock } from '@/services/hubContext.js'
 import { systemPromptForRole, modelKeyForAgencyRole } from '@/services/agency.js'
+import { runAgentLoop } from '@/services/agentLoop.js'
 
 export const MODEL_KEYS = ['gemma', 'gwen']
 
@@ -10,6 +11,7 @@ function rowToThread(row) {
     id: row.id,
     title: row.title,
     modelKey: row.model_key,
+    agentRole: row.agent_role || 'agent',
     createdAt: row.created_at,
     updatedAt: row.updated_at
   }
@@ -47,15 +49,23 @@ export async function getThread(id) {
   return rows[0] ? rowToThread(rows[0]) : null
 }
 
-export async function createThread({ title, modelKey = 'gemma' }) {
+export async function createThread({ title, modelKey = 'gemma', agentRole = 'agent' }) {
   const db = await getDatabase()
   const id = newThreadId()
   const now = new Date().toISOString()
-  await db.execute(
-    `INSERT INTO ai_threads (id, title, model_key, created_at, updated_at)
-     VALUES ($1, $2, $3, $4, $5)`,
-    [id, title.trim() || 'New chat', modelKey, now, now]
-  )
+  try {
+    await db.execute(
+      `INSERT INTO ai_threads (id, title, model_key, agent_role, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
+      [id, title.trim() || 'New chat', modelKey, agentRole, now, now]
+    )
+  } catch {
+    await db.execute(
+      `INSERT INTO ai_threads (id, title, model_key, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [id, title.trim() || 'New chat', modelKey, now, now]
+    )
+  }
   return getThread(id)
 }
 
@@ -66,12 +76,20 @@ export async function updateThread(id, patch) {
 
   const title = patch.title ?? thread.title
   const modelKey = patch.modelKey ?? thread.modelKey
+  const agentRole = patch.agentRole ?? thread.agentRole
   const now = new Date().toISOString()
 
-  await db.execute(
-    `UPDATE ai_threads SET title = $1, model_key = $2, updated_at = $3 WHERE id = $4`,
-    [title, modelKey, now, id]
-  )
+  try {
+    await db.execute(
+      `UPDATE ai_threads SET title = $1, model_key = $2, agent_role = $3, updated_at = $4 WHERE id = $5`,
+      [title, modelKey, agentRole, now, id]
+    )
+  } catch {
+    await db.execute(
+      `UPDATE ai_threads SET title = $1, model_key = $2, updated_at = $3 WHERE id = $4`,
+      [title, modelKey, now, id]
+    )
+  }
   return getThread(id)
 }
 
@@ -110,14 +128,33 @@ export async function addMessage(threadId, role, content) {
 }
 
 function buildSystemPrompt(thread, contextItems = []) {
-  const model = getModelByKey(thread.modelKey)
-  const base = model?.role === 'review'
-    ? systemPromptForRole('review')
-    : systemPromptForRole('implementation')
-
+  const roleId = thread.agentRole || (getModelByKey(thread.modelKey)?.role === 'review' ? 'review' : 'implementation')
+  const base = systemPromptForRole(roleId)
   const contextBlock = formatContextBlock(contextItems)
   if (!contextBlock) return base
   return `${base}\n\n${contextBlock}`
+}
+
+export async function sendAgentMessage(threadId, userContent, modelId = null, options = {}) {
+  const thread = await getThread(threadId)
+  if (!thread) throw new Error('Thread not found')
+
+  try {
+    return await runAgentLoop(threadId, userContent, {
+      contextItems: options.contextItems || [],
+      modelId,
+      onStreamChunk: options.onStreamChunk || null,
+      onPendingAction: options.onPendingAction || null
+    })
+  } catch (e) {
+    const db = await getDatabase()
+    const rows = await db.select(
+      `SELECT id FROM ai_messages WHERE thread_id = $1 AND role = 'user' AND content = $2 ORDER BY created_at DESC LIMIT 1`,
+      [threadId, userContent]
+    )
+    if (rows[0]) await db.execute('DELETE FROM ai_messages WHERE id = $1', [rows[0].id])
+    throw e
+  }
 }
 
 export async function sendChatMessage(threadId, userContent, modelId = null, options = {}) {

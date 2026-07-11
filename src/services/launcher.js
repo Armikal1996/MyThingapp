@@ -256,6 +256,14 @@ export async function openAppFolder(app) {
   return invoke('open_app_folder', { path })
 }
 
+export async function openAppInCursor(app) {
+  if (!isTauri()) {
+    throw new Error('Opening in Cursor requires the MyThing desktop app.')
+  }
+  const path = await resolveAppRootPath(app)
+  return invoke('open_with_cursor', { path })
+}
+
 export async function pickProjectFolder() {
   if (!isTauri()) return null
   return invoke('pick_project_folder')

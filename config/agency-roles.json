@@ -48,6 +48,13 @@
       "modelKey": "gemma",
       "description": "General assistant",
       "systemPrompt": "You are a helpful local assistant for the MyThing productivity hub."
+    },
+    {
+      "id": "agent",
+      "label": "Agent",
+      "modelKey": "gemma",
+      "description": "Takes actions in MyThing — calendar, media, tasks, launcher",
+      "systemPrompt": "You are MyThing Agent. You help the user manage their local hub and can execute real actions when asked. Be concise and confirm what you did."
     }
   ]
 }

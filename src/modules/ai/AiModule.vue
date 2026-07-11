@@ -61,6 +61,10 @@
                 @blur="onRenameThread"
                 @keydown.enter="$event.target.blur()"
               />
+              <label class="agent-toggle">
+                <input v-model="agentMode" type="checkbox" />
+                <span>Agent mode</span>
+              </label>
               <select v-model="activeModelKey" @change="onModelChange">
                 <option v-for="opt in modelOptions" :key="opt.key" :value="opt.key">
                   {{ opt.label }} ({{ opt.role }})
@@ -69,17 +73,36 @@
               <BaseButton size="sm" variant="danger" @click="onDeleteThread">Delete</BaseButton>
             </header>
 
+            <p v-if="agentMode && !isDesktop" class="agent-banner">
+              Agent mode active — hub data actions work; OS actions (Start, Folder, Cursor) need the desktop app.
+            </p>
+
             <div ref="messagesEl" class="messages">
               <article
-                v-for="msg in messages"
+                v-for="msg in visibleMessages"
                 :key="msg.id"
                 class="bubble"
                 :class="msg.role"
               >
                 <p class="role">{{ msg.role }}</p>
                 <pre class="content">{{ msg.content }}</pre>
+                <AgentActionLog
+                  v-if="msg.role === 'assistant' && messageActions[msg.id]?.length"
+                  :actions="messageActions[msg.id]"
+                />
               </article>
               <p v-if="sending" class="typing">{{ streamingText || 'Thinking…' }}</p>
+            </div>
+
+            <div v-if="pendingActions.length" class="pending-actions">
+              <AgentActionCard
+                v-for="action in pendingActions"
+                :key="action.id"
+                :action="action"
+                :busy="confirmingId === action.id"
+                @confirm="onConfirmPending(action)"
+                @cancel="onCancelPending(action)"
+              />
             </div>
 
             <div v-if="contextItems.length" class="context-tray">
@@ -112,12 +135,12 @@
               <textarea
                 v-model="draft"
                 rows="3"
-                :placeholder="modelOnline ? 'Message Gemma or Gwen…' : 'Load a model in LM Studio first…'"
+                :placeholder="composerPlaceholder"
                 :disabled="sending || !modelOnline"
                 @keydown.ctrl.enter.prevent="onSend"
               />
               <BaseButton variant="primary" type="submit" :disabled="sending || !draft.trim() || !modelOnline">
-                Send
+                {{ agentMode ? 'Send (agent)' : 'Send' }}
               </BaseButton>
             </form>
           </template>
@@ -206,6 +229,8 @@
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AnnouncementFormModal from '@/modules/ai/components/AnnouncementFormModal.vue'
+import AgentActionCard from '@/modules/ai/components/AgentActionCard.vue'
+import AgentActionLog from '@/modules/ai/components/AgentActionLog.vue'
 import ContextPicker from '@/components/ContextPicker.vue'
 import ModuleShell from '@/components/ui/ModuleShell.vue'
 import ModuleToolbar from '@/components/ui/ModuleToolbar.vue'
@@ -223,9 +248,11 @@ import {
   deleteThread,
   listMessages,
   listThreads,
+  sendAgentMessage,
   sendChatMessage,
   updateThread
 } from '@/services/aiChat.js'
+import { confirmPendingAction } from '@/services/agentLoop.js'
 import {
   AGENT_ROLES,
   STATUSES,
@@ -240,6 +267,7 @@ import {
 import { checkAllModels, getModelOptions } from '@/services/lmstudio.js'
 import { getContextItems, getQuickContextChips, searchHubItems } from '@/services/hubContext.js'
 import { openInModule } from '@/services/integrations.js'
+import { isTauri } from '@/services/platform.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -276,6 +304,11 @@ const contextItems = ref([])
 const quickChips = ref([])
 const pickerOpen = ref(false)
 const streamingText = ref('')
+const agentMode = ref(isTauri())
+const pendingActions = ref([])
+const messageActions = ref({})
+const confirmingId = ref(null)
+const isDesktop = computed(() => isTauri())
 
 const statusFilters = computed(() => [
   { id: 'all', label: 'All' },
@@ -289,6 +322,21 @@ const activeThread = computed(() =>
 const modelOnline = computed(() =>
   Boolean(health.value[activeModelKey.value]?.online)
 )
+
+const visibleMessages = computed(() =>
+  messages.value.filter(m =>
+    !(m.role === 'user' && (
+      m.content.startsWith('[Tool results]') ||
+      m.content.startsWith('[Confirmed]')
+    ))
+  )
+)
+
+const composerPlaceholder = computed(() => {
+  if (!modelOnline.value) return 'Load a model in LM Studio first…'
+  if (agentMode.value) return 'Ask the agent to update media, add events, open apps…'
+  return 'Message Gemma or Gwen…'
+})
 
 function modelLabel(key) {
   return modelOptions.find(m => m.key === key)?.label || key
@@ -370,7 +418,9 @@ async function selectThread(id) {
 }
 
 async function onNewThread() {
-  const thread = await createThread({ title: 'New chat', modelKey: 'gemma' })
+  const thread = await createThread({ title: 'New chat', modelKey: 'gemma', agentRole: 'agent' })
+  pendingActions.value = []
+  messageActions.value = {}
   await loadThreads(thread.id)
 }
 
@@ -402,12 +452,41 @@ async function onSend() {
   draft.value = ''
   sending.value = true
   streamingText.value = ''
+  const modelId = health.value[activeModelKey.value]?.modelId || null
+
   try {
-    const modelId = health.value[activeModelKey.value]?.modelId || null
-    await sendChatMessage(activeThread.value.id, text, modelId, {
-      contextItems: contextItems.value,
-      onStreamChunk: (_chunk, full) => { streamingText.value = full }
-    })
+    if (agentMode.value) {
+      const result = await sendAgentMessage(activeThread.value.id, text, modelId, {
+        contextItems: contextItems.value,
+        onStreamChunk: (_chunk, full) => { streamingText.value = full },
+        onPendingAction: (action) => {
+          if (!pendingActions.value.find(p => p.id === action.id)) {
+            pendingActions.value.push(action)
+          }
+        }
+      })
+      if (result.assistantMessage && result.executedActions?.length) {
+        messageActions.value = {
+          ...messageActions.value,
+          [result.assistantMessage.id]: result.executedActions.map(a => ({
+            tool: a.tool,
+            summary: a.summary
+          }))
+        }
+      }
+      if (result.pendingActions?.length) {
+        for (const action of result.pendingActions) {
+          if (!pendingActions.value.find(p => p.id === action.id)) {
+            pendingActions.value.push(action)
+          }
+        }
+      }
+    } else {
+      await sendChatMessage(activeThread.value.id, text, modelId, {
+        contextItems: contextItems.value,
+        onStreamChunk: (_chunk, full) => { streamingText.value = full }
+      })
+    }
     await loadMessages(activeThread.value.id)
     await loadThreads(activeThread.value.id)
   } catch (e) {
@@ -418,6 +497,32 @@ async function onSend() {
     sending.value = false
     streamingText.value = ''
   }
+}
+
+async function onConfirmPending(action) {
+  if (!activeThread.value) return
+  confirmingId.value = action.id
+  try {
+    const { summary } = await confirmPendingAction(activeThread.value.id, action)
+    pendingActions.value = pendingActions.value.filter(p => p.id !== action.id)
+    await loadMessages(activeThread.value.id)
+    const lastAssistant = [...messages.value].reverse().find(m => m.role === 'assistant')
+    if (lastAssistant) {
+      messageActions.value = {
+        ...messageActions.value,
+        [lastAssistant.id]: [{ tool: action.tool, summary }]
+      }
+    }
+    success(summary)
+  } catch (e) {
+    toastError(e.message)
+  } finally {
+    confirmingId.value = null
+  }
+}
+
+function onCancelPending(action) {
+  pendingActions.value = pendingActions.value.filter(p => p.id !== action.id)
 }
 
 function addContextChip(chip) {
@@ -625,6 +730,37 @@ onMounted(async () => {
   align-items: center;
   padding: var(--space-3);
   border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+
+.agent-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-caption);
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.agent-toggle input {
+  accent-color: var(--accent-ai);
+}
+
+.agent-banner {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-caption);
+  color: var(--text-muted);
+  background: rgba(139, 92, 246, 0.08);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.pending-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0 var(--space-4) var(--space-3);
 }
 
 .title-input {

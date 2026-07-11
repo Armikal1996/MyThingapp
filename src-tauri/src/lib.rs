@@ -61,6 +61,12 @@ pub fn run() {
             sql: include_str!("../../data/migrations/008_integrations.sql"),
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 9,
+            description: "agent_threads",
+            sql: include_str!("../../data/migrations/009_agent_threads.sql"),
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri::Builder::default()

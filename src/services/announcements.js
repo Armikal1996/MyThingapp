@@ -1,5 +1,5 @@
 import { getDatabase } from '@/services/database.js'
-import { createThread, deleteThread, sendChatMessage } from '@/services/aiChat.js'
+import { createThread, deleteThread, sendAgentMessage, sendChatMessage } from '@/services/aiChat.js'
 import { getAgencyRoles, modelKeyForAgencyRole } from '@/services/agency.js'
 
 export const AGENT_ROLES = getAgencyRoles()
@@ -142,10 +142,12 @@ export function modelKeyForRole(agentRole) {
 export async function dispatchToChat(announcement) {
   const modelKey = modelKeyForRole(announcement.agentRole)
   const roleLabel = AGENT_ROLES.find(r => r.id === announcement.agentRole)?.label || 'Agent'
+  const agentRole = announcement.agentRole === 'general' ? 'agent' : (announcement.agentRole || 'agent')
 
   const thread = await createThread({
     title: announcement.title,
-    modelKey
+    modelKey,
+    agentRole
   })
 
   const prompt = [
@@ -156,7 +158,7 @@ export async function dispatchToChat(announcement) {
   ].join('\n')
 
   try {
-    await sendChatMessage(thread.id, prompt)
+    await sendAgentMessage(thread.id, prompt)
     await updateAnnouncementStatus(announcement.id, 'in_progress')
     await markAnnouncementRead(announcement.id)
     return thread
