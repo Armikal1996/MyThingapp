@@ -1,90 +1,93 @@
 <template>
-  <DesktopRequired>
-  <div class="favorites-panel" tabindex="0" @keydown="onKeydown">
-    <header class="start-header">
-      <div class="search-wrap">
-        <span class="search-icon">⌕</span>
-        <input
-          v-model="search"
-          type="search"
-          class="search"
-          placeholder="Search favorites, apps, modules…"
-          autofocus
-        />
-      </div>
-      <div class="header-actions">
-        <button class="btn" :class="{ active: editMode }" @click="editMode = !editMode">
-          {{ editMode ? 'Done' : 'Edit' }}
-        </button>
-        <button class="btn primary" @click="openAdd">Add</button>
-      </div>
-    </header>
+  <ModuleShell max-width="960px" accent="favorites">
+    <template #toolbar>
+      <ModuleToolbar>
+        <template #center>
+          <SearchInput
+            v-model="search"
+            placeholder="Search favorites, apps, modules…"
+          />
+        </template>
+        <template #trailing>
+          <BaseButton :class="{ active: editMode }" @click="editMode = !editMode">
+            {{ editMode ? 'Done' : 'Edit' }}
+          </BaseButton>
+          <BaseButton variant="primary" @click="openAdd">Add</BaseButton>
+        </template>
+      </ModuleToolbar>
+    </template>
 
-    <p v-if="message" class="message" :class="messageType">{{ message }}</p>
-
-    <section v-if="filteredGroups.length" class="groups">
-      <div v-for="group in filteredGroups" :key="group.name" class="group">
-        <h3 class="group-title">{{ group.name }}</h3>
-        <div class="tile-grid">
-          <div
-            v-for="(fav, idx) in group.items"
-            :key="fav.id"
-            class="tile-wrap"
-            :class="{ focused: flatIndex(group.name, idx) === focusIndex }"
-            :draggable="editMode && !fav.dynamic"
-            @dragstart="onDragStart(group.name, idx)"
-            @dragover.prevent
-            @drop="onDrop(group.name, idx)"
-          >
-            <FavoriteTile :favorite="fav" @launch="onLaunch" />
-            <div v-if="editMode" class="edit-actions">
-              <button class="mini" @click="openEdit(fav)">Edit</button>
-              <button class="mini danger" @click="onDelete(fav)">×</button>
+    <DesktopRequired>
+      <div class="favorites-content" tabindex="0" @keydown="onKeydown">
+        <section v-if="filteredGroups.length" class="groups">
+          <div v-for="group in filteredGroups" :key="group.name" class="group">
+            <h3 class="group-title">{{ group.name }}</h3>
+            <div class="tile-grid">
+              <div
+                v-for="(fav, idx) in group.items"
+                :key="fav.id"
+                class="tile-wrap"
+                :class="{ focused: flatIndex(group.name, idx) === focusIndex }"
+                :draggable="editMode && !fav.dynamic"
+                @dragstart="onDragStart(group.name, idx)"
+                @dragover.prevent
+                @drop="onDrop(group.name, idx)"
+              >
+                <FavoriteTile :favorite="fav" @launch="onLaunch" />
+                <div v-if="editMode" class="edit-actions">
+                  <BaseButton size="sm" @click="openEdit(fav)">Edit</BaseButton>
+                  <BaseButton size="sm" variant="danger" @click="onDelete(fav)">×</BaseButton>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
+        </section>
 
-    <section v-else class="empty">
-      <h3>No favorites match</h3>
-      <p>Add shortcuts to modules, apps, links, or folders.</p>
-      <button class="btn primary" @click="openAdd">Add favorite</button>
-    </section>
-
-    <section v-if="editMode && apps.length" class="pin-apps">
-      <h3>Pin from launcher</h3>
-      <p class="hint">Quick-add registered apps to your Start panel.</p>
-      <div class="app-chips">
-        <button
-          v-for="app in apps"
-          :key="app.id"
-          class="chip"
-          @click="onPinApp(app)"
+        <BaseEmptyState
+          v-else
+          title="No favorites match"
+          description="Add shortcuts to modules, apps, links, or folders."
         >
-          + {{ app.title }}
-        </button>
-      </div>
-    </section>
+          <template #action>
+            <BaseButton variant="primary" @click="openAdd">Add favorite</BaseButton>
+          </template>
+        </BaseEmptyState>
 
-    <div v-if="modalOpen" class="modal-backdrop" @click.self="closeModal">
-      <div class="modal">
-        <header>
-          <h2>{{ modalMode === 'edit' ? 'Edit favorite' : 'Add favorite' }}</h2>
-          <button class="close" @click="closeModal">×</button>
-        </header>
-        <FavoriteFormModal
-          :favorite="editing"
-          :mode="modalMode"
-          :apps="apps"
-          :group-suggestions="groupNames"
-          @save="onSave"
-          @cancel="closeModal"
-        />
+        <BaseCard v-if="editMode && apps.length" variant="dashed" class="pin-apps">
+          <h3>Pin from launcher</h3>
+          <p class="hint">Quick-add registered apps to your Start panel.</p>
+          <div class="app-chips">
+            <BaseButton
+              v-for="app in apps"
+              :key="app.id"
+              size="sm"
+              variant="ghost"
+              @click="onPinApp(app)"
+            >
+              + {{ app.title }}
+            </BaseButton>
+          </div>
+        </BaseCard>
       </div>
-    </div>
-  </div>
-  </DesktopRequired>
+    </DesktopRequired>
+
+    <BaseModal
+      :open="modalOpen"
+      :title="modalMode === 'edit' ? 'Edit favorite' : 'Add favorite'"
+      size="md"
+      @update:open="modalOpen = $event"
+      @close="closeModal"
+    >
+      <FavoriteFormModal
+        :favorite="editing"
+        :mode="modalMode"
+        :apps="apps"
+        :group-suggestions="groupNames"
+        @save="onSave"
+        @cancel="closeModal"
+      />
+    </BaseModal>
+  </ModuleShell>
 </template>
 
 <script setup>
@@ -92,7 +95,15 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import FavoriteFormModal from '@/modules/favorites/components/FavoriteFormModal.vue'
 import FavoriteTile from '@/modules/favorites/components/FavoriteTile.vue'
+import ModuleShell from '@/components/ui/ModuleShell.vue'
+import ModuleToolbar from '@/components/ui/ModuleToolbar.vue'
+import SearchInput from '@/components/ui/SearchInput.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
+import BaseCard from '@/components/ui/BaseCard.vue'
+import BaseEmptyState from '@/components/ui/BaseEmptyState.vue'
+import BaseModal from '@/components/ui/BaseModal.vue'
 import DesktopRequired from '@/components/DesktopRequired.vue'
+import { useToast } from '@/composables/useToast.js'
 import { getHubDynamicTiles } from '@/services/hubContext.js'
 import {
   createEmptyFavorite,
@@ -110,6 +121,8 @@ import {
 import { pickProjectFolder } from '@/services/launcher.js'
 
 const router = useRouter()
+const { success, error: toastError, info } = useToast()
+
 const favorites = ref([])
 const hubTiles = ref([])
 const apps = ref([])
@@ -117,8 +130,6 @@ const search = ref('')
 const editMode = ref(false)
 const focusIndex = ref(0)
 const dragFrom = ref(null)
-const message = ref('')
-const messageType = ref('info')
 const modalOpen = ref(false)
 const modalMode = ref('add')
 const editing = ref(createEmptyFavorite())
@@ -205,11 +216,6 @@ async function onDrop(groupName, index) {
   await refresh()
 }
 
-function setMessage(text, type = 'info') {
-  message.value = text
-  messageType.value = type
-}
-
 async function refresh() {
   favorites.value = await listAllFavorites()
   hubTiles.value = await getHubDynamicTiles()
@@ -249,9 +255,9 @@ async function onSave(fav) {
     await saveFavorite(payload)
     await refresh()
     closeModal()
-    setMessage(`Saved "${payload.label}".`, 'success')
+    success(`Saved "${payload.label}".`)
   } catch (e) {
-    setMessage(e.message, 'error')
+    toastError(e.message)
   }
 }
 
@@ -259,7 +265,7 @@ async function onDelete(fav) {
   if (!confirm(`Remove "${fav.label}" from favorites?`)) return
   await deleteFavorite(fav.id)
   await refresh()
-  setMessage(`Removed "${fav.label}".`, 'success')
+  success(`Removed "${fav.label}".`)
 }
 
 async function onLaunch(fav) {
@@ -267,14 +273,14 @@ async function onLaunch(fav) {
   try {
     const result = await launchFavorite(fav, router)
     if (result.action === 'navigate') {
-      setMessage(`Opened ${fav.label}.`, 'success')
+      success(`Opened ${fav.label}.`)
     } else if (result.action === 'start') {
-      setMessage(`Starting ${result.app}…`, 'success')
+      info(`Starting ${result.app}…`)
     } else {
-      setMessage(`Launched ${fav.label}.`, 'success')
+      success(`Launched ${fav.label}.`)
     }
   } catch (e) {
-    setMessage(e.message, 'error')
+    toastError(e.message)
   }
 }
 
@@ -282,9 +288,9 @@ async function onPinApp(app) {
   try {
     await pinAppAsFavorite(app)
     await refresh()
-    setMessage(`Pinned "${app.title}" to Apps.`, 'success')
+    success(`Pinned "${app.title}" to Apps.`)
   } catch (e) {
-    setMessage(e.message, 'error')
+    toastError(e.message)
   }
 }
 
@@ -296,113 +302,36 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.favorites-panel {
-  padding: 24px;
-  max-width: 960px;
-  margin: 0 auto;
+.favorites-content {
+  outline: none;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  outline: none;
+  gap: var(--space-5);
 }
 
-.start-header {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.search-wrap {
-  flex: 1;
-  min-width: 240px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 12px;
-  padding: 0 14px;
-}
-
-.search-icon {
-  color: #64748b;
-  font-size: 18px;
-}
-
-.search {
-  flex: 1;
-  background: transparent;
-  border: none;
-  color: #e2e8f0;
-  font-size: 15px;
-  padding: 14px 0;
-  outline: none;
-}
-
-.header-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.btn {
-  background: #1e293b;
-  border: 1px solid #334155;
-  color: #e2e8f0;
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn.active {
-  border-color: #3b82f6;
-  color: #93c5fd;
-}
-
-.btn.primary {
-  background: #2563eb;
-  border-color: #2563eb;
-  color: #fff;
-}
-
-.message {
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-}
-
-.message.success {
-  background: rgba(22, 101, 52, 0.25);
-  border: 1px solid #166534;
-  color: #86efac;
-}
-
-.message.error {
-  background: rgba(127, 29, 29, 0.25);
-  border: 1px solid #991b1b;
-  color: #fca5a5;
+.base-btn.active {
+  border-color: var(--accent-favorites);
+  color: var(--accent-favorites);
 }
 
 .groups {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--space-6);
 }
 
 .group-title {
-  font-size: 12px;
+  font-size: var(--text-caption);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #64748b;
-  margin-bottom: 12px;
+  color: var(--text-faint);
+  margin-bottom: var(--space-3);
 }
 
 .tile-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 .tile-wrap {
@@ -410,7 +339,7 @@ onMounted(async () => {
 }
 
 .tile-wrap.focused :deep(.tile) {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--accent-favorites);
   outline-offset: 2px;
 }
 
@@ -421,106 +350,28 @@ onMounted(async () => {
 .edit-actions {
   display: flex;
   justify-content: center;
-  gap: 4px;
-  margin-top: 4px;
-}
-
-.mini {
-  background: #1e293b;
-  border: 1px solid #334155;
-  color: #94a3b8;
-  border-radius: 6px;
-  padding: 2px 8px;
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.mini.danger {
-  color: #fca5a5;
-  border-color: #7f1d1d;
-}
-
-.empty {
-  text-align: center;
-  padding: 48px 24px;
-  border: 1px dashed #334155;
-  border-radius: 14px;
-  color: #94a3b8;
-}
-
-.empty h3 {
-  color: #e2e8f0;
-  margin-bottom: 8px;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
 }
 
 .pin-apps {
-  border-top: 1px solid #1f2937;
-  padding-top: 20px;
+  padding: var(--space-5);
 }
 
 .pin-apps h3 {
-  font-size: 14px;
-  margin-bottom: 6px;
+  font-size: var(--text-body);
+  margin-bottom: var(--space-2);
 }
 
 .hint {
-  font-size: 12px;
-  color: #64748b;
-  margin-bottom: 10px;
+  font-size: var(--text-caption);
+  color: var(--text-faint);
+  margin-bottom: var(--space-3);
 }
 
 .app-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-}
-
-.chip {
-  background: #0f172a;
-  border: 1px dashed #475569;
-  color: #cbd5e1;
-  border-radius: 999px;
-  padding: 6px 12px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.chip:hover {
-  border-color: #3b82f6;
-  color: #93c5fd;
-}
-
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(2, 6, 23, 0.75);
-  display: grid;
-  place-items: center;
-  z-index: 100;
-  padding: 24px;
-}
-
-.modal {
-  width: min(560px, 100%);
-  background: #111827;
-  border: 1px solid #334155;
-  border-radius: 14px;
-  padding: 20px;
-  max-height: 90vh;
-  overflow: auto;
-}
-
-.modal header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.close {
-  background: none;
-  border: none;
-  color: #94a3b8;
-  font-size: 24px;
-  cursor: pointer;
+  gap: var(--space-2);
 }
 </style>

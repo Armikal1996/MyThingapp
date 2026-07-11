@@ -1,22 +1,37 @@
 <template>
-  <div class="hub-actions" @click.stop>
-    <button type="button" class="trigger" @click="open = !open">⋯</button>
-    <div v-if="open" class="menu">
-      <button type="button" @click="run('askAi')">Ask AI</button>
-      <button type="button" @click="run('pin')">Pin to Favorites</button>
-      <button v-if="showReminder" type="button" @click="run('reminder')">Add reminder</button>
-      <button v-if="showCalendar" type="button" @click="run('calendar')">Add to calendar</button>
-      <button v-if="showTonight" type="button" @click="run('tonight')">Watch / play tonight</button>
-      <button v-if="showEpisode" type="button" @click="run('episode')">+1 episode</button>
-      <button type="button" @click="run('agent')">Send to agent</button>
-      <button type="button" @click="run('open')">Open in module</button>
+  <div ref="rootRef" class="hub-actions" @click.stop>
+    <button
+      type="button"
+      class="trigger"
+      aria-label="Hub actions"
+      aria-haspopup="true"
+      :aria-expanded="open"
+      @click="toggle"
+    >
+      <MoreHorizontal :size="16" />
+    </button>
+    <div v-if="open" class="menu" role="menu">
+      <p class="menu-label">AI</p>
+      <button type="button" role="menuitem" @click="run('askAi')">Ask AI</button>
+      <button type="button" role="menuitem" @click="run('agent')">Send to agent</button>
+
+      <p class="menu-label">Schedule</p>
+      <button v-if="showReminder" type="button" role="menuitem" @click="run('reminder')">Add reminder</button>
+      <button v-if="showCalendar" type="button" role="menuitem" @click="run('calendar')">Add to calendar</button>
+      <button v-if="showTonight" type="button" role="menuitem" @click="run('tonight')">Watch / play tonight</button>
+      <button v-if="showEpisode" type="button" role="menuitem" @click="run('episode')">+1 episode</button>
+
+      <p class="menu-label">Navigate</p>
+      <button type="button" role="menuitem" @click="run('pin')">Pin to Favorites</button>
+      <button type="button" role="menuitem" @click="run('open')">Open in module</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { MoreHorizontal } from 'lucide-vue-next'
 import {
   askAiAbout,
   createReminderFor,
@@ -25,9 +40,10 @@ import {
   incrementWatchEpisode,
   openInModule,
   pinQuickFavorite,
-  syncTaskToCalendar
+  syncTaskToCalendar,
+  hubItemFromRaw
 } from '@/services/integrations.js'
-import { hubItemFromRaw } from '@/services/integrations.js'
+import { useToast } from '@/composables/useToast.js'
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -37,7 +53,10 @@ const props = defineProps({
 const emit = defineEmits(['done', 'error'])
 
 const router = useRouter()
+const route = useRoute()
+const { success } = useToast()
 const open = ref(false)
+const rootRef = ref(null)
 
 const hubItem = computed(() => {
   if (props.item.key) return props.item
@@ -49,6 +68,17 @@ const showCalendar = computed(() => props.itemType === 'task' && props.item.dueA
 const showTonight = computed(() => ['game', 'watch'].includes(props.itemType))
 const showEpisode = computed(() => props.itemType === 'watch' && props.item.mediaType === 'series')
 
+function toggle() {
+  open.value = !open.value
+}
+
+function onClickOutside(e) {
+  if (rootRef.value && !rootRef.value.contains(e.target)) open.value = false
+}
+
+onMounted(() => document.addEventListener('click', onClickOutside))
+onUnmounted(() => document.removeEventListener('click', onClickOutside))
+
 async function run(action) {
   open.value = false
   try {
@@ -59,24 +89,30 @@ async function run(action) {
         break
       case 'pin':
         await pinQuickFavorite(item)
+        success('Pinned to Favorites')
         break
       case 'reminder':
         await createReminderFor(item)
+        success('Reminder created')
         break
       case 'calendar':
         await syncTaskToCalendar(props.item)
+        success('Added to calendar')
         break
       case 'tonight':
         await createWatchTonight(item)
+        success('Scheduled for tonight')
         break
       case 'episode':
         await incrementWatchEpisode(props.item.id)
+        success('Episode incremented')
         break
       case 'agent':
         await dispatchToAgent(item)
+        success('Sent to agent inbox')
         break
       case 'open':
-        await openInModule(item, router)
+        await openInModule(item, router, route.path.split('/')[1] || 'hub')
         break
     }
     emit('done', action)
@@ -92,43 +128,62 @@ async function run(action) {
 }
 
 .trigger {
-  background: #1e293b;
-  border: 1px solid #334155;
-  color: #e2e8f0;
-  border-radius: 6px;
-  padding: 4px 10px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
   cursor: pointer;
-  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.trigger:hover {
+  color: var(--text-primary);
 }
 
 .menu {
   position: absolute;
   right: 0;
-  top: 100%;
-  z-index: 20;
-  min-width: 180px;
-  background: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 8px;
-  padding: 6px;
+  top: calc(100% + 4px);
+  z-index: var(--z-dropdown);
+  min-width: 200px;
+  background: var(--surface-overlay);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
   display: flex;
   flex-direction: column;
   gap: 2px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-lg);
+}
+
+.menu-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: var(--space-2) var(--space-2) var(--space-1);
+  margin-top: var(--space-1);
+}
+
+.menu-label:first-child {
+  margin-top: 0;
 }
 
 .menu button {
   text-align: left;
   background: transparent;
   border: none;
-  color: #e2e8f0;
+  color: var(--text-primary);
   padding: 8px 10px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--text-small);
 }
 
 .menu button:hover {
-  background: #1e293b;
+  background: var(--surface-hover);
 }
 </style>

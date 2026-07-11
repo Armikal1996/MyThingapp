@@ -1,207 +1,223 @@
 <template>
-  <DesktopRequired>
-  <div class="ai-module">
-    <section class="toolbar">
-      <div class="tabs">
-        <button
-          v-for="tab in tabs"
-          :key="tab.id"
-          class="tab"
-          :class="{ active: activeTab === tab.id }"
-          @click="activeTab = tab.id"
-        >
-          {{ tab.label }}
-          <span v-if="tab.badge" class="badge">{{ tab.badge }}</span>
-        </button>
-      </div>
-      <div class="toolbar-actions">
-        <button class="btn" :disabled="checking" @click="refreshHealth">
-          {{ checking ? 'Checking…' : 'Check LM Studio' }}
-        </button>
-        <button v-if="activeTab === 'chat'" class="btn primary" @click="onNewThread">New chat</button>
-        <button v-else class="btn primary" @click="openAddAnnouncement">New announcement</button>
-      </div>
-    </section>
-
-    <section class="model-status">
-      <article
-        v-for="opt in modelOptions"
-        :key="opt.key"
-        class="status-pill"
-        :class="{ online: health[opt.key]?.online }"
-      >
-        <span class="dot" />
-        <strong>{{ opt.label }}</strong>
-        <span class="role">{{ opt.role }}</span>
-        <span class="port">:{{ opt.port }}</span>
-        <span v-if="health[opt.key]?.online" class="hint">ready</span>
-        <span v-else class="hint err">{{ health[opt.key]?.error || 'offline' }}</span>
-      </article>
-    </section>
-
-    <p v-if="message" class="message" :class="messageType">{{ message }}</p>
-
-    <!-- Chat -->
-    <section v-if="activeTab === 'chat'" class="chat-layout">
-      <aside class="thread-list">
-        <p v-if="!threads.length" class="empty-side">No chats yet.</p>
-        <button
-          v-for="thread in threads"
-          :key="thread.id"
-          class="thread-item"
-          :class="{ active: thread.id === activeThreadId }"
-          @click="selectThread(thread.id)"
-        >
-          <span class="thread-title">{{ thread.title }}</span>
-          <span class="thread-meta">{{ modelLabel(thread.modelKey) }}</span>
-        </button>
-      </aside>
-
-      <div class="chat-panel">
-        <template v-if="activeThread">
-          <header class="chat-header">
-            <input
-              v-model="threadTitleEdit"
-              class="title-input"
-              @blur="onRenameThread"
-              @keydown.enter="$event.target.blur()"
-            />
-            <select v-model="activeModelKey" @change="onModelChange">
-              <option v-for="opt in modelOptions" :key="opt.key" :value="opt.key">
-                {{ opt.label }} ({{ opt.role }})
-              </option>
-            </select>
-            <button class="btn-sm danger" @click="onDeleteThread">Delete</button>
-          </header>
-
-          <div ref="messagesEl" class="messages">
-            <article
-              v-for="msg in messages"
-              :key="msg.id"
-              class="bubble"
-              :class="msg.role"
-            >
-              <p class="role">{{ msg.role }}</p>
-              <pre class="content">{{ msg.content }}</pre>
-            </article>
-            <p v-if="sending" class="typing">{{ streamingText || 'Thinking…' }}</p>
-          </div>
-
-          <div v-if="contextItems.length" class="context-tray">
-            <span v-for="item in contextItems" :key="item.key" class="ctx-chip">
-              {{ item.title }}
-              <button type="button" @click="removeContext(item.key)">×</button>
-            </span>
-          </div>
-
-          <div class="quick-prompts">
-            <button
-              v-for="chip in quickChips"
-              :key="chip.key"
-              type="button"
-              class="quick-chip"
-              @click="addContextChip(chip)"
-            >
-              {{ chip.title }}
-            </button>
-            <button type="button" class="quick-chip" @click="pickerOpen = true">@ Add context</button>
-            <button type="button" class="quick-chip" @click="applyQuickPrompt('What should I play or watch next?')">Plan media</button>
-            <button type="button" class="quick-chip" @click="applyQuickPrompt('Plan my week across tasks and calendar.')">Plan week</button>
-          </div>
-
-          <form class="composer" @submit.prevent="onSend">
-            <textarea
-              v-model="draft"
-              rows="3"
-              :placeholder="modelOnline ? 'Message Gemma or Gwen…' : 'Load a model in LM Studio first…'"
-              :disabled="sending || !modelOnline"
-              @keydown.ctrl.enter.prevent="onSend"
-            />
-            <button class="btn primary" type="submit" :disabled="sending || !draft.trim() || !modelOnline">
-              Send
-            </button>
-          </form>
+  <ModuleShell accent="ai">
+    <template #toolbar>
+      <ModuleToolbar>
+        <template #leading>
+          <BaseTabs v-model="activeTab" :tabs="tabs" />
         </template>
-        <p v-else class="empty-main">Select or start a chat.</p>
-      </div>
-    </section>
+        <template #trailing>
+          <BaseButton :disabled="checking" @click="refreshHealth">
+            {{ checking ? 'Checking…' : 'Check LM Studio' }}
+          </BaseButton>
+          <BaseButton v-if="activeTab === 'chat'" variant="primary" @click="onNewThread">New chat</BaseButton>
+          <BaseButton v-else variant="primary" @click="openAddAnnouncement">New announcement</BaseButton>
+        </template>
+      </ModuleToolbar>
+    </template>
 
-    <!-- Inbox -->
-    <section v-else class="inbox-panel">
-      <div class="filters">
-        <button
-          v-for="s in statusFilters"
-          :key="s.id"
-          class="filter"
-          :class="{ active: inboxFilter === s.id }"
-          @click="inboxFilter = s.id"
+    <DesktopRequired>
+      <section class="model-status">
+        <BaseCard
+          v-for="opt in modelOptions"
+          :key="opt.key"
+          class="status-pill"
+          :class="{ online: health[opt.key]?.online }"
         >
-          {{ s.label }}
-        </button>
-      </div>
+          <span class="dot" />
+          <strong>{{ opt.label }}</strong>
+          <span class="role">{{ opt.role }}</span>
+          <span class="port">:{{ opt.port }}</span>
+          <span v-if="health[opt.key]?.online" class="hint">ready</span>
+          <span v-else class="hint err">{{ health[opt.key]?.error || 'offline' }}</span>
+        </BaseCard>
+      </section>
 
-      <div class="card-grid">
-        <article
-          v-for="item in announcements"
-          :key="item.id"
-          class="card"
-          :class="{ unread: !item.readAt && item.status !== 'dismissed' }"
-        >
-          <header>
-            <h3>{{ item.title }}</h3>
-            <span class="pill" :class="item.priority">{{ item.priority }}</span>
-          </header>
-          <p class="body">{{ item.body }}</p>
-          <div class="meta">
-            <span class="pill role">{{ roleLabel(item.agentRole) }}</span>
-            <span class="pill status">{{ statusLabel(item.status) }}</span>
-          </div>
-          <footer>
-            <button class="btn-sm primary" @click="onDispatch(item)">Send to chat</button>
-            <button class="btn-sm" @click="openEditAnnouncement(item)">Edit</button>
-            <select :value="item.status" @change="onStatusChange(item, $event.target.value)">
-              <option v-for="s in statuses" :key="s.id" :value="s.id">{{ s.label }}</option>
-            </select>
-            <button class="btn-sm danger" @click="onDeleteAnnouncement(item)">Delete</button>
-          </footer>
-        </article>
-      </div>
-      <p v-if="!announcements.length" class="empty">No announcements in this view.</p>
-    </section>
+      <!-- Chat -->
+      <section v-if="activeTab === 'chat'" class="chat-layout">
+        <BaseCard class="thread-list">
+          <BaseEmptyState
+            v-if="!threads.length"
+            variant="inline"
+            description="No chats yet."
+          />
+          <button
+            v-for="thread in threads"
+            :key="thread.id"
+            class="thread-item"
+            :class="{ active: thread.id === activeThreadId }"
+            @click="selectThread(thread.id)"
+          >
+            <span class="thread-title">{{ thread.title }}</span>
+            <span class="thread-meta">{{ modelLabel(thread.modelKey) }}</span>
+          </button>
+        </BaseCard>
 
-    <div v-if="modalOpen" class="modal-backdrop" @click.self="closeModal">
-      <div class="modal">
-        <header>
-          <h2>{{ modalMode === 'edit' ? 'Edit announcement' : 'New announcement' }}</h2>
-          <button class="close" @click="closeModal">×</button>
-        </header>
-        <AnnouncementFormModal
-          :announcement="editingAnnouncement"
-          :mode="modalMode"
-          @save="onSaveAnnouncement"
-          @cancel="closeModal"
+        <BaseCard class="chat-panel">
+          <template v-if="activeThread">
+            <header class="chat-header">
+              <input
+                v-model="threadTitleEdit"
+                class="title-input"
+                @blur="onRenameThread"
+                @keydown.enter="$event.target.blur()"
+              />
+              <select v-model="activeModelKey" @change="onModelChange">
+                <option v-for="opt in modelOptions" :key="opt.key" :value="opt.key">
+                  {{ opt.label }} ({{ opt.role }})
+                </option>
+              </select>
+              <BaseButton size="sm" variant="danger" @click="onDeleteThread">Delete</BaseButton>
+            </header>
+
+            <div ref="messagesEl" class="messages">
+              <article
+                v-for="msg in messages"
+                :key="msg.id"
+                class="bubble"
+                :class="msg.role"
+              >
+                <p class="role">{{ msg.role }}</p>
+                <pre class="content">{{ msg.content }}</pre>
+              </article>
+              <p v-if="sending" class="typing">{{ streamingText || 'Thinking…' }}</p>
+            </div>
+
+            <div v-if="contextItems.length" class="context-tray">
+              <HubItemChip
+                v-for="item in contextItems"
+                :key="item.key"
+                :item="item"
+                removable
+                from="ai"
+                @remove="removeContext(item.key)"
+              />
+            </div>
+
+            <div class="quick-prompts">
+              <BaseButton
+                v-for="chip in quickChips"
+                :key="chip.key"
+                size="sm"
+                variant="ghost"
+                @click="addContextChip(chip)"
+              >
+                {{ chip.title }}
+              </BaseButton>
+              <BaseButton size="sm" variant="ghost" @click="pickerOpen = true">@ Add context</BaseButton>
+              <BaseButton size="sm" variant="ghost" @click="applyQuickPrompt('What should I play or watch next?')">Plan media</BaseButton>
+              <BaseButton size="sm" variant="ghost" @click="applyQuickPrompt('Plan my week across tasks and calendar.')">Plan week</BaseButton>
+            </div>
+
+            <form class="composer" @submit.prevent="onSend">
+              <textarea
+                v-model="draft"
+                rows="3"
+                :placeholder="modelOnline ? 'Message Gemma or Gwen…' : 'Load a model in LM Studio first…'"
+                :disabled="sending || !modelOnline"
+                @keydown.ctrl.enter.prevent="onSend"
+              />
+              <BaseButton variant="primary" type="submit" :disabled="sending || !draft.trim() || !modelOnline">
+                Send
+              </BaseButton>
+            </form>
+          </template>
+          <BaseEmptyState
+            v-else
+            variant="inline"
+            title="No chat selected"
+            description="Select or start a chat."
+          />
+        </BaseCard>
+      </section>
+
+      <!-- Inbox -->
+      <section v-else class="inbox-panel">
+        <BaseTabs v-model="inboxFilter" :tabs="statusFilters" />
+
+        <div class="card-grid">
+          <BaseCard
+            v-for="item in announcements"
+            :key="item.id"
+            class="inbox-card"
+            :class="{ unread: !item.readAt && item.status !== 'dismissed' }"
+          >
+            <header>
+              <h3>{{ item.title }}</h3>
+              <BaseBadge :variant="item.priority === 'high' ? 'danger' : 'default'">
+                {{ item.priority }}
+              </BaseBadge>
+            </header>
+            <p class="body">{{ item.body }}</p>
+            <div class="meta">
+              <BaseBadge>{{ roleLabel(item.agentRole) }}</BaseBadge>
+              <BaseBadge>{{ statusLabel(item.status) }}</BaseBadge>
+            </div>
+            <footer>
+              <BaseButton size="sm" variant="primary" @click="onDispatch(item)">Send to chat</BaseButton>
+              <BaseButton
+                v-if="announcementSources[item.id]"
+                size="sm"
+                @click="openAnnouncementSource(item)"
+              >
+                Open source
+              </BaseButton>
+              <BaseButton size="sm" @click="openEditAnnouncement(item)">Edit</BaseButton>
+              <select :value="item.status" @change="onStatusChange(item, $event.target.value)">
+                <option v-for="s in statuses" :key="s.id" :value="s.id">{{ s.label }}</option>
+              </select>
+              <BaseButton size="sm" variant="danger" @click="onDeleteAnnouncement(item)">Delete</BaseButton>
+            </footer>
+          </BaseCard>
+        </div>
+        <BaseEmptyState
+          v-if="!announcements.length"
+          variant="inline"
+          description="No announcements in this view."
         />
-      </div>
-    </div>
-    <div v-if="pickerOpen" class="modal-backdrop" @click.self="pickerOpen = false">
-      <div class="modal picker-modal">
-        <header>
-          <h2>Add context</h2>
-          <button class="close" @click="pickerOpen = false">×</button>
-        </header>
-        <ContextPicker :initial="contextItems" @confirm="onPickerConfirm" @cancel="pickerOpen = false" />
-      </div>
-    </div>
-  </div>
-  </DesktopRequired>
+      </section>
+    </DesktopRequired>
+
+    <BaseModal
+      :open="modalOpen"
+      :title="modalMode === 'edit' ? 'Edit announcement' : 'New announcement'"
+      size="md"
+      @update:open="modalOpen = $event"
+      @close="closeModal"
+    >
+      <AnnouncementFormModal
+        :announcement="editingAnnouncement"
+        :mode="modalMode"
+        @save="onSaveAnnouncement"
+        @cancel="closeModal"
+      />
+    </BaseModal>
+
+    <ContextPicker
+      :open="pickerOpen"
+      :initial="contextItems"
+      @update:open="pickerOpen = $event"
+      @confirm="onPickerConfirm"
+      @cancel="pickerOpen = false"
+    />
+  </ModuleShell>
 </template>
 
 <script setup>
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import AnnouncementFormModal from '@/modules/ai/components/AnnouncementFormModal.vue'
 import ContextPicker from '@/components/ContextPicker.vue'
+import ModuleShell from '@/components/ui/ModuleShell.vue'
+import ModuleToolbar from '@/components/ui/ModuleToolbar.vue'
+import BaseTabs from '@/components/ui/BaseTabs.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
+import BaseCard from '@/components/ui/BaseCard.vue'
+import BaseBadge from '@/components/ui/BaseBadge.vue'
+import BaseEmptyState from '@/components/ui/BaseEmptyState.vue'
+import BaseModal from '@/components/ui/BaseModal.vue'
+import HubItemChip from '@/components/ui/HubItemChip.vue'
 import DesktopRequired from '@/components/DesktopRequired.vue'
+import { useToast } from '@/composables/useToast.js'
 import {
   createThread,
   deleteThread,
@@ -222,9 +238,12 @@ import {
   updateAnnouncementStatus
 } from '@/services/announcements.js'
 import { checkAllModels, getModelOptions } from '@/services/lmstudio.js'
-import { getContextItems, getQuickContextChips } from '@/services/hubContext.js'
+import { getContextItems, getQuickContextChips, searchHubItems } from '@/services/hubContext.js'
+import { openInModule } from '@/services/integrations.js'
 
 const route = useRoute()
+const router = useRouter()
+const { success, error: toastError } = useToast()
 
 const tabs = ref([
   { id: 'chat', label: 'Chat', badge: 0 },
@@ -235,8 +254,6 @@ const activeTab = ref('chat')
 const modelOptions = getModelOptions()
 const health = ref({})
 const checking = ref(false)
-const message = ref('')
-const messageType = ref('info')
 
 const threads = ref([])
 const activeThreadId = ref(null)
@@ -249,6 +266,7 @@ const messagesEl = ref(null)
 
 const announcements = ref([])
 const inboxFilter = ref('all')
+const announcementSources = ref({})
 const statuses = STATUSES
 
 const modalOpen = ref(false)
@@ -259,10 +277,10 @@ const quickChips = ref([])
 const pickerOpen = ref(false)
 const streamingText = ref('')
 
-const statusFilters = [
+const statusFilters = computed(() => [
   { id: 'all', label: 'All' },
   ...STATUSES
-]
+])
 
 const activeThread = computed(() =>
   threads.value.find(t => t.id === activeThreadId.value) || null
@@ -284,10 +302,31 @@ function statusLabel(status) {
   return STATUSES.find(s => s.id === status)?.label || status
 }
 
-function showMsg(text, type = 'info') {
-  message.value = text
-  messageType.value = type
-  setTimeout(() => { message.value = '' }, 5000)
+async function resolveAnnouncementSource(body) {
+  const match = body.match(/### (\w+): (.+)/)
+  if (!match) return null
+  const [, type, title] = match
+  const results = await searchHubItems(title.trim(), 10)
+  return results.find(r => r.type === type && r.title === title.trim()) || null
+}
+
+async function refreshAnnouncementSources(items) {
+  const map = {}
+  for (const item of items) {
+    const source = await resolveAnnouncementSource(item.body)
+    if (source) map[item.id] = source
+  }
+  announcementSources.value = map
+}
+
+async function openAnnouncementSource(item) {
+  const source = announcementSources.value[item.id]
+  if (!source) return
+  try {
+    await openInModule(source, router, 'ai')
+  } catch (e) {
+    toastError(e.message)
+  }
 }
 
 async function refreshHealth() {
@@ -372,7 +411,7 @@ async function onSend() {
     await loadMessages(activeThread.value.id)
     await loadThreads(activeThread.value.id)
   } catch (e) {
-    showMsg(e.message, 'error')
+    toastError(e.message)
     draft.value = text
     await loadMessages(activeThread.value.id)
   } finally {
@@ -402,6 +441,7 @@ function applyQuickPrompt(prompt) {
 
 async function loadInbox() {
   announcements.value = await listAnnouncements(inboxFilter.value)
+  await refreshAnnouncementSources(announcements.value)
   const unread = await countUnread()
   tabs.value[1].badge = unread || 0
 }
@@ -426,7 +466,7 @@ async function onSaveAnnouncement(data) {
   await saveAnnouncement(data)
   closeModal()
   await loadInbox()
-  showMsg('Announcement saved.')
+  success('Announcement saved.')
 }
 
 async function onStatusChange(item, status) {
@@ -446,25 +486,34 @@ async function onDispatch(item) {
     activeTab.value = 'chat'
     await loadThreads(thread.id)
     await loadInbox()
-    showMsg(`Opened chat with ${modelLabel(thread.modelKey)}.`)
+    success(`Opened chat with ${modelLabel(thread.modelKey)}.`)
   } catch (e) {
-    showMsg(e.message, 'error')
+    toastError(e.message)
   }
 }
 
-watch(inboxFilter, () => loadInbox())
-
 async function loadRouteContext() {
   const raw = route.query.context
-  if (!raw) return
-  const keys = String(raw).split(',').filter(Boolean)
-  contextItems.value = await getContextItems(keys)
+  if (raw) {
+    const keys = String(raw).split(',').filter(Boolean)
+    contextItems.value = await getContextItems(keys)
+  }
   if (route.query.thread) {
     activeThreadId.value = route.query.thread
     await loadMessages(route.query.thread)
   }
   if (route.query.tab === 'inbox') activeTab.value = 'inbox'
 }
+
+watch(inboxFilter, () => loadInbox())
+
+watch(
+  () => route.fullPath,
+  async () => {
+    if (route.path !== '/ai') return
+    await loadRouteContext()
+  }
+)
 
 onMounted(async () => {
   await refreshHealth()
@@ -476,139 +525,63 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.ai-module {
-  padding: 20px 24px 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-height: 100%;
-}
-
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.tabs {
-  display: flex;
-  gap: 8px;
-}
-
-.tab {
-  background: #111827;
-  border: 1px solid #1f2937;
-  color: #cbd5e1;
-  border-radius: 8px;
-  padding: 8px 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.tab.active {
-  background: #1d4ed8;
-  border-color: #2563eb;
-  color: #fff;
-}
-
-.tab .badge {
-  background: #ef4444;
-  color: #fff;
-  font-size: 10px;
-  border-radius: 999px;
-  padding: 1px 6px;
-}
-
-.toolbar-actions {
-  display: flex;
-  gap: 8px;
-}
-
 .model-status {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
 .status-pill {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: #111827;
-  border: 1px solid #1f2937;
-  border-radius: 999px;
-  padding: 6px 12px;
-  font-size: 12px;
+  gap: var(--space-2);
+  border-radius: var(--radius-pill);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-caption);
 }
 
 .status-pill.online {
-  border-color: #166534;
+  border-color: var(--status-success);
 }
 
 .dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #ef4444;
+  background: var(--status-error);
 }
 
 .status-pill.online .dot {
-  background: #22c55e;
+  background: var(--status-success);
 }
 
 .role,
 .port,
 .hint {
-  color: #64748b;
+  color: var(--text-faint);
 }
 
 .hint.err {
-  color: #f87171;
+  color: var(--status-error);
   max-width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.message {
-  font-size: 13px;
-  padding: 8px 12px;
-  border-radius: 8px;
-}
-
-.message.info {
-  background: #1e293b;
-  color: #93c5fd;
-}
-
-.message.error {
-  background: #450a0a;
-  color: #fca5a5;
-}
-
 .chat-layout {
   display: grid;
   grid-template-columns: 240px 1fr;
-  gap: 12px;
+  gap: var(--space-3);
   min-height: 520px;
 }
 
-.thread-list,
-.chat-panel,
-.inbox-panel {
-  background: #0f172a;
-  border: 1px solid #1f2937;
-  border-radius: 12px;
-}
-
 .thread-list {
-  padding: 10px;
+  padding: var(--space-3);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-2);
   overflow: auto;
 }
 
@@ -616,28 +589,28 @@ onMounted(async () => {
   text-align: left;
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 10px;
-  color: #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  color: var(--text-primary);
   cursor: pointer;
 }
 
 .thread-item.active,
 .thread-item:hover {
-  background: #1e293b;
-  border-color: #334155;
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
 }
 
 .thread-title {
   display: block;
-  font-size: 13px;
+  font-size: var(--text-small);
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: var(--space-1);
 }
 
 .thread-meta {
-  font-size: 11px;
-  color: #64748b;
+  font-size: var(--text-caption);
+  color: var(--text-faint);
 }
 
 .chat-panel {
@@ -648,42 +621,42 @@ onMounted(async () => {
 
 .chat-header {
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
   align-items: center;
-  padding: 12px;
-  border-bottom: 1px solid #1f2937;
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .title-input {
   flex: 1;
-  background: #111827;
-  border: 1px solid #334155;
-  border-radius: 8px;
-  color: #e2e8f0;
-  padding: 8px 10px;
+  background: var(--surface-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  padding: var(--space-2) var(--space-3);
 }
 
 .messages {
   flex: 1;
   overflow: auto;
-  padding: 16px;
+  padding: var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .bubble {
   max-width: 85%;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: #111827;
-  border: 1px solid #1f2937;
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
 }
 
 .bubble.user {
   align-self: flex-end;
-  background: #172554;
-  border-color: #1d4ed8;
+  background: rgba(29, 78, 216, 0.2);
+  border-color: var(--accent-primary);
 }
 
 .bubble.assistant {
@@ -693,243 +666,109 @@ onMounted(async () => {
 .bubble .role {
   font-size: 10px;
   text-transform: uppercase;
-  color: #64748b;
-  margin-bottom: 6px;
+  color: var(--text-faint);
+  margin-bottom: var(--space-2);
 }
 
 .bubble .content {
   white-space: pre-wrap;
   font-family: inherit;
-  font-size: 14px;
+  font-size: var(--text-body);
   line-height: 1.5;
   margin: 0;
 }
 
 .typing {
-  color: #94a3b8;
-  font-size: 13px;
+  color: var(--text-muted);
+  font-size: var(--text-small);
 }
 
 .composer {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 8px;
-  padding: 12px;
-  border-top: 1px solid #1f2937;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .composer textarea {
-  background: #111827;
-  border: 1px solid #334155;
-  border-radius: 8px;
-  color: #e2e8f0;
-  padding: 10px;
+  background: var(--surface-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  padding: var(--space-3);
   resize: vertical;
+  font-family: inherit;
 }
 
 .inbox-panel {
-  padding: 16px;
-}
-
-.filters {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.filter {
-  background: #111827;
-  border: 1px solid #1f2937;
-  color: #cbd5e1;
-  border-radius: 999px;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.filter.active {
-  background: #1d4ed8;
-  border-color: #2563eb;
-  color: #fff;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 12px;
+  gap: var(--space-3);
 }
 
-.card {
-  background: #111827;
-  border: 1px solid #1f2937;
-  border-radius: 12px;
-  padding: 14px;
+.inbox-card {
+  padding: var(--space-4);
 }
 
-.card.unread {
-  border-color: #2563eb;
+.inbox-card.unread {
+  border-color: var(--accent-ai);
 }
 
-.card header {
+.inbox-card header {
   display: flex;
   justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
 }
 
-.card h3 {
-  font-size: 15px;
+.inbox-card h3 {
+  font-size: var(--text-body);
 }
 
 .body {
-  font-size: 13px;
-  color: #cbd5e1;
+  font-size: var(--text-small);
+  color: var(--text-secondary);
   line-height: 1.5;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-3);
   white-space: pre-wrap;
 }
 
 .meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 10px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
 }
 
-.pill {
-  font-size: 11px;
-  border-radius: 999px;
-  padding: 2px 8px;
-  background: #1e293b;
-  color: #94a3b8;
-}
-
-.pill.high {
-  background: #450a0a;
-  color: #fca5a5;
-}
-
-.pill.normal {
-  background: #1e293b;
-}
-
-.pill.low {
-  background: #0f172a;
-}
-
-.card footer {
+.inbox-card footer {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--space-2);
   align-items: center;
 }
 
-.btn,
-.btn-sm {
-  background: #1e293b;
-  border: 1px solid #334155;
-  color: #e2e8f0;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.btn-sm {
-  padding: 6px 10px;
-  font-size: 12px;
-}
-
-.btn.primary,
-.btn-sm.primary {
-  background: #1d4ed8;
-  border-color: #2563eb;
-}
-
-.btn-sm.danger {
-  color: #fca5a5;
-  border-color: #7f1d1d;
-}
-
-.empty,
-.empty-side,
-.empty-main {
-  color: #64748b;
-  font-size: 13px;
-  padding: 12px;
-}
-
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: grid;
-  place-items: center;
-  z-index: 50;
-}
-
-.modal {
-  width: min(520px, 92vw);
-  background: #0f172a;
-  border: 1px solid #1f2937;
-  border-radius: 12px;
-  padding: 16px;
-}
-
-.modal header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.close {
-  background: transparent;
-  border: none;
-  color: #94a3b8;
-  font-size: 22px;
-  cursor: pointer;
-}
-
-select {
-  background: #111827;
-  border: 1px solid #334155;
-  border-radius: 8px;
-  color: #e2e8f0;
-  padding: 6px 8px;
-  font-size: 12px;
+.inbox-card footer select {
+  background: var(--surface-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  padding: var(--space-2);
+  font-size: var(--text-caption);
 }
 
 .context-tray,
 .quick-prompts {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  padding: 0 12px 8px;
-}
-
-.ctx-chip,
-.quick-chip {
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 999px;
-  color: #e2e8f0;
-  padding: 4px 10px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.ctx-chip button {
-  background: transparent;
-  border: none;
-  color: #94a3b8;
-  margin-left: 4px;
-  cursor: pointer;
-}
-
-.picker-modal {
-  width: min(560px, 92vw);
+  gap: var(--space-2);
+  padding: 0 var(--space-3) var(--space-2);
 }
 
 @media (max-width: 900px) {

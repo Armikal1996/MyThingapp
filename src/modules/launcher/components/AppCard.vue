@@ -1,16 +1,21 @@
 <template>
-  <article class="app-card" :class="{ disabled: !app.enabled }">
+  <BaseCard
+    class="app-card"
+    :class="{ disabled: !app.enabled }"
+    accent="var(--accent-launcher)"
+    :data-highlight-id="app.id"
+  >
     <header class="card-head">
       <div>
         <h3>{{ app.title }}</h3>
         <p class="folder">{{ app.folderName || app.name }}</p>
       </div>
       <div class="head-right">
-        <HubActionMenu item-type="app" :item="app" @error="onHubError" />
+        <HubActionMenu item-type="app" :item="app" @error="$emit('hub-error', $event)" />
         <div class="badges">
-        <span class="badge runtime">{{ app.runtime }}</span>
-        <span v-if="app.autoDiscovered" class="badge auto">auto</span>
-        <span v-if="!app.enabled" class="badge off">disabled</span>
+          <BaseBadge>{{ app.runtime }}</BaseBadge>
+          <BaseBadge v-if="app.autoDiscovered" variant="success">auto</BaseBadge>
+          <BaseBadge v-if="!app.enabled" variant="danger">off</BaseBadge>
         </div>
       </div>
     </header>
@@ -38,16 +43,19 @@
     </div>
 
     <footer class="card-actions">
-      <button class="btn primary" :disabled="!app.startCmd" @click="$emit('start', app)">Start</button>
-      <button class="btn" :disabled="!app.installCmd" @click="$emit('install', app)">Install</button>
-      <button class="btn" @click="$emit('open-folder', app)">Folder</button>
-      <button class="btn" @click="$emit('edit', app)">Edit</button>
-      <button class="btn danger" @click="$emit('delete', app)">Delete</button>
+      <BaseButton variant="primary" size="sm" :disabled="!app.startCmd" @click="$emit('start', app)">Start</BaseButton>
+      <BaseButton size="sm" :disabled="!app.installCmd" @click="$emit('install', app)">Install</BaseButton>
+      <BaseButton size="sm" @click="$emit('open-folder', app)">Folder</BaseButton>
+      <BaseButton size="sm" @click="$emit('edit', app)">Edit</BaseButton>
+      <BaseButton size="sm" variant="danger" @click="$emit('delete', app)">Delete</BaseButton>
     </footer>
-  </article>
+  </BaseCard>
 </template>
 
 <script setup>
+import BaseCard from '@/components/ui/BaseCard.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
+import BaseBadge from '@/components/ui/BaseBadge.vue'
 import HubActionMenu from '@/components/HubActionMenu.vue'
 
 defineProps({
@@ -55,21 +63,14 @@ defineProps({
 })
 
 defineEmits(['start', 'install', 'open-folder', 'edit', 'delete', 'hub-error'])
-
-function onHubError(msg) {
-  console.warn('Hub action:', msg)
-}
 </script>
 
 <style scoped>
 .app-card {
-  background: #0f172a;
-  border: 1px solid #1f2937;
-  border-radius: 14px;
-  padding: 16px;
+  padding: var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .app-card.disabled {
@@ -79,7 +80,7 @@ function onHubError(msg) {
 .card-head {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .card-head h3 {
@@ -88,8 +89,8 @@ function onHubError(msg) {
 }
 
 .folder {
-  font-size: 12px;
-  color: #64748b;
+  font-size: var(--text-caption);
+  color: var(--text-faint);
   margin-top: 2px;
   word-break: break-all;
 }
@@ -98,115 +99,63 @@ function onHubError(msg) {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--space-1);
   justify-content: flex-end;
 }
 
-.badge {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border-radius: 999px;
-  padding: 3px 8px;
-  border: 1px solid #334155;
-  color: #94a3b8;
-}
-
-.badge.runtime {
-  color: #93c5fd;
-  border-color: #1d4ed8;
-}
-
-.badge.auto {
-  color: #86efac;
-  border-color: #166534;
-}
-
-.badge.off {
-  color: #fca5a5;
-  border-color: #991b1b;
-}
-
 .desc {
-  font-size: 13px;
-  color: #cbd5e1;
+  font-size: var(--text-small);
+  color: var(--text-secondary);
   line-height: 1.45;
 }
 
 .desc.muted {
-  color: #64748b;
+  color: var(--text-faint);
   font-style: italic;
 }
 
 .meta {
   display: grid;
-  gap: 8px;
-  font-size: 12px;
+  gap: var(--space-2);
+  font-size: var(--text-caption);
 }
 
 .meta dt {
-  color: #64748b;
+  color: var(--text-faint);
   margin-bottom: 2px;
 }
 
 .meta code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  color: #bfdbfe;
+  font-family: var(--font-mono);
+  color: var(--status-info);
   word-break: break-all;
 }
 
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--space-1);
 }
 
 .tag {
-  font-size: 11px;
-  background: #1e293b;
-  color: #94a3b8;
-  border-radius: 999px;
+  font-size: var(--text-caption);
+  background: var(--surface-hover);
+  color: var(--text-muted);
+  border-radius: var(--radius-pill);
   padding: 3px 8px;
 }
 
 .card-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
   margin-top: auto;
-  padding-top: 4px;
-}
-
-.btn {
-  background: #1e293b;
-  border: 1px solid #334155;
-  color: #e2e8f0;
-  border-radius: 8px;
-  padding: 7px 11px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
-.btn.primary {
-  background: #2563eb;
-  border-color: #2563eb;
-  color: #fff;
-}
-
-.btn.danger {
-  color: #fca5a5;
-  border-color: #7f1d1d;
+  padding-top: var(--space-1);
 }
 </style>

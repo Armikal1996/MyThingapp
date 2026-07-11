@@ -1,158 +1,177 @@
 <template>
-  <DesktopRequired>
-  <div class="media-module">
-    <section class="toolbar">
-      <div class="tabs">
-        <button
-          v-for="tab in tabs"
-          :key="tab.id"
-          class="tab"
-          :class="{ active: activeTab === tab.id }"
-          @click="activeTab = tab.id"
-        >
-          {{ tab.label }}
-          <span class="count">{{ tab.count }}</span>
-        </button>
-      </div>
-      <div class="toolbar-actions">
-        <input v-model="search" class="search" type="search" placeholder="Search…" />
-        <button class="btn primary" @click="openAdd">Add {{ activeTab === 'games' ? 'game' : 'title' }}</button>
-      </div>
-    </section>
+  <ModuleShell sticky-toolbar accent="media">
+    <template #toolbar>
+      <ModuleToolbar>
+        <template #leading>
+          <BaseTabs v-model="activeTab" :tabs="tabs" />
+        </template>
+        <template #center>
+          <SearchInput v-model="search" placeholder="Search…" />
+        </template>
+        <template #trailing>
+          <BaseButton variant="primary" @click="openAdd">
+            Add {{ activeTab === 'games' ? 'game' : 'title' }}
+          </BaseButton>
+        </template>
+      </ModuleToolbar>
+    </template>
 
-    <p v-if="message" class="message" :class="messageType">{{ message }}</p>
-
-    <!-- Games -->
-    <section v-if="activeTab === 'games'" class="panel">
-      <div class="filters">
-        <button
-          class="filter"
-          :class="{ active: gameFilter === 'all' }"
-          @click="gameFilter = 'all'"
-        >
-          All ({{ games.length }})
-        </button>
-        <button
-          v-for="s in gameStatuses"
-          :key="s.id"
-          class="filter"
-          :class="{ active: gameFilter === s.id }"
-          @click="gameFilter = s.id"
-        >
-          {{ s.label }} ({{ countGames(s.id) }})
-        </button>
-      </div>
-      <div class="card-grid">
-        <article v-for="game in filteredGames" :key="game.id" class="card">
-          <header>
-            <h3>{{ game.title }}</h3>
-            <div class="card-head-actions">
-              <span class="badge">{{ game.platform || 'PC' }}</span>
-              <HubActionMenu item-type="game" :item="game" @done="onHubAction" @error="onHubError" />
-            </div>
-          </header>
-          <p v-if="game.description" class="desc">{{ game.description }}</p>
-          <div class="meta">
-            <span class="pill status">{{ statusLabel(gameStatuses, game.status) }}</span>
-            <span v-if="game.hoursPlayed" class="pill">{{ game.hoursPlayed }}h</span>
-            <span v-for="tag in game.tags" :key="tag" class="pill tag">{{ tag }}</span>
+    <DesktopRequired>
+      <div ref="listRef" class="media-content">
+        <!-- Games -->
+        <section v-if="activeTab === 'games'" class="panel">
+          <div class="filters">
+            <BasePill :active="gameFilter === 'all'" @click="gameFilter = 'all'">
+              All ({{ games.length }})
+            </BasePill>
+            <BasePill
+              v-for="s in gameStatuses"
+              :key="s.id"
+              :active="gameFilter === s.id"
+              @click="gameFilter = s.id"
+            >
+              {{ s.label }} ({{ countGames(s.id) }})
+            </BasePill>
           </div>
-          <p v-if="game.notes" class="notes">{{ game.notes }}</p>
-          <footer>
-            <select :value="game.status" @change="onGameStatus(game, $event.target.value)">
-              <option v-for="s in gameStatuses" :key="s.id" :value="s.id">{{ s.label }}</option>
-            </select>
-            <button class="btn-sm" @click="openEditGame(game)">Edit</button>
-            <button class="btn-sm danger" @click="onDeleteGame(game)">Delete</button>
-          </footer>
-        </article>
-      </div>
-      <p v-if="!filteredGames.length" class="empty">No games in this view.</p>
-    </section>
-
-    <!-- Watchlist -->
-    <section v-else class="panel">
-      <div class="filters">
-        <button
-          class="filter"
-          :class="{ active: watchFilter === 'all' }"
-          @click="watchFilter = 'all'"
-        >
-          All ({{ watchlist.length }})
-        </button>
-        <button
-          v-for="s in watchStatuses"
-          :key="s.id"
-          class="filter"
-          :class="{ active: watchFilter === s.id }"
-          @click="watchFilter = s.id"
-        >
-          {{ s.label }} ({{ countWatch(s.id) }})
-        </button>
-      </div>
-      <div class="card-grid">
-        <article v-for="item in filteredWatch" :key="item.id" class="card">
-          <header>
-            <h3>{{ item.title }}</h3>
-            <div class="card-head-actions">
-              <span class="badge">{{ item.mediaType === 'series' ? 'Series' : 'Movie' }}</span>
-              <HubActionMenu item-type="watch" :item="item" @done="onHubAction" @error="onHubError" />
-            </div>
-          </header>
-          <p v-if="item.description" class="desc">{{ item.description }}</p>
-          <div class="meta">
-            <span class="pill status">{{ statusLabel(watchStatuses, item.status) }}</span>
-            <span v-if="item.mediaType === 'series' && item.season" class="pill">
-              S{{ item.season }}{{ item.episode ? `E${item.episode}` : '' }}
-            </span>
-            <span v-if="item.rating" class="pill">★ {{ item.rating }}/10</span>
-            <span v-for="tag in item.tags" :key="tag" class="pill tag">{{ tag }}</span>
+          <div v-if="filteredGames.length" class="card-grid">
+            <BaseCard
+              v-for="game in filteredGames"
+              :key="game.id"
+              class="media-card"
+              accent="var(--accent-media)"
+              :data-highlight-id="game.id"
+            >
+              <header class="card-head">
+                <h3>{{ game.title }}</h3>
+                <div class="card-head-actions">
+                  <BaseBadge>{{ game.platform || 'PC' }}</BaseBadge>
+                  <HubActionMenu item-type="game" :item="game" @done="onHubAction" @error="onHubError" />
+                </div>
+              </header>
+              <p v-if="game.description" class="desc">{{ game.description }}</p>
+              <div class="meta">
+                <BaseBadge variant="primary">{{ statusLabel(gameStatuses, game.status) }}</BaseBadge>
+                <BaseBadge v-if="game.hoursPlayed">{{ game.hoursPlayed }}h</BaseBadge>
+                <BaseBadge v-for="tag in game.tags" :key="tag">{{ tag }}</BaseBadge>
+              </div>
+              <p v-if="game.notes" class="notes">{{ game.notes }}</p>
+              <footer class="card-footer">
+                <select :value="game.status" @change="onGameStatus(game, $event.target.value)">
+                  <option v-for="s in gameStatuses" :key="s.id" :value="s.id">{{ s.label }}</option>
+                </select>
+                <BaseButton size="sm" @click="openEditGame(game)">Edit</BaseButton>
+                <BaseButton size="sm" variant="danger" @click="onDeleteGame(game)">Delete</BaseButton>
+              </footer>
+            </BaseCard>
           </div>
-          <p v-if="item.notes" class="notes">{{ item.notes }}</p>
-          <footer>
-            <select :value="item.status" @change="onWatchStatus(item, $event.target.value)">
-              <option v-for="s in watchStatuses" :key="s.id" :value="s.id">{{ s.label }}</option>
-            </select>
-            <button class="btn-sm" @click="openEditWatch(item)">Edit</button>
-            <button class="btn-sm danger" @click="onDeleteWatch(item)">Delete</button>
-          </footer>
-        </article>
-      </div>
-      <p v-if="!filteredWatch.length" class="empty">Nothing in this watchlist view.</p>
-    </section>
+          <BaseEmptyState
+            v-else
+            variant="inline"
+            title="No games in this view."
+          />
+        </section>
 
-    <div v-if="modalOpen" class="modal-backdrop" @click.self="closeModal">
-      <div class="modal">
-        <header>
-          <h2>{{ modalTitle }}</h2>
-          <button class="close" @click="closeModal">×</button>
-        </header>
-        <GameFormModal
-          v-if="modalKind === 'game'"
-          :game="editingGame"
-          :mode="modalMode"
-          @save="onSaveGame"
-          @cancel="closeModal"
-        />
-        <WatchFormModal
-          v-else
-          :item="editingWatch"
-          :mode="modalMode"
-          @save="onSaveWatch"
-          @cancel="closeModal"
-        />
+        <!-- Watchlist -->
+        <section v-else class="panel">
+          <div class="filters">
+            <BasePill :active="watchFilter === 'all'" @click="watchFilter = 'all'">
+              All ({{ watchlist.length }})
+            </BasePill>
+            <BasePill
+              v-for="s in watchStatuses"
+              :key="s.id"
+              :active="watchFilter === s.id"
+              @click="watchFilter = s.id"
+            >
+              {{ s.label }} ({{ countWatch(s.id) }})
+            </BasePill>
+          </div>
+          <div v-if="filteredWatch.length" class="card-grid">
+            <BaseCard
+              v-for="item in filteredWatch"
+              :key="item.id"
+              class="media-card"
+              accent="var(--accent-media)"
+              :data-highlight-id="item.id"
+            >
+              <header class="card-head">
+                <h3>{{ item.title }}</h3>
+                <div class="card-head-actions">
+                  <BaseBadge>{{ item.mediaType === 'series' ? 'Series' : 'Movie' }}</BaseBadge>
+                  <HubActionMenu item-type="watch" :item="item" @done="onHubAction" @error="onHubError" />
+                </div>
+              </header>
+              <p v-if="item.description" class="desc">{{ item.description }}</p>
+              <div class="meta">
+                <BaseBadge variant="primary">{{ statusLabel(watchStatuses, item.status) }}</BaseBadge>
+                <BaseBadge v-if="item.mediaType === 'series' && item.season">
+                  S{{ item.season }}{{ item.episode ? `E${item.episode}` : '' }}
+                </BaseBadge>
+                <BaseBadge v-if="item.rating">★ {{ item.rating }}/10</BaseBadge>
+                <BaseBadge v-for="tag in item.tags" :key="tag">{{ tag }}</BaseBadge>
+              </div>
+              <p v-if="item.notes" class="notes">{{ item.notes }}</p>
+              <footer class="card-footer">
+                <select :value="item.status" @change="onWatchStatus(item, $event.target.value)">
+                  <option v-for="s in watchStatuses" :key="s.id" :value="s.id">{{ s.label }}</option>
+                </select>
+                <BaseButton size="sm" @click="openEditWatch(item)">Edit</BaseButton>
+                <BaseButton size="sm" variant="danger" @click="onDeleteWatch(item)">Delete</BaseButton>
+              </footer>
+            </BaseCard>
+          </div>
+          <BaseEmptyState
+            v-else
+            variant="inline"
+            title="Nothing in this watchlist view."
+          />
+        </section>
       </div>
-    </div>
-  </div>
-  </DesktopRequired>
+    </DesktopRequired>
+
+    <BaseModal
+      :open="modalOpen"
+      :title="modalTitle"
+      @update:open="modalOpen = $event"
+      @close="closeModal"
+    >
+      <GameFormModal
+        v-if="modalKind === 'game'"
+        :game="editingGame"
+        :mode="modalMode"
+        @save="onSaveGame"
+        @cancel="closeModal"
+      />
+      <WatchFormModal
+        v-else
+        :item="editingWatch"
+        :mode="modalMode"
+        @save="onSaveWatch"
+        @cancel="closeModal"
+      />
+    </BaseModal>
+  </ModuleShell>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import GameFormModal from '@/modules/media/components/GameFormModal.vue'
 import WatchFormModal from '@/modules/media/components/WatchFormModal.vue'
 import HubActionMenu from '@/components/HubActionMenu.vue'
 import DesktopRequired from '@/components/DesktopRequired.vue'
+import ModuleShell from '@/components/ui/ModuleShell.vue'
+import ModuleToolbar from '@/components/ui/ModuleToolbar.vue'
+import BaseTabs from '@/components/ui/BaseTabs.vue'
+import BasePill from '@/components/ui/BasePill.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
+import BaseCard from '@/components/ui/BaseCard.vue'
+import BaseBadge from '@/components/ui/BaseBadge.vue'
+import BaseEmptyState from '@/components/ui/BaseEmptyState.vue'
+import BaseModal from '@/components/ui/BaseModal.vue'
+import SearchInput from '@/components/ui/SearchInput.vue'
+import { useToast } from '@/composables/useToast.js'
+import { useHubHighlight } from '@/composables/useHubHighlight.js'
 import {
   GAME_STATUSES,
   WATCH_STATUSES,
@@ -168,14 +187,17 @@ import {
   saveWatchItem
 } from '@/services/media.js'
 
+const route = useRoute()
+const { success, error: toastError } = useToast()
+const { applyHighlight } = useHubHighlight()
+
 const activeTab = ref('games')
 const gameFilter = ref('all')
 const watchFilter = ref('all')
 const search = ref('')
 const games = ref([])
 const watchlist = ref([])
-const message = ref('')
-const messageType = ref('info')
+const listRef = ref(null)
 
 const gameStatuses = GAME_STATUSES
 const watchStatuses = WATCH_STATUSES
@@ -187,8 +209,8 @@ const editingGame = ref(createEmptyGame())
 const editingWatch = ref(createEmptyWatchItem())
 
 const tabs = computed(() => [
-  { id: 'games', label: 'Games', count: games.value.length },
-  { id: 'watchlist', label: 'Movies & Series', count: watchlist.value.length }
+  { id: 'games', label: 'Games', badge: games.value.length },
+  { id: 'watchlist', label: 'Movies & Series', badge: watchlist.value.length }
 ])
 
 const modalTitle = computed(() => {
@@ -217,11 +239,6 @@ const filteredWatch = computed(() => {
       .join(' ').toLowerCase().includes(q)
   })
 })
-
-function setMessage(text, type = 'info') {
-  message.value = text
-  messageType.value = type
-}
 
 function statusLabel(statuses, id) {
   return statuses.find(s => s.id === id)?.label || id
@@ -277,9 +294,9 @@ async function onSaveGame(game) {
     await saveGame(payload)
     await refresh()
     closeModal()
-    setMessage(`Saved "${payload.title}".`, 'success')
+    success(`Saved "${payload.title}".`)
   } catch (e) {
-    setMessage(e.message, 'error')
+    toastError(e.message)
   }
 }
 
@@ -290,9 +307,9 @@ async function onSaveWatch(item) {
     await saveWatchItem(payload)
     await refresh()
     closeModal()
-    setMessage(`Saved "${payload.title}".`, 'success')
+    success(`Saved "${payload.title}".`)
   } catch (e) {
-    setMessage(e.message, 'error')
+    toastError(e.message)
   }
 }
 
@@ -300,14 +317,14 @@ async function onDeleteGame(game) {
   if (!confirm(`Delete "${game.title}"?`)) return
   await deleteGame(game.id)
   await refresh()
-  setMessage('Game removed.', 'success')
+  success('Game removed.')
 }
 
 async function onDeleteWatch(item) {
   if (!confirm(`Delete "${item.title}"?`)) return
   await deleteWatchItem(item.id)
   await refresh()
-  setMessage('Removed from watchlist.', 'success')
+  success('Removed from watchlist.')
 }
 
 async function onGameStatus(game, status) {
@@ -320,76 +337,98 @@ async function onWatchStatus(item, status) {
   await refresh()
 }
 
-onMounted(refresh)
-
 function onHubAction(action) {
-  message.value = `Done: ${action}`
-  messageType.value = 'info'
+  success(`Done: ${action}`)
   refresh()
 }
 
 function onHubError(err) {
-  message.value = err
-  messageType.value = 'error'
+  toastError(err)
 }
+
+onMounted(async () => {
+  await refresh()
+  if (route.query.action === 'add') openAdd()
+  await applyHighlight(listRef)
+})
+
+watch(() => route.query.highlight, () => applyHighlight(listRef))
 </script>
 
 <style scoped>
-.media-module { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
-.toolbar { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
-.tabs { display: flex; gap: 6px; }
-.tab {
-  display: flex; align-items: center; gap: 8px;
-  background: #1e293b; border: 1px solid #334155; color: #94a3b8;
-  border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
 }
-.tab.active { background: #2563eb; border-color: #2563eb; color: #fff; }
-.count { font-size: 11px; background: rgba(0,0,0,.2); border-radius: 999px; padding: 1px 7px; }
-.toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.search {
-  background: #0f172a; border: 1px solid #334155; border-radius: 8px;
-  color: #e2e8f0; padding: 8px 12px; min-width: 160px;
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-3);
 }
-.btn { background: #1e293b; border: 1px solid #334155; color: #e2e8f0; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 600; cursor: pointer; }
-.btn.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
-.message { padding: 10px 14px; border-radius: 8px; font-size: 13px; }
-.message.success { background: rgba(22,101,52,.25); border: 1px solid #166534; color: #86efac; }
-.message.error { background: rgba(127,29,29,.25); border: 1px solid #991b1b; color: #fca5a5; }
-.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-.filter {
-  background: #0f172a; border: 1px solid #334155; color: #94a3b8;
-  border-radius: 999px; padding: 6px 12px; font-size: 12px; cursor: pointer;
+
+.media-card {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
-.filter.active { background: #1d4ed8; border-color: #1d4ed8; color: #fff; }
-.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-.card {
-  background: #0f172a; border: 1px solid #1f2937; border-radius: 14px;
-  padding: 14px; display: flex; flex-direction: column; gap: 8px;
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  align-items: flex-start;
 }
-.card header { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
-.card h3 { font-size: 15px; font-weight: 600; }
-.badge { font-size: 10px; text-transform: uppercase; letter-spacing: .04em; color: #94a3b8; border: 1px solid #334155; border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
-.desc { font-size: 13px; color: #64748b; line-height: 1.4; }
-.notes { font-size: 12px; color: #475569; font-style: italic; }
-.meta { display: flex; flex-wrap: wrap; gap: 6px; }
-.pill { font-size: 11px; background: #1e293b; color: #94a3b8; border-radius: 999px; padding: 3px 8px; }
-.pill.status { color: #93c5fd; }
-.card footer { display: flex; gap: 6px; margin-top: auto; padding-top: 4px; flex-wrap: wrap; }
-.card footer select {
-  flex: 1; min-width: 100px; background: #0b1220; border: 1px solid #334155;
-  border-radius: 6px; color: #cbd5e1; font-size: 12px; padding: 6px 8px;
+
+.card-head h3 {
+  font-size: var(--text-body);
+  font-weight: 600;
 }
-.btn-sm { background: #1e293b; border: 1px solid #334155; color: #e2e8f0; border-radius: 6px; padding: 6px 10px; font-size: 12px; cursor: pointer; }
-.btn-sm.danger { color: #fca5a5; border-color: #7f1d1d; }
-.empty { color: #64748b; text-align: center; padding: 32px; }
-.modal-backdrop {
-  position: fixed; inset: 0; background: rgba(2,6,23,.75);
-  display: grid; place-items: center; z-index: 100; padding: 24px;
+
+.card-head-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
 }
-.modal {
-  width: min(560px, 100%); background: #111827; border: 1px solid #334155;
-  border-radius: 14px; padding: 20px; max-height: 90vh; overflow: auto;
+
+.desc {
+  font-size: var(--text-small);
+  color: var(--text-faint);
+  line-height: 1.4;
 }
-.modal header { display: flex; justify-content: space-between; margin-bottom: 16px; }
-.close { background: none; border: none; color: #94a3b8; font-size: 24px; cursor: pointer; }
+
+.notes {
+  font-size: var(--text-caption);
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.card-footer {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-1);
+  flex-wrap: wrap;
+}
+
+.card-footer select {
+  flex: 1;
+  min-width: 100px;
+  background: var(--surface-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: var(--text-caption);
+  padding: 6px 8px;
+}
 </style>

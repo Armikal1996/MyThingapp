@@ -24,35 +24,39 @@ defineEmits(['launch'])
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-2);
   min-height: 96px;
-  padding: 12px 10px;
-  background: linear-gradient(180deg, #1e293b 0%, #111827 100%);
-  border: 1px solid #334155;
-  border-radius: 12px;
-  color: #e2e8f0;
+  padding: var(--space-3) var(--space-3);
+  background: linear-gradient(180deg, var(--surface-hover) 0%, var(--surface-raised) 100%);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
   cursor: pointer;
-  transition: transform 0.12s, border-color 0.12s, background 0.12s;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
   text-align: center;
 }
+
 .tile:hover {
   transform: translateY(-2px);
-  border-color: #3b82f6;
-  background: linear-gradient(180deg, #273549 0%, #1e293b 100%);
+  border-color: var(--accent-favorites);
+  background: linear-gradient(180deg, var(--surface-overlay) 0%, var(--surface-hover) 100%);
 }
+
 .icon {
   font-size: 26px;
   line-height: 1;
 }
+
 .label {
-  font-size: 12px;
+  font-size: var(--text-caption);
   font-weight: 600;
   line-height: 1.2;
   word-break: break-word;
 }
+
 .sub {
   font-size: 10px;
-  color: #64748b;
+  color: var(--text-faint);
   line-height: 1.2;
   display: -webkit-box;
   -webkit-line-clamp: 2;

@@ -10,6 +10,7 @@
           v-for="task in tasksByColumn[col.id] || []"
           :key="task.id"
           class="task-card"
+          :data-highlight-id="task.id"
         >
           <h4>{{ task.title }}</h4>
           <p v-if="task.description" class="desc">{{ task.description }}</p>

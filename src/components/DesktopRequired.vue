@@ -1,21 +1,32 @@
 <template>
-  <div v-if="!isDesktop" class="desktop-required">
-    <h2>Desktop app required</h2>
-    <p>{{ message }}</p>
-    <p class="hint">Double-click <code>Launch-MyThing.exe</code> (uses built desktop app) or run <code>npm run tauri:build</code> once if you see this in the launcher.</p>
+  <div class="desktop-wrap">
+    <div v-if="!isDesktop && soft" class="soft-warning">
+      <Monitor :size="16" />
+      <span>{{ message }}</span>
+    </div>
+    <div v-if="!isDesktop && !soft" class="desktop-required">
+      <Monitor :size="28" class="icon" />
+      <h2>Desktop app required</h2>
+      <p>{{ message }}</p>
+      <p class="hint">
+        Double-click <code>Launch-MyThing.exe</code> or run <code>npm run tauri:build</code> once.
+      </p>
+    </div>
+    <slot v-if="isDesktop || soft" />
   </div>
-  <slot v-else />
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { Monitor } from 'lucide-vue-next'
 import { isTauri } from '@/services/platform.js'
 
 defineProps({
   message: {
     type: String,
     default: 'This module needs the MyThing desktop app for SQLite, notifications, and process access.'
-  }
+  },
+  soft: { type: Boolean, default: false }
 })
 
 const isDesktop = computed(() => isTauri())
@@ -23,31 +34,45 @@ const isDesktop = computed(() => isTauri())
 
 <style scoped>
 .desktop-required {
-  margin: 24px;
-  padding: 24px;
-  border: 1px solid #334155;
-  border-radius: 12px;
-  background: #111827;
+  margin: var(--space-6);
+  padding: var(--space-6);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  background: var(--surface-raised);
   max-width: 520px;
+  text-align: center;
+}
+
+.desktop-required .icon {
+  color: var(--text-faint);
+  margin-bottom: var(--space-3);
 }
 
 .desktop-required h2 {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
+  font-size: var(--text-heading);
 }
 
 .desktop-required p {
-  color: #94a3b8;
+  color: var(--text-muted);
   line-height: 1.5;
 }
 
 .hint {
-  margin-top: 12px;
-  font-size: 13px;
+  margin-top: var(--space-3);
+  font-size: var(--text-small);
 }
 
-code {
-  background: #1e293b;
-  padding: 2px 6px;
-  border-radius: 4px;
+.soft-warning {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+  background: var(--status-warning-bg);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--status-warning);
+  font-size: var(--text-small);
 }
 </style>

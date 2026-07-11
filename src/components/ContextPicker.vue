@@ -1,45 +1,69 @@
 <template>
-  <div class="context-picker">
-    <input
+  <BaseModal
+    :open="open"
+    title="Add context"
+    size="md"
+    @update:open="$emit('update:open', $event)"
+    @close="onCancel"
+  >
+    <SearchInput
       v-model="query"
-      class="search"
-      type="search"
       placeholder="Search games, movies, tasks, apps…"
-      @input="onSearch"
+      @update:model-value="onSearch"
     />
+
+    <div v-if="selected.length" class="selected-tray">
+      <HubItemChip
+        v-for="item in selected"
+        :key="item.key"
+        :item="item"
+        removable
+        @remove="toggle(item)"
+      />
+    </div>
+
     <div class="results">
-      <button
+      <HubItemChip
         v-for="item in results"
         :key="item.key"
-        type="button"
-        class="chip"
-        :class="{ selected: selectedKeys.has(item.key) }"
+        :item="item"
+        selectable
+        :selected="selectedKeys.has(item.key)"
         @click="toggle(item)"
-      >
-        <span class="icon">{{ hubItemIcon(item.type) }}</span>
-        <span class="label">{{ item.title }}</span>
-        <span class="meta">{{ item.type }}</span>
-      </button>
-      <p v-if="!results.length" class="empty">No matches.</p>
+      />
+      <BaseEmptyState
+        v-if="!results.length"
+        variant="inline"
+        title="No matches"
+        description="Try a different search term."
+      />
     </div>
-    <footer>
-      <button type="button" class="btn" @click="$emit('cancel')">Cancel</button>
-      <button type="button" class="btn primary" :disabled="!selected.length" @click="confirm">
-        Add {{ selected.length }} item(s)
-      </button>
-    </footer>
-  </div>
+
+    <template #footer>
+      <BaseButton variant="ghost" @click="onCancel">Cancel</BaseButton>
+      <BaseButton variant="primary" :disabled="!selected.length" @click="confirm">
+        Add {{ selected.length }} item{{ selected.length === 1 ? '' : 's' }}
+      </BaseButton>
+    </template>
+  </BaseModal>
 </template>
 
 <script setup>
 import { onMounted, ref, watch } from 'vue'
-import { hubItemIcon, searchHubItems } from '@/services/hubContext.js'
+import BaseModal from '@/components/ui/BaseModal.vue'
+import SearchInput from '@/components/ui/SearchInput.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
+import BaseEmptyState from '@/components/ui/BaseEmptyState.vue'
+import HubItemChip from '@/components/ui/HubItemChip.vue'
+import { searchHubItems } from '@/services/hubContext.js'
 
 const props = defineProps({
-  initial: { type: Array, default: () => [] }
+  open: { type: Boolean, default: false },
+  initial: { type: Array, default: () => [] },
+  single: { type: Boolean, default: false }
 })
 
-const emit = defineEmits(['confirm', 'cancel'])
+const emit = defineEmits(['confirm', 'cancel', 'update:open'])
 
 const query = ref('')
 const results = ref([])
@@ -54,6 +78,9 @@ function toggle(item) {
   if (selectedKeys.value.has(item.key)) {
     selectedKeys.value.delete(item.key)
     selected.value = selected.value.filter(s => s.key !== item.key)
+  } else if (props.single) {
+    selectedKeys.value = new Set([item.key])
+    selected.value = [item]
   } else {
     selectedKeys.value.add(item.key)
     selected.value.push(item)
@@ -62,6 +89,12 @@ function toggle(item) {
 
 function confirm() {
   emit('confirm', [...selected.value])
+  emit('update:open', false)
+}
+
+function onCancel() {
+  emit('cancel')
+  emit('update:open', false)
 }
 
 watch(() => props.initial, (v) => {
@@ -69,83 +102,26 @@ watch(() => props.initial, (v) => {
   selectedKeys.value = new Set(v.map(i => i.key))
 }, { deep: true })
 
-onMounted(() => onSearch())
+watch(() => props.open, (isOpen) => {
+  if (isOpen) onSearch()
+})
+
+onMounted(() => {
+  if (props.open) onSearch()
+})
 </script>
 
 <style scoped>
-.context-picker {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.search {
-  background: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 8px;
-  color: #e2e8f0;
-  padding: 10px 12px;
-}
-
+.selected-tray,
 .results {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.results {
   max-height: 240px;
   overflow: auto;
-}
-
-.chip {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 999px;
-  color: #e2e8f0;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.chip.selected {
-  background: #1d4ed8;
-  border-color: #2563eb;
-}
-
-.meta {
-  color: #94a3b8;
-  font-size: 10px;
-  text-transform: uppercase;
-}
-
-.empty {
-  color: #64748b;
-  font-size: 13px;
-}
-
-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.btn {
-  background: #1e293b;
-  border: 1px solid #334155;
-  color: #e2e8f0;
-  border-radius: 8px;
-  padding: 8px 14px;
-  cursor: pointer;
-}
-
-.btn.primary {
-  background: #1d4ed8;
-  border-color: #2563eb;
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 </style>

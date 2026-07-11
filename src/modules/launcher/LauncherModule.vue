@@ -1,83 +1,95 @@
 <template>
-  <div class="launcher">
-    <div class="launcher-sticky">
-      <section class="toolbar">
-        <div class="work-folder">
-          <label>WOrK folder</label>
-          <div class="path-row">
-            <input v-model="workFolder" type="text" />
-            <button class="btn" :disabled="!isDesktop" @click="browseWorkFolder">Browse</button>
-            <button class="btn primary" :disabled="loading || !isDesktop" @click="onScan">
-              {{ loading ? 'Scanning…' : 'Scan for new projects' }}
-            </button>
+  <ModuleShell sticky-toolbar accent="launcher">
+    <template #toolbar>
+      <ModuleToolbar>
+        <template #leading>
+          <div class="work-folder">
+            <BaseField label="WOrK folder">
+              <div class="path-row">
+                <input v-model="workFolder" type="text" class="field-input" />
+                <BaseButton :disabled="!isDesktop" @click="browseWorkFolder">Browse</BaseButton>
+                <BaseButton variant="primary" :disabled="loading || !isDesktop" @click="onScan">
+                  {{ loading ? 'Scanning…' : 'Scan for new projects' }}
+                </BaseButton>
+              </div>
+            </BaseField>
+            <p class="hint">
+              Scans subfolders in WOrK and adds new repos automatically. Existing apps keep your custom commands.
+            </p>
           </div>
-          <p class="hint">
-            Scans subfolders in WOrK and adds new repos automatically. Existing apps keep your custom commands.
-          </p>
-        </div>
+        </template>
+        <template #center>
+          <SearchInput v-model="search" placeholder="Search apps…" />
+        </template>
+        <template #trailing>
+          <BaseButton variant="primary" @click="openAdd">Add app</BaseButton>
+        </template>
+      </ModuleToolbar>
+    </template>
 
-        <div class="toolbar-actions">
-          <input
-            v-model="search"
-            class="search"
-            type="search"
-            placeholder="Search apps…"
+    <DesktopRequired soft message="Launcher scan and run commands need the desktop app.">
+      <div ref="listRef" class="launcher-content">
+        <section v-if="filteredApps.length" class="app-grid">
+          <AppCard
+            v-for="app in filteredApps"
+            :key="app.id"
+            :app="app"
+            @start="onStart"
+            @install="onInstall"
+            @open-folder="onOpenFolder"
+            @edit="openEdit"
+            @delete="onDelete"
+            @hub-error="onHubError"
           />
-          <button class="btn primary" @click="openAdd">Add app</button>
-        </div>
-      </section>
-    </div>
+        </section>
 
-    <div class="launcher-scroll">
-      <p v-if="message" class="message" :class="messageType">{{ message }}</p>
-      <p v-if="!isDesktop" class="warning">
-        Launcher scan and run commands need the desktop app. Use <code>npm run tauri:dev</code>.
-      </p>
-
-      <section v-if="filteredApps.length" class="app-grid">
-        <AppCard
-          v-for="app in filteredApps"
-          :key="app.id"
-          :app="app"
-          @start="onStart"
-          @install="onInstall"
-          @open-folder="onOpenFolder"
-          @edit="openEdit"
-          @delete="onDelete"
-        />
-      </section>
-
-      <section v-else class="empty">
-        <h3>No apps yet</h3>
-        <p>Scan your WOrK folder or add a project manually.</p>
-        <button class="btn primary" :disabled="!isDesktop" @click="onScan">Scan WOrK folder</button>
-      </section>
-    </div>
-
-    <div v-if="modalOpen" class="modal-backdrop" @click.self="closeModal">
-      <div class="modal">
-        <header>
-          <h2>{{ modalMode === 'edit' ? 'Edit app' : 'Add app' }}</h2>
-          <button class="close" @click="closeModal">×</button>
-        </header>
-        <AppFormModal
-          :app="editingApp"
-          :mode="modalMode"
-          :error="modalError"
-          @save="onSave"
-          @cancel="closeModal"
-          @pick-folder="onPickFolderForForm"
-        />
+        <BaseEmptyState
+          v-else
+          title="No apps yet"
+          description="Scan your WOrK folder or add a project manually."
+        >
+          <template #action>
+            <BaseButton variant="primary" :disabled="!isDesktop" @click="onScan">Scan WOrK folder</BaseButton>
+          </template>
+        </BaseEmptyState>
       </div>
-    </div>
-  </div>
+    </DesktopRequired>
+
+    <BaseModal
+      :open="modalOpen"
+      :title="modalMode === 'edit' ? 'Edit app' : 'Add app'"
+      size="lg"
+      @update:open="modalOpen = $event"
+      @close="closeModal"
+    >
+      <AppFormModal
+        :app="editingApp"
+        :mode="modalMode"
+        :error="modalError"
+        @save="onSave"
+        @cancel="closeModal"
+        @pick-folder="onPickFolderForForm"
+      />
+    </BaseModal>
+  </ModuleShell>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import AppCard from '@/modules/launcher/components/AppCard.vue'
 import AppFormModal from '@/modules/launcher/components/AppFormModal.vue'
+import ModuleShell from '@/components/ui/ModuleShell.vue'
+import ModuleToolbar from '@/components/ui/ModuleToolbar.vue'
+import SearchInput from '@/components/ui/SearchInput.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
+import BaseField from '@/components/ui/BaseField.vue'
+import BaseEmptyState from '@/components/ui/BaseEmptyState.vue'
+import BaseModal from '@/components/ui/BaseModal.vue'
+import DesktopRequired from '@/components/DesktopRequired.vue'
 import { isTauri } from '@/services/platform.js'
+import { useToast } from '@/composables/useToast.js'
+import { useHubHighlight } from '@/composables/useHubHighlight.js'
 import {
   createEmptyApp,
   deleteApp,
@@ -93,13 +105,16 @@ import {
   syncWorkFolder
 } from '@/services/launcher.js'
 
+const route = useRoute()
+const { success, error: toastError, info } = useToast()
+const { applyHighlight } = useHubHighlight()
+
 const isDesktop = isTauri()
 const apps = ref([])
 const workFolder = ref('')
 const search = ref('')
 const loading = ref(false)
-const message = ref('')
-const messageType = ref('info')
+const listRef = ref(null)
 
 const modalOpen = ref(false)
 const modalMode = ref('add')
@@ -117,11 +132,6 @@ const filteredApps = computed(() => {
   )
 })
 
-function setMessage(text, type = 'info') {
-  message.value = text
-  messageType.value = type
-}
-
 async function refresh() {
   apps.value = await listApps()
 }
@@ -132,17 +142,13 @@ async function loadWorkFolder() {
 
 async function onScan() {
   loading.value = true
-  setMessage('')
   try {
     await setWorkFolder(workFolder.value)
     const result = await syncWorkFolder()
     await refresh()
-    setMessage(
-      `Scan complete — ${result.added} added, ${result.updated} updated (${result.total} folders found).`,
-      'success'
-    )
-  } catch (error) {
-    setMessage(error.message || String(error), 'error')
+    success(`Scan complete — ${result.added} added, ${result.updated} updated (${result.total} folders found).`)
+  } catch (err) {
+    toastError(err.message || String(err))
   } finally {
     loading.value = false
   }
@@ -197,13 +203,10 @@ async function onSave(app, validationError = null) {
     return
   }
   if (!app) return
-
   modalError.value = ''
   try {
     const payload = { ...app }
-    if (!payload.id) {
-      payload.id = slugify(payload.name || payload.title || 'app')
-    }
+    if (!payload.id) payload.id = slugify(payload.name || payload.title || 'app')
     if (!payload.folderName) {
       const parts = payload.rootPath.replace(/\\/g, '/').split('/')
       payload.folderName = parts[parts.length - 1] || payload.name
@@ -211,11 +214,10 @@ async function onSave(app, validationError = null) {
     await saveApp(payload)
     await refresh()
     closeModal()
-    setMessage(`Saved "${payload.title}".`, 'success')
-  } catch (error) {
-    const msg = error.message || String(error)
-    modalError.value = msg
-    setMessage(msg, 'error')
+    success(`Saved "${payload.title}".`)
+  } catch (err) {
+    modalError.value = err.message || String(err)
+    toastError(modalError.value)
   }
 }
 
@@ -224,251 +226,85 @@ async function onDelete(app) {
   try {
     await deleteApp(app.id)
     await refresh()
-    setMessage(`Deleted "${app.title}".`, 'success')
-  } catch (error) {
-    setMessage(error.message || String(error), 'error')
+    success(`Deleted "${app.title}".`)
+  } catch (err) {
+    toastError(err.message || String(err))
   }
 }
 
 async function onStart(app) {
   try {
     await runAppCommand(app, 'start')
-    setMessage(`Started "${app.title}" in terminal.`, 'success')
-  } catch (error) {
-    setMessage(error.message || String(error), 'error')
+    success(`Started "${app.title}" in terminal.`)
+  } catch (err) {
+    toastError(err.message || String(err))
   }
 }
 
 async function onInstall(app) {
   try {
     await runAppCommand(app, 'install')
-    setMessage(`Running install for "${app.title}".`, 'success')
-  } catch (error) {
-    setMessage(error.message || String(error), 'error')
+    info(`Running install for "${app.title}".`)
+  } catch (err) {
+    toastError(err.message || String(err))
   }
 }
 
 async function onOpenFolder(app) {
   try {
     await openAppFolder(app)
-  } catch (error) {
-    setMessage(error.message || String(error), 'error')
+  } catch (err) {
+    toastError(err.message || String(err))
   }
+}
+
+function onHubError(msg) {
+  toastError(msg)
 }
 
 onMounted(async () => {
   await loadWorkFolder()
   await refresh()
+  if (route.query.action === 'add') openAdd()
+  await applyHighlight(listRef)
   if (isDesktop) {
     try {
-      if (apps.value.length === 0) {
-        await onScan()
-      }
-    } catch (error) {
-      setMessage(error.message || String(error), 'error')
+      if (apps.value.length === 0) await onScan()
+    } catch (err) {
+      toastError(err.message || String(err))
     }
   }
 })
+
+watch(() => route.query.highlight, () => applyHighlight(listRef))
 </script>
 
 <style scoped>
-.launcher {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.launcher-sticky {
-  flex-shrink: 0;
-  padding: 24px 24px 0;
-}
-
-.launcher-scroll {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 20px 24px 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.toolbar {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  background: #0f172a;
-  border: 1px solid #1f2937;
-  border-radius: 14px;
-  padding: 16px;
-}
-
-.work-folder label {
-  display: block;
-  font-size: 12px;
-  color: #94a3b8;
-  margin-bottom: 8px;
+.work-folder {
+  width: 100%;
 }
 
 .path-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .path-row input {
   flex: 1;
   min-width: 240px;
-  background: #0b1220;
-  border: 1px solid #334155;
-  border-radius: 8px;
-  color: #e2e8f0;
-  padding: 10px 12px;
 }
 
 .hint {
-  margin-top: 8px;
-  font-size: 12px;
-  color: #64748b;
+  margin-top: var(--space-2);
+  font-size: var(--text-caption);
+  color: var(--text-faint);
   line-height: 1.45;
-}
-
-.toolbar-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.search {
-  flex: 1;
-  min-width: 200px;
-  background: #0b1220;
-  border: 1px solid #334155;
-  border-radius: 8px;
-  color: #e2e8f0;
-  padding: 10px 12px;
-}
-
-.btn {
-  background: #1e293b;
-  border: 1px solid #334155;
-  color: #e2e8f0;
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn.primary {
-  background: #2563eb;
-  border-color: #2563eb;
-  color: #fff;
-}
-
-.message {
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-}
-
-.message.success {
-  background: rgba(22, 101, 52, 0.25);
-  border: 1px solid #166534;
-  color: #86efac;
-}
-
-.message.error {
-  background: rgba(127, 29, 29, 0.25);
-  border: 1px solid #991b1b;
-  color: #fca5a5;
-}
-
-.message.info {
-  background: rgba(30, 58, 138, 0.25);
-  border: 1px solid #1d4ed8;
-  color: #93c5fd;
-}
-
-.warning {
-  background: rgba(120, 53, 15, 0.25);
-  border: 1px solid #92400e;
-  color: #fcd34d;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-}
-
-.warning code {
-  color: #fde68a;
 }
 
 .app-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 14px;
-}
-
-.empty {
-  text-align: center;
-  padding: 48px 24px;
-  border: 1px dashed #334155;
-  border-radius: 14px;
-  color: #94a3b8;
-}
-
-.empty h3 {
-  color: #e2e8f0;
-  margin-bottom: 8px;
-}
-
-.empty p {
-  margin-bottom: 16px;
-}
-
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(2, 6, 23, 0.75);
-  display: grid;
-  place-items: center;
-  z-index: 100;
-  padding: 24px;
-}
-
-.modal {
-  width: min(720px, 100%);
-  max-height: 90vh;
-  overflow: auto;
-  background: #111827;
-  border: 1px solid #334155;
-  border-radius: 14px;
-  padding: 20px;
-}
-
-.modal header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.modal h2 {
-  font-size: 18px;
-}
-
-.close {
-  background: transparent;
-  border: none;
-  color: #94a3b8;
-  font-size: 24px;
-  cursor: pointer;
-  line-height: 1;
+  gap: var(--space-3);
 }
 </style>

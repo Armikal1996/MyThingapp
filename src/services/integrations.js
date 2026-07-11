@@ -165,8 +165,7 @@ export async function incrementWatchEpisode(watchId) {
   })
 }
 
-export function openInModule(item, router) {
-  const key = item.key || hubItemKey(item.type, item.id)
+export function openInModule(item, router, from = null) {
   const routes = {
     task: '/tasks',
     game: '/media',
@@ -175,12 +174,12 @@ export function openInModule(item, router) {
     event: '/calendar'
   }
   const path = routes[item.type] || '/'
-  return router.push({
-    path,
-    query: item.type === 'task' || item.type === 'game' || item.type === 'watch'
-      ? { highlight: item.id }
-      : {}
-  })
+  const query = {}
+  if (['task', 'game', 'watch', 'app', 'event'].includes(item.type)) {
+    query.highlight = item.id
+  }
+  if (from) query.from = from
+  return router.push({ path, query })
 }
 
 export async function openAiWithContext(keys, router) {
@@ -188,19 +187,22 @@ export async function openAiWithContext(keys, router) {
   return router.push({ path: '/ai', query })
 }
 
-export async function navigateToLinkedItem(linkedType, linkedId, router) {
+export async function navigateToLinkedItem(linkedType, linkedId, router, from = null) {
   if (!linkedType || !linkedId) return
+
+  const query = { highlight: linkedId }
+  if (from) query.from = from
 
   switch (linkedType) {
     case 'task':
-      return router.push({ path: '/tasks', query: { highlight: linkedId } })
+      return router.push({ path: '/tasks', query })
     case 'game':
     case 'watch':
-      return router.push({ path: '/media', query: { highlight: linkedId } })
+      return router.push({ path: '/media', query })
     case 'app':
-      return router.push({ path: '/launcher', query: { highlight: linkedId } })
+      return router.push({ path: '/launcher', query })
     case 'event':
-      return router.push({ path: '/calendar', query: { highlight: linkedId } })
+      return router.push({ path: '/calendar', query })
     default:
       return router.push('/')
   }
@@ -214,12 +216,12 @@ export async function resolveHubFavorite(fav, router) {
   const item = await getContextItem(parsed.type, parsed.id)
   if (!item) return router.push('/')
 
-  if (parsed.type === 'task') return router.push({ path: '/tasks', query: { highlight: parsed.id } })
+  if (parsed.type === 'task') return router.push({ path: '/tasks', query: { highlight: parsed.id, from: 'favorites' } })
   if (parsed.type === 'game' || parsed.type === 'watch') {
-    return router.push({ path: '/media', query: { highlight: parsed.id } })
+    return router.push({ path: '/media', query: { highlight: parsed.id, from: 'favorites' } })
   }
-  if (parsed.type === 'app') return router.push({ path: '/launcher', query: { highlight: parsed.id } })
-  if (parsed.type === 'event') return router.push({ path: '/calendar', query: { highlight: parsed.id } })
+  if (parsed.type === 'app') return router.push({ path: '/launcher', query: { highlight: parsed.id, from: 'favorites' } })
+  if (parsed.type === 'event') return router.push({ path: '/calendar', query: { highlight: parsed.id, from: 'favorites' } })
 
   return openAiWithContext([fav.targetId], router)
 }

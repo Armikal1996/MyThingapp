@@ -1,0 +1,108 @@
+/* Form inputs (used outside BaseField slots) */
+.field-input,
+input.field-input,
+select.field-input,
+textarea.field-input {
+  background: var(--surface-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  padding: 10px 12px;
+  font-size: var(--text-body);
+  font-family: inherit;
+  width: 100%;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--accent-primary-hover);
+}
+
+/* Scrollbar */
+.hub-scroll,
+.content :deep(> *) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.hub-scroll::-webkit-scrollbar,
+.content :deep(> *)::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.hub-scroll::-webkit-scrollbar-thumb,
+.content :deep(> *)::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: var(--radius-pill);
+}
+
+/* Focus rings */
+:focus-visible {
+  outline: 2px solid var(--accent-primary-hover);
+  outline-offset: 2px;
+}
+
+/* Section headers */
+.hub-section-title {
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: var(--space-3);
+}
+
+/* Keyboard hint */
+kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  background: var(--surface-overlay);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+}
+
+/* Hub highlight pulse */
+.hub-highlight {
+  animation: hub-highlight-pulse 2s ease-out;
+  box-shadow: 0 0 0 2px var(--accent-primary-hover);
+}
+
+@keyframes hub-highlight-pulse {
+  0% {
+    box-shadow: 0 0 0 3px var(--accent-primary-hover);
+    background: rgba(59, 130, 246, 0.15);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+    background: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hub-highlight {
+    animation: none;
+    box-shadow: 0 0 0 2px var(--accent-primary-hover);
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Links */
+.hub-link {
+  color: var(--accent-primary-hover);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.hub-link:hover {
+  text-decoration: underline;
+}

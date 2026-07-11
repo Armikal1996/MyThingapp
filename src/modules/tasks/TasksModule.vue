@@ -1,136 +1,155 @@
 <template>
-  <DesktopRequired>
-  <div class="tasks-module">
-    <section class="toolbar">
-      <div class="tabs">
-        <button
-          v-for="tab in tabs"
-          :key="tab.id"
-          class="tab"
-          :class="{ active: activeTab === tab.id }"
-          @click="activeTab = tab.id"
-        >
-          {{ tab.label }}
-        </button>
-      </div>
-      <div class="toolbar-actions">
-        <button class="btn" @click="onExportBackup">Export backup</button>
-        <button class="btn" :disabled="!isDesktop" @click="onImportBackup">Import backup</button>
-        <button class="btn primary" @click="openAdd">Add task</button>
-      </div>
-    </section>
+  <ModuleShell sticky-toolbar accent="tasks">
+    <template #toolbar>
+      <ModuleToolbar>
+        <template #leading>
+          <BaseTabs v-model="activeTab" :tabs="tabs" />
+        </template>
+        <template #trailing>
+          <BaseButton @click="onExportBackup">Export backup</BaseButton>
+          <BaseButton :disabled="!isDesktop" @click="onImportBackup">Import backup</BaseButton>
+          <BaseButton variant="primary" @click="openAdd">Add task</BaseButton>
+        </template>
+      </ModuleToolbar>
+    </template>
 
-    <p v-if="message" class="message" :class="messageType">{{ message }}</p>
-
-    <!-- Work tasks -->
-    <section v-if="activeTab === 'work'" class="panel">
-      <div class="filters">
-        <button
-          class="filter"
-          :class="{ active: workFilter === 'all' }"
-          @click="workFilter = 'all'"
-        >
-          All ({{ workTasks.length }})
-        </button>
-        <button
-          v-for="s in workStatuses"
-          :key="s.id"
-          class="filter"
-          :class="{ active: workFilter === s.id }"
-          @click="workFilter = s.id"
-        >
-          {{ s.label }} ({{ countByStatus('work', s.id) }})
-        </button>
-      </div>
-      <div class="task-list">
-        <article v-for="task in filteredWorkTasks" :key="task.id" class="task-row">
-          <div class="task-main">
-            <h3>{{ task.title }}</h3>
-            <p v-if="task.description" class="desc">{{ task.description }}</p>
-            <div class="meta">
-              <span v-if="task.dueAt" class="pill">Due {{ formatDate(task.dueAt) }}</span>
-              <span v-for="tag in task.tags" :key="tag" class="pill tag">{{ tag }}</span>
-            </div>
+    <DesktopRequired>
+      <div ref="listRef" class="tasks-content">
+        <!-- Work tasks -->
+        <section v-if="activeTab === 'work'" class="panel">
+          <div class="filters">
+            <BasePill :active="workFilter === 'all'" @click="workFilter = 'all'">
+              All ({{ workTasks.length }})
+            </BasePill>
+            <BasePill
+              v-for="s in workStatuses"
+              :key="s.id"
+              :active="workFilter === s.id"
+              @click="workFilter = s.id"
+            >
+              {{ s.label }} ({{ countByStatus('work', s.id) }})
+            </BasePill>
           </div>
-          <div class="row-actions">
-            <HubActionMenu item-type="task" :item="task" @done="onHubAction" @error="onHubError" />
-            <select :value="task.status" @change="onStatusChange(task, $event.target.value)">
-              <option v-for="s in workStatuses" :key="s.id" :value="s.id">{{ s.label }}</option>
-            </select>
-            <button class="btn-sm" @click="openEdit(task)">Edit</button>
-            <button class="btn-sm danger" @click="onDelete(task)">Delete</button>
+          <div class="task-list">
+            <BaseCard
+              v-for="task in filteredWorkTasks"
+              :key="task.id"
+              class="task-row"
+              accent="var(--accent-tasks)"
+              :data-highlight-id="task.id"
+            >
+              <div class="task-main">
+                <h3>{{ task.title }}</h3>
+                <p v-if="task.description" class="desc">{{ task.description }}</p>
+                <div class="meta">
+                  <BaseBadge v-if="task.dueAt">Due {{ formatDate(task.dueAt) }}</BaseBadge>
+                  <BaseBadge v-for="tag in task.tags" :key="tag">{{ tag }}</BaseBadge>
+                </div>
+              </div>
+              <div class="row-actions">
+                <HubActionMenu item-type="task" :item="task" @done="onHubAction" @error="onHubError" />
+                <select :value="task.status" @change="onStatusChange(task, $event.target.value)">
+                  <option v-for="s in workStatuses" :key="s.id" :value="s.id">{{ s.label }}</option>
+                </select>
+                <BaseButton size="sm" @click="openEdit(task)">Edit</BaseButton>
+                <BaseButton size="sm" variant="danger" @click="onDelete(task)">Delete</BaseButton>
+              </div>
+            </BaseCard>
+            <BaseEmptyState
+              v-if="!filteredWorkTasks.length"
+              variant="inline"
+              title="No work tasks in this view."
+            />
           </div>
-        </article>
-        <p v-if="!filteredWorkTasks.length" class="empty">No work tasks in this view.</p>
-      </div>
-    </section>
+        </section>
 
-    <!-- Moving kanban -->
-    <section v-else-if="activeTab === 'moving'" class="panel">
-      <KanbanBoard
-        :tasks="movingTasks"
-        :columns="movingColumns"
-        @move="onMove"
-        @edit="openEdit"
-        @delete="onDelete"
+        <!-- Moving kanban -->
+        <section v-else-if="activeTab === 'moving'" class="panel">
+          <KanbanBoard
+            :tasks="movingTasks"
+            :columns="movingColumns"
+            @move="onMove"
+            @edit="openEdit"
+            @delete="onDelete"
+          />
+        </section>
+
+        <!-- Cycling tasks -->
+        <section v-else class="panel">
+          <div class="task-list">
+            <BaseCard
+              v-for="task in cyclingTasks"
+              :key="task.id"
+              class="task-row"
+              accent="var(--accent-tasks)"
+              :data-highlight-id="task.id"
+            >
+              <div class="task-main">
+                <h3>{{ task.title }}</h3>
+                <p v-if="task.description" class="desc">{{ task.description }}</p>
+                <div class="meta">
+                  <BaseBadge>{{ task.recurrence || 'daily' }}</BaseBadge>
+                  <BaseBadge v-if="task.nextDueAt" :variant="isOverdue(task) ? 'danger' : 'default'">
+                    Next: {{ formatDate(task.nextDueAt) }}
+                  </BaseBadge>
+                  <BaseBadge v-if="task.lastCompletedAt">Last: {{ formatDate(task.lastCompletedAt) }}</BaseBadge>
+                </div>
+              </div>
+              <div class="row-actions">
+                <HubActionMenu item-type="task" :item="task" @done="onHubAction" @error="onHubError" />
+                <BaseButton size="sm" variant="primary" @click="onCompleteCycle(task)">Complete</BaseButton>
+                <BaseButton size="sm" @click="openEdit(task)">Edit</BaseButton>
+                <BaseButton size="sm" variant="danger" @click="onDelete(task)">Delete</BaseButton>
+              </div>
+            </BaseCard>
+            <BaseEmptyState
+              v-if="!cyclingTasks.length"
+              variant="inline"
+              title="No cycling tasks yet."
+            />
+          </div>
+        </section>
+      </div>
+    </DesktopRequired>
+
+    <BaseModal
+      :open="modalOpen"
+      :title="modalMode === 'edit' ? 'Edit task' : 'Add task'"
+      @update:open="modalOpen = $event"
+      @close="closeModal"
+    >
+      <TaskFormModal
+        :task="editingTask"
+        :mode="modalMode"
+        :show-status="activeTab === 'work'"
+        :show-recurrence="activeTab === 'cycling'"
+        @save="onSave"
+        @cancel="closeModal"
       />
-    </section>
-
-    <!-- Cycling tasks -->
-    <section v-else class="panel">
-      <div class="task-list">
-        <article v-for="task in cyclingTasks" :key="task.id" class="task-row cycling">
-          <div class="task-main">
-            <h3>{{ task.title }}</h3>
-            <p v-if="task.description" class="desc">{{ task.description }}</p>
-            <div class="meta">
-              <span class="pill">{{ task.recurrence || 'daily' }}</span>
-              <span v-if="task.nextDueAt" class="pill" :class="{ overdue: isOverdue(task) }">
-                Next: {{ formatDate(task.nextDueAt) }}
-              </span>
-              <span v-if="task.lastCompletedAt" class="pill muted">
-                Last: {{ formatDate(task.lastCompletedAt) }}
-              </span>
-            </div>
-          </div>
-          <div class="row-actions">
-            <button class="btn-sm primary" @click="onCompleteCycle(task)">Complete</button>
-            <button class="btn-sm" @click="openEdit(task)">Edit</button>
-            <button class="btn-sm danger" @click="onDelete(task)">Delete</button>
-          </div>
-        </article>
-        <p v-if="!cyclingTasks.length" class="empty">No cycling tasks yet.</p>
-      </div>
-    </section>
-
-    <div v-if="modalOpen" class="modal-backdrop" @click.self="closeModal">
-      <div class="modal">
-        <header>
-          <h2>{{ modalMode === 'edit' ? 'Edit task' : 'Add task' }}</h2>
-          <button class="close" @click="closeModal">×</button>
-        </header>
-        <TaskFormModal
-          :task="editingTask"
-          :mode="modalMode"
-          :show-status="activeTab === 'work'"
-          :show-recurrence="activeTab === 'cycling'"
-          @save="onSave"
-          @cancel="closeModal"
-        />
-      </div>
-    </div>
-  </div>
-  </DesktopRequired>
+    </BaseModal>
+  </ModuleShell>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import KanbanBoard from '@/modules/tasks/components/KanbanBoard.vue'
 import TaskFormModal from '@/modules/tasks/components/TaskFormModal.vue'
 import HubActionMenu from '@/components/HubActionMenu.vue'
 import DesktopRequired from '@/components/DesktopRequired.vue'
+import ModuleShell from '@/components/ui/ModuleShell.vue'
+import ModuleToolbar from '@/components/ui/ModuleToolbar.vue'
+import BaseTabs from '@/components/ui/BaseTabs.vue'
+import BasePill from '@/components/ui/BasePill.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
+import BaseCard from '@/components/ui/BaseCard.vue'
+import BaseBadge from '@/components/ui/BaseBadge.vue'
+import BaseEmptyState from '@/components/ui/BaseEmptyState.vue'
+import BaseModal from '@/components/ui/BaseModal.vue'
 import { exportBackup, importBackup } from '@/services/backup.js'
 import { isTauri } from '@/services/platform.js'
+import { useToast } from '@/composables/useToast.js'
+import { useHubHighlight } from '@/composables/useHubHighlight.js'
 import {
   TASK_KINDS,
   WORK_STATUSES,
@@ -144,6 +163,10 @@ import {
   saveTask
 } from '@/services/tasks.js'
 
+const route = useRoute()
+const { success, error: toastError } = useToast()
+const { applyHighlight } = useHubHighlight()
+
 const isDesktop = isTauri()
 const tabs = [
   { id: 'work', label: 'Work' },
@@ -156,8 +179,7 @@ const workFilter = ref('all')
 const workStatuses = WORK_STATUSES
 const movingColumns = ref([])
 const allTasks = ref([])
-const message = ref('')
-const messageType = ref('info')
+const listRef = ref(null)
 const modalOpen = ref(false)
 const modalMode = ref('add')
 const editingTask = ref(createEmptyTask())
@@ -169,11 +191,6 @@ const cyclingTasks = computed(() => allTasks.value.filter(t => t.kind === TASK_K
 const filteredWorkTasks = computed(() =>
   workTasks.value.filter(t => workFilter.value === 'all' || t.status === workFilter.value)
 )
-
-function setMessage(text, type = 'info') {
-  message.value = text
-  messageType.value = type
-}
 
 function formatDate(iso) {
   if (!iso) return '—'
@@ -216,9 +233,9 @@ async function onSave(task) {
     await saveTask(payload)
     await refresh()
     closeModal()
-    setMessage(`Saved "${payload.title}".`, 'success')
+    success(`Saved "${payload.title}".`)
   } catch (e) {
-    setMessage(e.message, 'error')
+    toastError(e.message)
   }
 }
 
@@ -226,7 +243,7 @@ async function onDelete(task) {
   if (!confirm(`Delete "${task.title}"?`)) return
   await deleteTask(task.id)
   await refresh()
-  setMessage(`Deleted "${task.title}".`, 'success')
+  success(`Deleted "${task.title}".`)
 }
 
 async function onStatusChange(task, status) {
@@ -242,15 +259,15 @@ async function onMove(task, status) {
 async function onCompleteCycle(task) {
   await completeCyclingTask(task)
   await refresh()
-  setMessage(`Completed "${task.title}" — next due scheduled.`, 'success')
+  success(`Completed "${task.title}" — next due scheduled.`)
 }
 
 async function onExportBackup() {
   try {
     const result = await exportBackup()
-    setMessage(result.path ? `Backup saved to ${result.path}` : 'Backup exported.', 'success')
+    success(result.path ? `Backup saved to ${result.path}` : 'Backup exported.')
   } catch (e) {
-    setMessage(e.message, 'error')
+    toastError(e.message)
   }
 }
 
@@ -260,88 +277,89 @@ async function onImportBackup() {
     const result = await importBackup()
     if (!result) return
     await refresh()
-    setMessage(`Restored backup from ${result.importedAt || 'file'}.`, 'success')
+    success(`Restored backup from ${result.importedAt || 'file'}.`)
   } catch (e) {
-    setMessage(e.message, 'error')
+    toastError(e.message)
   }
 }
 
 function onHubAction(action) {
-  setMessage(`Done: ${action}`, 'success')
+  success(`Done: ${action}`)
   refresh()
 }
 
 function onHubError(err) {
-  setMessage(err, 'error')
+  toastError(err)
 }
 
 onMounted(async () => {
   movingColumns.value = await getMovingColumns()
   await refresh()
+  if (route.query.action === 'add') openAdd()
+  await applyHighlight(listRef)
 })
+
+watch(() => route.query.highlight, () => applyHighlight(listRef))
 </script>
 
 <style scoped>
-.tasks-module { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
-.toolbar { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
-.tabs { display: flex; gap: 6px; }
-.tab {
-  background: #1e293b; border: 1px solid #334155; color: #94a3b8;
-  border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
 }
-.tab.active { background: #2563eb; border-color: #2563eb; color: #fff; }
-.toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.btn {
-  background: #1e293b; border: 1px solid #334155; color: #e2e8f0;
-  border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 600; cursor: pointer;
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
-.message { padding: 10px 14px; border-radius: 8px; font-size: 13px; }
-.message.success { background: rgba(22,101,52,.25); border: 1px solid #166534; color: #86efac; }
-.message.error { background: rgba(127,29,29,.25); border: 1px solid #991b1b; color: #fca5a5; }
-.message.info { background: rgba(30,58,138,.25); border: 1px solid #1d4ed8; color: #93c5fd; }
-.panel { min-height: 300px; }
-.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-.filter {
-  background: #0f172a; border: 1px solid #334155; color: #94a3b8;
-  border-radius: 999px; padding: 6px 12px; font-size: 12px; cursor: pointer;
-}
-.filter.active { background: #1d4ed8; border-color: #1d4ed8; color: #fff; }
-.task-list { display: flex; flex-direction: column; gap: 10px; }
+
 .task-row {
-  display: flex; justify-content: space-between; gap: 12px; align-items: flex-start;
-  background: #0f172a; border: 1px solid #1f2937; border-radius: 12px; padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-4);
 }
-.task-main h3 { font-size: 15px; margin-bottom: 4px; }
-.desc { font-size: 13px; color: #64748b; margin-bottom: 8px; line-height: 1.4; }
-.meta { display: flex; flex-wrap: wrap; gap: 6px; }
-.pill {
-  font-size: 11px; background: #1e293b; color: #94a3b8;
-  border-radius: 999px; padding: 3px 8px;
+
+.task-main h3 {
+  font-size: var(--text-body);
+  font-weight: 600;
+  margin-bottom: var(--space-1);
 }
-.pill.overdue { color: #fca5a5; border: 1px solid #991b1b; }
-.pill.muted { opacity: 0.7; }
-.row-actions { display: flex; gap: 6px; flex-shrink: 0; align-items: center; }
+
+.desc {
+  font-size: var(--text-small);
+  color: var(--text-faint);
+  margin-bottom: var(--space-2);
+  line-height: 1.4;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.row-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  align-items: center;
+}
+
 .row-actions select {
-  background: #0b1220; border: 1px solid #334155; border-radius: 6px;
-  color: #cbd5e1; font-size: 12px; padding: 6px 8px;
+  background: var(--surface-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: var(--text-caption);
+  padding: 6px 8px;
 }
-.btn-sm {
-  background: #1e293b; border: 1px solid #334155; color: #e2e8f0;
-  border-radius: 6px; padding: 6px 10px; font-size: 12px; cursor: pointer;
+
+.panel {
+  min-height: 300px;
 }
-.btn-sm.primary { background: #2563eb; border-color: #2563eb; }
-.btn-sm.danger { color: #fca5a5; border-color: #7f1d1d; }
-.empty { color: #64748b; text-align: center; padding: 32px; }
-.modal-backdrop {
-  position: fixed; inset: 0; background: rgba(2,6,23,.75);
-  display: grid; place-items: center; z-index: 100; padding: 24px;
-}
-.modal {
-  width: min(560px, 100%); background: #111827; border: 1px solid #334155;
-  border-radius: 14px; padding: 20px; max-height: 90vh; overflow: auto;
-}
-.modal header { display: flex; justify-content: space-between; margin-bottom: 16px; }
-.close { background: none; border: none; color: #94a3b8; font-size: 24px; cursor: pointer; }
 </style>
