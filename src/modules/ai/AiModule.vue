@@ -30,6 +30,19 @@
           <span v-if="health[opt.key]?.online" class="hint">ready</span>
           <span v-else class="hint err">{{ health[opt.key]?.error || 'offline' }}</span>
         </BaseCard>
+        <BaseCard
+          v-if="activeTab === 'chat'"
+          class="status-pill speech-pill"
+          :class="{ online: whisperStatus.ready, loading: whisperLoading }"
+        >
+          <span class="dot" />
+          <strong>Speech</strong>
+          <span class="role">local Whisper</span>
+          <span v-if="whisperLoading" class="hint">downloading…</span>
+          <span v-else-if="whisperStatus.ready" class="hint">ready</span>
+          <span v-else-if="isDesktop" class="hint err">{{ whisperStatus.message }}</span>
+          <span v-else class="hint err">desktop only</span>
+        </BaseCard>
       </section>
 
       <!-- Chat -->
@@ -73,8 +86,11 @@
               <BaseButton size="sm" variant="danger" @click="onDeleteThread">Delete</BaseButton>
             </header>
 
-            <p v-if="agentMode && !isDesktop" class="agent-banner">
-              Agent mode active — hub data actions work; OS actions (Start, Folder, Cursor) need the desktop app.
+            <p v-if="!isDesktop" class="agent-banner">
+              Voice input requires the MyThing desktop app. Agent OS actions (Start, Folder, Cursor) also need desktop.
+            </p>
+            <p v-else-if="isDesktop && !whisperStatus.ready && !whisperLoading" class="agent-banner">
+              {{ whisperStatus.message }} — tap Voice to download on first use (~150 MB, one-time).
             </p>
 
             <div ref="messagesEl" class="messages">
@@ -132,14 +148,24 @@
             </div>
 
             <form class="composer" @submit.prevent="onSend">
-              <textarea
-                v-model="draft"
-                rows="3"
-                :placeholder="composerPlaceholder"
-                :disabled="sending || !modelOnline"
-                @keydown.ctrl.enter.prevent="onSend"
-              />
-              <BaseButton variant="primary" type="submit" :disabled="sending || !draft.trim() || !modelOnline">
+              <div class="composer-input">
+                <textarea
+                  v-model="draft"
+                  rows="3"
+                  :placeholder="composerPlaceholder"
+                  :disabled="sending || !modelOnline || voiceRecording"
+                  @keydown.ctrl.enter.prevent="onSend"
+                />
+                <VoiceInputButton
+                  :disabled="sending || !modelOnline"
+                  :available="isDesktop"
+                  @preparing="whisperLoading = $event"
+                  @transcribed="onVoiceTranscribed"
+                  @recording-change="onVoiceRecordingChange"
+                  @error="onVoiceError"
+                />
+              </div>
+              <BaseButton variant="primary" type="submit" :disabled="sending || !draft.trim() || !modelOnline || voiceRecording">
                 {{ agentMode ? 'Send (agent)' : 'Send' }}
               </BaseButton>
             </form>
@@ -231,6 +257,7 @@ import { useRoute, useRouter } from 'vue-router'
 import AnnouncementFormModal from '@/modules/ai/components/AnnouncementFormModal.vue'
 import AgentActionCard from '@/modules/ai/components/AgentActionCard.vue'
 import AgentActionLog from '@/modules/ai/components/AgentActionLog.vue'
+import VoiceInputButton from '@/modules/ai/components/VoiceInputButton.vue'
 import ContextPicker from '@/components/ContextPicker.vue'
 import ModuleShell from '@/components/ui/ModuleShell.vue'
 import ModuleToolbar from '@/components/ui/ModuleToolbar.vue'
@@ -268,6 +295,7 @@ import { checkAllModels, getModelOptions } from '@/services/lmstudio.js'
 import { getContextItems, getQuickContextChips, searchHubItems } from '@/services/hubContext.js'
 import { openInModule } from '@/services/integrations.js'
 import { isTauri } from '@/services/platform.js'
+import { getWhisperStatus } from '@/services/speechToText.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -309,6 +337,9 @@ const pendingActions = ref([])
 const messageActions = ref({})
 const confirmingId = ref(null)
 const isDesktop = computed(() => isTauri())
+const whisperStatus = ref({ ready: false, message: 'Checking…' })
+const whisperLoading = ref(false)
+const voiceRecording = ref(false)
 
 const statusFilters = computed(() => [
   { id: 'all', label: 'All' },
@@ -525,6 +556,34 @@ function onCancelPending(action) {
   pendingActions.value = pendingActions.value.filter(p => p.id !== action.id)
 }
 
+function onVoiceTranscribed(text) {
+  const trimmed = text.trim()
+  if (!trimmed) return
+  draft.value = draft.value ? `${draft.value.trim()} ${trimmed}` : trimmed
+  refreshWhisperStatus()
+}
+
+function onVoiceError(message) {
+  toastError(message)
+}
+
+function onVoiceRecordingChange(recording) {
+  voiceRecording.value = recording
+  if (!recording) refreshWhisperStatus()
+}
+
+async function refreshWhisperStatus() {
+  if (!isDesktop.value) {
+    whisperStatus.value = { ready: false, message: 'Desktop only' }
+    return
+  }
+  try {
+    whisperStatus.value = await getWhisperStatus()
+  } catch {
+    whisperStatus.value = { ready: false, message: 'Speech unavailable' }
+  }
+}
+
 function addContextChip(chip) {
   if (!contextItems.value.find(c => c.key === chip.key)) {
     contextItems.value.push(chip)
@@ -622,6 +681,7 @@ watch(
 
 onMounted(async () => {
   await refreshHealth()
+  await refreshWhisperStatus()
   quickChips.value = await getQuickContextChips()
   await loadThreads(route.query.thread || null)
   await loadRouteContext()
@@ -825,6 +885,25 @@ onMounted(async () => {
   gap: var(--space-2);
   padding: var(--space-3);
   border-top: 1px solid var(--border-subtle);
+  align-items: end;
+}
+
+.composer-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.composer-input textarea {
+  width: 100%;
+}
+
+.status-pill.speech-pill.online {
+  border-color: var(--accent-ai);
+}
+
+.status-pill.loading {
+  opacity: 0.85;
 }
 
 .composer textarea {

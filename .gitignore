@@ -8,5 +8,6 @@ dist/
 backups/
 src-tauri/target/
 launcher/target/
+src-tauri/binaries/
 Launch-MyThing.exe
 Launch-MyThing-Release.exe
