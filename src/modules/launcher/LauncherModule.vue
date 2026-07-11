@@ -1,54 +1,58 @@
 <template>
   <div class="launcher">
-    <section class="toolbar">
-      <div class="work-folder">
-        <label>WOrK folder</label>
-        <div class="path-row">
-          <input v-model="workFolder" type="text" />
-          <button class="btn" :disabled="!isDesktop" @click="browseWorkFolder">Browse</button>
-          <button class="btn primary" :disabled="loading || !isDesktop" @click="onScan">
-            {{ loading ? 'Scanning…' : 'Scan for new projects' }}
-          </button>
+    <div class="launcher-sticky">
+      <section class="toolbar">
+        <div class="work-folder">
+          <label>WOrK folder</label>
+          <div class="path-row">
+            <input v-model="workFolder" type="text" />
+            <button class="btn" :disabled="!isDesktop" @click="browseWorkFolder">Browse</button>
+            <button class="btn primary" :disabled="loading || !isDesktop" @click="onScan">
+              {{ loading ? 'Scanning…' : 'Scan for new projects' }}
+            </button>
+          </div>
+          <p class="hint">
+            Scans subfolders in WOrK and adds new repos automatically. Existing apps keep your custom commands.
+          </p>
         </div>
-        <p class="hint">
-          Scans subfolders in WOrK and adds new repos automatically. Existing apps keep your custom commands.
-        </p>
-      </div>
 
-      <div class="toolbar-actions">
-        <input
-          v-model="search"
-          class="search"
-          type="search"
-          placeholder="Search apps…"
+        <div class="toolbar-actions">
+          <input
+            v-model="search"
+            class="search"
+            type="search"
+            placeholder="Search apps…"
+          />
+          <button class="btn primary" @click="openAdd">Add app</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="launcher-scroll">
+      <p v-if="message" class="message" :class="messageType">{{ message }}</p>
+      <p v-if="!isDesktop" class="warning">
+        Launcher scan and run commands need the desktop app. Use <code>npm run tauri:dev</code>.
+      </p>
+
+      <section v-if="filteredApps.length" class="app-grid">
+        <AppCard
+          v-for="app in filteredApps"
+          :key="app.id"
+          :app="app"
+          @start="onStart"
+          @install="onInstall"
+          @open-folder="onOpenFolder"
+          @edit="openEdit"
+          @delete="onDelete"
         />
-        <button class="btn primary" @click="openAdd">Add app</button>
-      </div>
-    </section>
+      </section>
 
-    <p v-if="message" class="message" :class="messageType">{{ message }}</p>
-    <p v-if="!isDesktop" class="warning">
-      Launcher scan and run commands need the desktop app. Use <code>npm run tauri:dev</code>.
-    </p>
-
-    <section v-if="filteredApps.length" class="app-grid">
-      <AppCard
-        v-for="app in filteredApps"
-        :key="app.id"
-        :app="app"
-        @start="onStart"
-        @install="onInstall"
-        @open-folder="onOpenFolder"
-        @edit="openEdit"
-        @delete="onDelete"
-      />
-    </section>
-
-    <section v-else class="empty">
-      <h3>No apps yet</h3>
-      <p>Scan your WOrK folder or add a project manually.</p>
-      <button class="btn primary" :disabled="!isDesktop" @click="onScan">Scan WOrK folder</button>
-    </section>
+      <section v-else class="empty">
+        <h3>No apps yet</h3>
+        <p>Scan your WOrK folder or add a project manually.</p>
+        <button class="btn primary" :disabled="!isDesktop" @click="onScan">Scan WOrK folder</button>
+      </section>
+    </div>
 
     <div v-if="modalOpen" class="modal-backdrop" @click.self="closeModal">
       <div class="modal">
@@ -269,7 +273,22 @@ onMounted(async () => {
 
 <style scoped>
 .launcher {
-  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.launcher-sticky {
+  flex-shrink: 0;
+  padding: 24px 24px 0;
+}
+
+.launcher-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 24px 32px;
   display: flex;
   flex-direction: column;
   gap: 20px;

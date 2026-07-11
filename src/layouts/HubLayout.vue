@@ -87,6 +87,7 @@ onMounted(async () => {
   display: grid;
   grid-template-columns: 240px 1fr;
   height: 100vh;
+  overflow: hidden;
   background: #0b1020;
   color: #e8edf7;
 }
@@ -189,6 +190,8 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .topbar {
@@ -205,6 +208,16 @@ onMounted(async () => {
 .content {
   flex: 1;
   min-height: 0;
-  overflow: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.content :deep(> *) {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
 }
 </style>
